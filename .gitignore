@@ -2,3 +2,5 @@
 *.map
 *.history
 coffeescripts
+
+node_modules
