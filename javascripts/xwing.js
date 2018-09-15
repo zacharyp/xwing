@@ -12267,7 +12267,7 @@ exportObj.manifestByExpansion = {
       type: 'ship',
       count: 2
     }, {
-      name: 'Lancer-class Pursuit Craft',
+      name: 'Lancer-Class Pursuit Craft',
       type: 'ship',
       count: 2
     }, {
