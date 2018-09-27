@@ -18108,6 +18108,7 @@ class exportObj.SquadBuilder
                 @list_display_mode = 'simple'
                 @simple_container.show()
                 @fancy_container.hide()
+                @reddit_container.hide()
                 @bbcode_container.hide()
                 @htmlview_container.hide()
                 @toggle_vertical_space_container.hide()
@@ -18155,6 +18156,7 @@ class exportObj.SquadBuilder
                 @select_bbcode_view_button.addClass 'btn-inverse'
                 @list_display_mode = 'bbcode'
                 @bbcode_container.show()
+                @reddit_container.hide()
                 @htmlview_container.hide()
                 @simple_container.hide()
                 @fancy_container.hide()
@@ -20527,7 +20529,6 @@ class Ship
 
     toRedditText: ->
         reddit = """**#{@pilot.name} (#{@pilot.points})**    \n"""
-#        ship_total_points = @pilot.points
         slotted_upgrades = (upgrade for upgrade in @upgrades when upgrade.data?)
             .concat (modification for modification in @modifications when modification.data?)
             .concat (title for title in @titles when title.data?)
@@ -20538,9 +20539,7 @@ class Ship
                 points = upgrade.getPoints()
                 upgrade_reddit = upgrade.toRedditText points
                 reddit_upgrades.push upgrade_reddit if upgrade_reddit?
-#                ship_total_points += points
             reddit += reddit_upgrades.join "    "
-#        reddit += """*&nbsp;*Ship total: (#{@ship_total_points})*    \n"""
         reddit += """&nbsp;*Ship total: (#{@getPoints()})*    \n"""
 
         reddit
