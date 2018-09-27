@@ -18139,6 +18139,7 @@ class exportObj.SquadBuilder
                 @select_reddit_view_button.addClass 'btn-inverse'
                 @list_display_mode = 'reddit'
                 @reddit_container.show()
+                @bbcode_container.hide()
                 @htmlview_container.hide()
                 @simple_container.hide()
                 @fancy_container.hide()
