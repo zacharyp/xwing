@@ -20416,8 +20416,8 @@ Ship = (function() {
         }
       }
       reddit += reddit_upgrades.join("    ");
+      reddit += "&nbsp;*Ship total: (" + (this.getPoints()) + ")*    \n";
     }
-    reddit += "&nbsp;*Ship total: (" + (this.getPoints()) + ")*    \n";
     return reddit;
   };
 
