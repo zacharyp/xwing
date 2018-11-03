@@ -37,6 +37,14 @@ strong {
   font-family: EurostileStandardBold;
   font-weight: normal; }
 
+[tooltip]:before {
+  position: absolute;
+  content: attr(tooltip);
+  opacity: 0; }
+
+[tooltip]:hover:before {
+  opacity: 1; }
+
 em {
   font-family: EurostileStandardOblique;
   font-style: normal; }
@@ -45,6 +53,12 @@ strong em, em strong {
   font-family: EurostileStandardBoldOblique;
   font-style: normal;
   font-weight: normal; }
+
+.flavor_text {
+  display: none; }
+
+.xwing-card-browser .flavor_text {
+  display: unset; }
 
 .ship-container > .row-fluid {
   padding: 10px 0px; }
@@ -305,6 +319,19 @@ li.squad-summary {
 
 .nav-tabs a {
   color: black; }
+
+.advanced-search-container {
+  color: black; }
+
+.advanced-search-label {
+  display: inline;
+  margin: 0 10px 0 0; }
+
+.advanced-search-checkbox {
+  margin: 0; }
+
+.show-advanced-search {
+  margin-bottom: 10px; }
 
 .nav-tabs > .active > a,
 .nav-tabs > .active > a:focus,
