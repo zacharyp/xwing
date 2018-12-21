@@ -882,7 +882,7 @@ exportObj.CardBrowser = (function() {
 
   CardBrowser.prototype.setupUI = function() {
     var opt, slot;
-    this.container.append($.trim("<div class=\"container-fluid xwing-card-browser\">\n    <div class=\"row-fluid\">\n        <div class=\"span12\">\n            <span class=\"translate sort-cards-by\">Sort cards by</span>: <select class=\"sort-by\">\n                <option value=\"name\">Name</option>\n                <option value=\"source\">Source</option>\n                <option value=\"type-by-points\">Type (by Points)</option>\n                <option value=\"type-by-name\" selected=\"1\">Type (by Name)</option>\n            </select>\n        </div>\n    </div>\n    <div class=\"row-fluid\">\n        <div class=\"span4 card-selector-container\">\n\n        </div>\n        <div class=\"span8\">\n            <div class=\"well card-search-container\">\n                <input type=\"search\" placeholder=\"Search for name, text or ship\" class = \"card-search-text\">" + "                <button class=\"btn btn-primary show-advanced-search\">\n                    Advanced Search\n                </button>\n                <div class=\"advanced-search-container\">\n                    <div class= \"advanced-search-faction-selection-container\">\n                        <strong>Faction:</strong>\n                        <label class = \"toggle-rebel-search advanced-search-label\">\n                            <input type=\"checkbox\" class=\"rebel-checkbox advanced-search-checkbox\" checked=\"checked\" /> Rebel\n                        </label>\n                        <label class = \"toggle-imperial-search advanced-search-label\">\n                            <input type=\"checkbox\" class=\"imperial-checkbox advanced-search-checkbox\" checked=\"checked\" /> Imperial\n                        </label>\n                        <label class = \"toggle-scum-search advanced-search-label\">\n                            <input type=\"checkbox\" class=\"scum-checkbox advanced-search-checkbox\" checked=\"checked\" /> Scum\n                        </label>\n                        <label class = \"toggle-fo-search advanced-search-label\">\n                            <input type=\"checkbox\" class=\"fo-checkbox advanced-search-checkbox\" checked=\"checked\" /> First Order\n                        </label>\n                        <label class = \"toggle-resistance-search advanced-search-label\">\n                            <input type=\"checkbox\" class=\"resistance-checkbox advanced-search-checkbox\" checked=\"checked\" /> Resistance\n                        </label>\n                        <label class = \"toggle-separatist-search advanced-search-label\">\n                            <input type=\"checkbox\" class=\"separatist-checkbox advanced-search-checkbox\" checked=\"checked\" /> Separatist\n                        </label>\n                        <label class = \"toggle-republic-search advanced-search-label\">\n                            <input type=\"checkbox\" class=\"republic-checkbox advanced-search-checkbox\" checked=\"checked\" /> Republic\n                        </label>\n                        <label class = \"toggle-factionless-search advanced-search-label\">\n                            <input type=\"checkbox\" class=\"factionless-checkbox advanced-search-checkbox\" checked=\"checked\" /> Factionless\n                            <span class=\"advanced-search-tooltip\" tooltip=\"A card is considered factionless, if it can be used by more than one faction.\"> &#9432 </span>\n                        </label>\n                    </div>\n                    <div class = \"advanced-search-point-selection-container\">\n                        <strong>Point costs:</strong>\n                        <label class = \"advanced-search-label set-minimum-points\">\n                            from <input type=\"number\" class=\"minimum-point-cost advanced-search-number-input\" value=\"0\" /> \n                        </label>\n                        <label class = \"advanced-search-label set-maximum-points\">\n                            to <input type=\"number\" class=\"maximum-point-cost advanced-search-number-input\" value=\"200\" /> \n                        </label>\n                        <label class = \"advanced-search-label toggle-variable-cost-search\">\n                            <input type=\"checkbox\" class=\"variable-point-cost-checkbox advanced-search-checkbox\" checked=\"checked\" /> Variable point cost\n                        </label>\n                    </div>\n                    <div class = \"advanced-search-collection-container\">\n                        <strong>Owned copies:</strong>\n                        <label class = \"advanced-search-label set-minimum-owned-copies\">\n                            from <input type=\"number\" class=\"minimum-owned-copies advanced-search-number-input\" value=\"0\" /> \n                        </label>\n                        <label class = \"advanced-search-label set-maximum-owened-copies\">\n                            to <input type=\"number\" class=\"maximum-owned-copies advanced-search-number-input\" value=\"100\" /> \n                        </label>\n                    </div>\n                    <div class = \"advanced-search-slot-available-container\">\n                        <label class = \"advanced-search-label select-available-slots\">\n                            <strong>Available slots: </strong>\n                            <select class=\"advanced-search-selection slot-available-selection\" multiple=\"1\" data-placeholder=\"No slots selected\"></select>\n                            <span class=\"advanced-search-tooltip\" tooltip=\"Search for pilots having all selected slots available.\"> &#9432 </span>\n                        </label>\n                    </div>\n                    <div class = \"advanced-search-slot-used-container\">\n                        <label class = \"advanced-search-label select-used-slots\">\n                            <strong>Used slot: </strong>\n                            <select class=\"advanced-search-selection slot-used-selection\" multiple=\"1\" data-placeholder=\"No slots selected\"></select>\n                            <span class=\"advanced-search-tooltip\" tooltip=\"Search for upgrades using any of the selected slots.\"> &#9432 </span>\n                        </label>\n                    </div>\n                    <div class = \"advanced-search-charge-container\">\n                        <strong>Charges:</strong>\n                        <label class = \"advanced-search-label set-minimum-charge\">\n                            from <input type=\"number\" class=\"minimum-charge advanced-search-number-input\" value=\"0\" /> \n                        </label>\n                        <label class = \"advanced-search-label set-maximum-charge\">\n                            to <input type=\"number\" class=\"maximum-charge advanced-search-number-input\" value=\"5\" /> \n                        </label>\n                        <label class = \"advanced-search-label has-recurring-charge\">\n                            <input type=\"checkbox\" class=\"advanced-search-checkbox has-recurring-charge-checkbox\" checked=\"checked\"/> recurring\n                        </label>\n                        <label class = \"advanced-search-label has-not-recurring-charge\">\n                            <input type=\"checkbox\" class=\"advanced-search-checkbox has-not-recurring-charge-checkbox\" checked=\"checked\"/> not recurring\n                        </label>\n                    </div>\n                    <div class = \"advanced-search-misc-container\">\n                        <strong>Misc:</strong>\n                        <label class = \"advanced-search-label toggle-unique\">\n                            <input type=\"checkbox\" class=\"unique-checkbox advanced-search-checkbox\" /> Is unique\n                        </label>\n                        <label class = \"advanced-search-label toggle-second-edition\">\n                            <input type=\"checkbox\" class=\"second-edition-checkbox advanced-search-checkbox\" /> Second-Edition only\n                            <span class=\"advanced-search-tooltip\" tooltip=\"Check to exclude cards only obtainable from conversion kits.\"> &#9432 </span>\n                        </label>\n                    </div>\n                </div>\n            </div>\n            <div class=\"well card-viewer-placeholder info-well\">\n                <p class=\"translate select-a-card\">Select a card from the list at the left.</p>\n            </div>\n            <div class=\"well card-viewer-container info-well\">\n                <span class=\"info-name\"></span>\n                <br />\n                <span class=\"info-type\"></span>\n                <br />\n                <span class=\"info-sources\"></span>\n                <br />\n                <span class=\"info-collection\"></span>\n                <table>\n                    <tbody>\n                        <tr class=\"info-skill\">\n                            <td class=\"info-header\">Skill</td>\n                            <td class=\"info-data info-skill\"></td>\n                        </tr>\n                        <tr class=\"info-energy\">\n                            <td class=\"info-header\"><i class=\"xwing-miniatures-font header-energy xwing-miniatures-font-energy\"></i></td>\n                            <td class=\"info-data info-energy\"></td>\n                        </tr>\n                        <tr class=\"info-attack\">\n                            <td class=\"info-header\"><i class=\"xwing-miniatures-font header-attack xwing-miniatures-font-frontarc\"></i></td>\n                            <td class=\"info-data info-attack\"></td>\n                        </tr>\n                        <tr class=\"info-attack-fullfront\">\n                            <td class=\"info-header\"><i class=\"xwing-miniatures-font header-attack xwing-miniatures-font-fullfrontarc\"></i></td>\n                            <td class=\"info-data info-attack\"></td>\n                        </tr>\n                        <tr class=\"info-attack-bullseye\">\n                            <td class=\"info-header\"><i class=\"xwing-miniatures-font header-attack xwing-miniatures-font-bullseyearc\"></i></td>\n                            <td class=\"info-data info-attack\"></td>\n                        </tr>\n                        <tr class=\"info-attack-back\">\n                            <td class=\"info-header\"><i class=\"xwing-miniatures-font header-attack xwing-miniatures-font-reararc\"></i></td>\n                            <td class=\"info-data info-attack\"></td>\n                        </tr>\n                        <tr class=\"info-attack-turret\">\n                            <td class=\"info-header\"><i class=\"xwing-miniatures-font header-attack xwing-miniatures-font-singleturretarc\"></i></td>\n                            <td class=\"info-data info-attack\"></td>\n                        </tr>\n                        <tr class=\"info-attack-doubleturret\">\n                            <td class=\"info-header\"><i class=\"xwing-miniatures-font header-attack xwing-miniatures-font-doubleturretarc\"></i></td>\n                            <td class=\"info-data info-attack\"></td>\n                        </tr>\n                        <tr class=\"info-agility\">\n                            <td class=\"info-header\"><i class=\"xwing-miniatures-font header-agility xwing-miniatures-font-agility\"></i></td>\n                            <td class=\"info-data info-agility\"></td>\n                        </tr>\n                        <tr class=\"info-hull\">\n                            <td class=\"info-header\"><i class=\"xwing-miniatures-font header-hull xwing-miniatures-font-hull\"></i></td>\n                            <td class=\"info-data info-hull\"></td>\n                        </tr>\n                        <tr class=\"info-shields\">\n                            <td class=\"info-header\"><i class=\"xwing-miniatures-font header-shield xwing-miniatures-font-shield\"></i></td>\n                            <td class=\"info-data info-shields\"></td>\n                        </tr>\n                        <tr class=\"info-force\">\n                            <td class=\"info-header\"><i class=\"xwing-miniatures-font header-force xwing-miniatures-font-forcecharge\"></i></td>\n                            <td class=\"info-data info-force\"></td>\n                        </tr>\n                        <tr class=\"info-charge\">\n                            <td class=\"info-header\"><i class=\"xwing-miniatures-font header-charge xwing-miniatures-font-charge\"></i></td>\n                            <td class=\"info-data info-charge\"></td>\n                        </tr>\n                        <tr class=\"info-range\">\n                            <td class=\"info-header\">Range</td>\n                            <td class=\"info-data info-range\"></td>\n                        </tr>\n                        <tr class=\"info-actions\">\n                            <td class=\"info-header\">Actions</td>\n                            <td class=\"info-data\"></td>\n                        </tr>\n                        <tr class=\"info-actions-red\">\n                            <td></td>\n                            <td class=\"info-data-red\"></td>\n                        </tr>\n                        <tr class=\"info-upgrades\">\n                            <td class=\"info-header\">Upgrades</td>\n                            <td class=\"info-data\"></td>\n                        </tr>\n                    </tbody>\n                </table>\n                <p class=\"info-text\" />\n            </div>\n        </div>\n    </div>\n</div>"));
+    this.container.append($.trim("<div class=\"container-fluid xwing-card-browser\">\n    <div class=\"row-fluid\">\n        <div class=\"span12\">\n            <span class=\"translate sort-cards-by\">Sort cards by</span>: <select class=\"sort-by\">\n                <option value=\"name\">Name</option>\n                <option value=\"source\">Source</option>\n                <option value=\"type-by-points\">Type (by Points)</option>\n                <option value=\"type-by-name\" selected=\"1\">Type (by Name)</option>\n            </select>\n        </div>\n    </div>\n    <div class=\"row-fluid\">\n        <div class=\"span4 card-selector-container\">\n\n        </div>\n        <div class=\"span8\">\n            <div class=\"well card-search-container\">\n                <input type=\"search\" placeholder=\"Search for name, text or ship\" class = \"card-search-text\">" + "                <button class=\"btn btn-primary show-advanced-search\">\n                    Advanced Search\n                </button>\n                <div class=\"advanced-search-container\">\n                    <div class= \"advanced-search-faction-selection-container\">\n                        <strong>Faction:</strong>\n                        <label class = \"toggle-rebel-search advanced-search-label\">\n                            <input type=\"checkbox\" class=\"rebel-checkbox advanced-search-checkbox\" checked=\"checked\" /> Rebel\n                        </label>\n                        <label class = \"toggle-imperial-search advanced-search-label\">\n                            <input type=\"checkbox\" class=\"imperial-checkbox advanced-search-checkbox\" checked=\"checked\" /> Imperial\n                        </label>\n                        <label class = \"toggle-scum-search advanced-search-label\">\n                            <input type=\"checkbox\" class=\"scum-checkbox advanced-search-checkbox\" checked=\"checked\" /> Scum\n                        </label>\n                        <label class = \"toggle-fo-search advanced-search-label\">\n                            <input type=\"checkbox\" class=\"fo-checkbox advanced-search-checkbox\" checked=\"checked\" /> First Order\n                        </label>\n                        <label class = \"toggle-resistance-search advanced-search-label\">\n                            <input type=\"checkbox\" class=\"resistance-checkbox advanced-search-checkbox\" checked=\"checked\" /> Resistance\n                        </label>\n                        <label class = \"toggle-separatist-search advanced-search-label\">\n                            <input type=\"checkbox\" class=\"separatist-checkbox advanced-search-checkbox\" checked=\"checked\" /> Separatist\n                        </label>\n                        <label class = \"toggle-republic-search advanced-search-label\">\n                            <input type=\"checkbox\" class=\"republic-checkbox advanced-search-checkbox\" checked=\"checked\" /> Republic\n                        </label>\n                        <label class = \"toggle-factionless-search advanced-search-label\">\n                            <input type=\"checkbox\" class=\"factionless-checkbox advanced-search-checkbox\" checked=\"checked\" /> Factionless\n                            <span class=\"advanced-search-tooltip\" tooltip=\"A card is considered factionless, if it can be used by more than one faction.\"> &#9432 </span>\n                        </label>\n                    </div>\n                    <div class = \"advanced-search-point-selection-container\">\n                        <strong>Point costs:</strong>\n                        <label class = \"advanced-search-label set-minimum-points\">\n                            from <input type=\"number\" class=\"minimum-point-cost advanced-search-number-input\" value=\"0\" /> \n                        </label>\n                        <label class = \"advanced-search-label set-maximum-points\">\n                            to <input type=\"number\" class=\"maximum-point-cost advanced-search-number-input\" value=\"200\" /> \n                        </label>\n                        <label class = \"advanced-search-label toggle-variable-cost-search\">\n                            <input type=\"checkbox\" class=\"variable-point-cost-checkbox advanced-search-checkbox\" checked=\"checked\" /> Variable point cost\n                        </label>\n                    </div>\n                    <div class = \"advanced-search-collection-container\">\n                        <strong>Owned copies:</strong>\n                        <label class = \"advanced-search-label set-minimum-owned-copies\">\n                            from <input type=\"number\" class=\"minimum-owned-copies advanced-search-number-input\" value=\"0\" /> \n                        </label>\n                        <label class = \"advanced-search-label set-maximum-owened-copies\">\n                            to <input type=\"number\" class=\"maximum-owned-copies advanced-search-number-input\" value=\"100\" /> \n                        </label>\n                    </div>\n                    <div class = \"advanced-search-slot-available-container\">\n                        <label class = \"advanced-search-label select-available-slots\">\n                            <strong>Available slots: </strong>\n                            <select class=\"advanced-search-selection slot-available-selection\" multiple=\"1\" data-placeholder=\"No slots selected\"></select>\n                            <span class=\"advanced-search-tooltip\" tooltip=\"Search for pilots having all selected slots available.\"> &#9432 </span>\n                        </label>\n                    </div>\n                    <div class = \"advanced-search-slot-used-container\">\n                        <label class = \"advanced-search-label select-used-slots\">\n                            <strong>Used slot: </strong>\n                            <select class=\"advanced-search-selection slot-used-selection\" multiple=\"1\" data-placeholder=\"No slots selected\"></select>\n                            <span class=\"advanced-search-tooltip\" tooltip=\"Search for upgrades using any of the selected slots.\"> &#9432 </span>\n                        </label>\n                    </div>\n                    <div class = \"advanced-search-charge-container\">\n                        <strong>Charges:</strong>\n                        <label class = \"advanced-search-label set-minimum-charge\">\n                            from <input type=\"number\" class=\"minimum-charge advanced-search-number-input\" value=\"0\" /> \n                        </label>\n                        <label class = \"advanced-search-label set-maximum-charge\">\n                            to <input type=\"number\" class=\"maximum-charge advanced-search-number-input\" value=\"5\" /> \n                        </label>\n                        <label class = \"advanced-search-label has-recurring-charge\">\n                            <input type=\"checkbox\" class=\"advanced-search-checkbox has-recurring-charge-checkbox\" checked=\"checked\"/> recurring\n                        </label>\n                        <label class = \"advanced-search-label has-not-recurring-charge\">\n                            <input type=\"checkbox\" class=\"advanced-search-checkbox has-not-recurring-charge-checkbox\" checked=\"checked\"/> not recurring\n                        </label>\n                    </div>\n                    <div class = \"advanced-search-ini-container\">\n                        <strong>Initiative:</strong>\n                        <label class = \"advanced-search-label set-minimum-ini\">\n                            from <input type=\"number\" class=\"minimum-ini advanced-search-number-input\" value=\"0\" /> \n                        </label>\n                        <label class = \"advanced-search-label set-maximum-ini\">\n                            to <input type=\"number\" class=\"maximum-ini advanced-search-number-input\" value=\"6\" /> \n                        </label>\n                    </div>\n                    <div class = \"advanced-search-misc-container\">\n                        <strong>Misc:</strong>\n                        <label class = \"advanced-search-label toggle-unique\">\n                            <input type=\"checkbox\" class=\"unique-checkbox advanced-search-checkbox\" /> Is unique\n                        </label>\n                        <label class = \"advanced-search-label toggle-second-edition\">\n                            <input type=\"checkbox\" class=\"second-edition-checkbox advanced-search-checkbox\" /> Second-Edition only\n                            <span class=\"advanced-search-tooltip\" tooltip=\"Check to exclude cards only obtainable from conversion kits.\"> &#9432 </span>\n                        </label>\n                    </div>\n                </div>\n            </div>\n            <div class=\"well card-viewer-placeholder info-well\">\n                <p class=\"translate select-a-card\">Select a card from the list at the left.</p>\n            </div>\n            <div class=\"well card-viewer-container info-well\">\n                <span class=\"info-name\"></span>\n                <br />\n                <span class=\"info-type\"></span>\n                <br />\n                <span class=\"info-sources\"></span>\n                <br />\n                <span class=\"info-collection\"></span>\n                <table>\n                    <tbody>\n                        <tr class=\"info-skill\">\n                            <td class=\"info-header\">Skill</td>\n                            <td class=\"info-data info-skill\"></td>\n                        </tr>\n                        <tr class=\"info-energy\">\n                            <td class=\"info-header\"><i class=\"xwing-miniatures-font header-energy xwing-miniatures-font-energy\"></i></td>\n                            <td class=\"info-data info-energy\"></td>\n                        </tr>\n                        <tr class=\"info-attack\">\n                            <td class=\"info-header\"><i class=\"xwing-miniatures-font header-attack xwing-miniatures-font-frontarc\"></i></td>\n                            <td class=\"info-data info-attack\"></td>\n                        </tr>\n                        <tr class=\"info-attack-fullfront\">\n                            <td class=\"info-header\"><i class=\"xwing-miniatures-font header-attack xwing-miniatures-font-fullfrontarc\"></i></td>\n                            <td class=\"info-data info-attack\"></td>\n                        </tr>\n                        <tr class=\"info-attack-bullseye\">\n                            <td class=\"info-header\"><i class=\"xwing-miniatures-font header-attack xwing-miniatures-font-bullseyearc\"></i></td>\n                            <td class=\"info-data info-attack\"></td>\n                        </tr>\n                        <tr class=\"info-attack-back\">\n                            <td class=\"info-header\"><i class=\"xwing-miniatures-font header-attack xwing-miniatures-font-reararc\"></i></td>\n                            <td class=\"info-data info-attack\"></td>\n                        </tr>\n                        <tr class=\"info-attack-turret\">\n                            <td class=\"info-header\"><i class=\"xwing-miniatures-font header-attack xwing-miniatures-font-singleturretarc\"></i></td>\n                            <td class=\"info-data info-attack\"></td>\n                        </tr>\n                        <tr class=\"info-attack-doubleturret\">\n                            <td class=\"info-header\"><i class=\"xwing-miniatures-font header-attack xwing-miniatures-font-doubleturretarc\"></i></td>\n                            <td class=\"info-data info-attack\"></td>\n                        </tr>\n                        <tr class=\"info-agility\">\n                            <td class=\"info-header\"><i class=\"xwing-miniatures-font header-agility xwing-miniatures-font-agility\"></i></td>\n                            <td class=\"info-data info-agility\"></td>\n                        </tr>\n                        <tr class=\"info-hull\">\n                            <td class=\"info-header\"><i class=\"xwing-miniatures-font header-hull xwing-miniatures-font-hull\"></i></td>\n                            <td class=\"info-data info-hull\"></td>\n                        </tr>\n                        <tr class=\"info-shields\">\n                            <td class=\"info-header\"><i class=\"xwing-miniatures-font header-shield xwing-miniatures-font-shield\"></i></td>\n                            <td class=\"info-data info-shields\"></td>\n                        </tr>\n                        <tr class=\"info-force\">\n                            <td class=\"info-header\"><i class=\"xwing-miniatures-font header-force xwing-miniatures-font-forcecharge\"></i></td>\n                            <td class=\"info-data info-force\"></td>\n                        </tr>\n                        <tr class=\"info-charge\">\n                            <td class=\"info-header\"><i class=\"xwing-miniatures-font header-charge xwing-miniatures-font-charge\"></i></td>\n                            <td class=\"info-data info-charge\"></td>\n                        </tr>\n                        <tr class=\"info-range\">\n                            <td class=\"info-header\">Range</td>\n                            <td class=\"info-data info-range\"></td>\n                        </tr>\n                        <tr class=\"info-actions\">\n                            <td class=\"info-header\">Actions</td>\n                            <td class=\"info-data\"></td>\n                        </tr>\n                        <tr class=\"info-actions-red\">\n                            <td></td>\n                            <td class=\"info-data-red\"></td>\n                        </tr>\n                        <tr class=\"info-upgrades\">\n                            <td class=\"info-header\">Upgrades</td>\n                            <td class=\"info-data\"></td>\n                        </tr>\n                    </tbody>\n                </table>\n                <p class=\"info-text\" />\n            </div>\n        </div>\n    </div>\n</div>"));
     this.card_selector_container = $(this.container.find('.xwing-card-browser .card-selector-container'));
     this.card_viewer_container = $(this.container.find('.xwing-card-browser .card-viewer-container'));
     this.card_viewer_container.hide();
@@ -930,6 +930,8 @@ exportObj.CardBrowser = (function() {
     });
     this.minimum_charge = ($(this.container.find('.xwing-card-browser .minimum-charge')))[0];
     this.maximum_charge = ($(this.container.find('.xwing-card-browser .maximum-charge')))[0];
+    this.minimum_ini = ($(this.container.find('.xwing-card-browser .minimum-ini')))[0];
+    this.maximum_ini = ($(this.container.find('.xwing-card-browser .maximum-ini')))[0];
     this.recurring_charge = ($(this.container.find('.xwing-card-browser .has-recurring-charge-checkbox')))[0];
     this.not_recurring_charge = ($(this.container.find('.xwing-card-browser .has-not-recurring-charge-checkbox')))[0];
     this.minimum_owned_copies = ($(this.container.find('.xwing-card-browser .minimum-owned-copies')))[0];
@@ -1019,6 +1021,16 @@ exportObj.CardBrowser = (function() {
       };
     })(this);
     this.maximum_charge.oninput = (function(_this) {
+      return function() {
+        return _this.renderList(_this.sort_selector.val());
+      };
+    })(this);
+    this.minimum_ini.oninput = (function(_this) {
+      return function() {
+        return _this.renderList(_this.sort_selector.val());
+      };
+    })(this);
+    this.maximum_ini.oninput = (function(_this) {
       return function() {
         return _this.renderList(_this.sort_selector.val());
       };
@@ -1466,26 +1478,26 @@ exportObj.CardBrowser = (function() {
   };
 
   CardBrowser.prototype.getCollectionNumber = function(card) {
-    var owned_copies, _ref, _ref1, _ref2;
+    var owned_copies, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
     if (!((exportObj.builders[0].collection != null) && (exportObj.builders[0].collection.counts != null))) {
       return -1;
     }
     owned_copies = 0;
     switch (card.orig_type) {
       case 'Pilot':
-        owned_copies = (_ref = exportObj.builders[0].collection.counts.pilot[card.name]) != null ? _ref : 0;
+        owned_copies = (_ref = (_ref1 = exportObj.builders[0].collection.counts.pilot) != null ? _ref1[card.name] : void 0) != null ? _ref : 0;
         break;
       case 'Ship':
-        owned_copies = (_ref1 = exportObj.builders[0].collection.counts.ship[card.name]) != null ? _ref1 : 0;
+        owned_copies = (_ref2 = (_ref3 = exportObj.builders[0].collection.counts.ship) != null ? _ref3[card.name] : void 0) != null ? _ref2 : 0;
         break;
       default:
-        owned_copies = (_ref2 = exportObj.builders[0].collection.counts.upgrade[card.name]) != null ? _ref2 : 0;
+        owned_copies = (_ref4 = (_ref5 = exportObj.builders[0].collection.counts.upgrade) != null ? _ref5[card.name] : void 0) != null ? _ref4 : 0;
     }
     return owned_copies;
   };
 
   CardBrowser.prototype.checkSearchCriteria = function(card) {
-    var matches, owned_copies, required_slots, s, search_text, ship, slot, text_in_ship, text_search, used_slots, _i, _j, _k, _len, _len1, _len2;
+    var matches, owned_copies, required_slots, s, search_text, ship, slot, text_in_ship, text_search, used_slots, _i, _j, _k, _len, _len1, _len2, _ref;
     search_text = this.card_search_text.value.toLowerCase();
     text_search = card.name.toLowerCase().indexOf(search_text) > -1 || (card.data.text && card.data.text.toLowerCase().indexOf(search_text)) > -1 || (card.display_name && card.display_name.toLowerCase().indexOf(search_text) > -1);
     if (!text_search) {
@@ -1564,9 +1576,18 @@ exportObj.CardBrowser = (function() {
     if (card.data.charge && !card.data.recurring && !this.not_recurring_charge.checked) {
       return false;
     }
-    if (exportObj.builders[0].collection.counts != null) {
+    if (((_ref = exportObj.builders[0].collection) != null ? _ref.counts : void 0) != null) {
       owned_copies = this.getCollectionNumber(card);
       if (!(owned_copies >= this.minimum_owned_copies.value && owned_copies <= this.maximum_owned_copies.value)) {
+        return false;
+      }
+    }
+    if (card.data.skill != null) {
+      if (!(card.data.skill >= this.minimum_ini.value && card.data.skill <= this.maximum_ini.value)) {
+        return false;
+      }
+    } else {
+      if (!(this.minimum_ini.value <= 0 && this.maximum_ini.value >= 6)) {
         return false;
       }
     }
@@ -1593,38 +1614,172 @@ exportObj.isReleased = function(data) {
   return false;
 };
 
-exportObj.secondEditionExpansions = ['Second Edition Core Set', "Saw's Renegades Expansion Pack", 'TIE Reaper Expansion Pack', 'T-65 X-Wing Expansion Pack', 'BTL-A4 Y-Wing Expansion Pack', 'TIE/ln Fighter Expansion Pack', 'TIE Advanced x1 Expansion Pack', 'Slave I Expansion Pack', 'Fang Fighter Expansion Pack', "Lando's Millennium Falcon Expansion Pack", 'T-70 X-Wing Expansion Pack', 'RZ-2 A-Wing Expansion Pack', 'Mining Guild TIE Expansion Pack', 'TIE/FO Fighter Expansion Pack'];
+exportObj.hyperspaceExclusions = [
+  {
+    name: 'Y-Wing',
+    faction: 'Scum and Villainy'
+  }, {
+    name: 'TIE Fighter',
+    faction: 'Rebel Alliance'
+  }, {
+    name: 'Biohexacrypt Codes',
+    faction: ''
+  }, {
+    name: 'Ion Cannon',
+    faction: ''
+  }, {
+    name: 'Jamming Beam',
+    faction: ''
+  }, {
+    name: 'Tractor Beam',
+    faction: ''
+  }, {
+    name: 'Freelance Slicer',
+    faction: ''
+  }, {
+    name: 'GNK "Gonk" Droid',
+    faction: ''
+  }, {
+    name: 'Novice Technician',
+    faction: ''
+  }, {
+    name: 'Bomblet Generator',
+    faction: ''
+  }, {
+    name: 'Cloaking Device',
+    faction: ''
+  }, {
+    name: 'Contraband Cybernetics',
+    faction: ''
+  }, {
+    name: 'Feedback Array',
+    faction: ''
+  }, {
+    name: 'Barrage Rockets',
+    faction: ''
+  }, {
+    name: 'Ablative Plating',
+    faction: ''
+  }, {
+    name: 'Advanced SLAM',
+    faction: ''
+  }, {
+    name: 'Electronic Baffle',
+    faction: ''
+  }, {
+    name: 'Tactical Scrambler',
+    faction: ''
+  }, {
+    name: 'Debris Gambit',
+    faction: ''
+  }, {
+    name: 'Saturation Salvo',
+    faction: ''
+  }, {
+    name: 'Adv. Proton Torpedoes',
+    faction: ''
+  }, {
+    name: 'Dorsal Turret',
+    faction: ''
+  }
+];
 
-exportObj.secondEditionCheck = function(data, faction) {
-  var source, _i, _len, _ref;
+exportObj.hyperspaceShipInclusions = [
+  {
+    name: 'YT-1300',
+    faction: 'Rebel Alliance'
+  }, {
+    name: 'TIE Striker',
+    faction: 'Galactic Empire'
+  }, {
+    name: 'Scavenged YT-1300',
+    faction: 'Resistance'
+  }, {
+    name: 'MG-100 StarFortress',
+    faction: 'Resistance'
+  }, {
+    name: 'TIE/VN Silencer',
+    faction: 'First Order'
+  }, {
+    name: 'TIE/SF Fighter',
+    faction: 'First Order'
+  }
+];
+
+exportObj.hyperspaceUpgradeInclusions = [
+  {
+    name: 'Chewbacca',
+    faction: 'Rebel Alliance',
+    slot: 'Crew'
+  }, {
+    name: 'Lando Calrissian',
+    faction: 'Rebel Alliance',
+    slot: 'Crew'
+  }, {
+    name: 'Leia Organa',
+    faction: 'Rebel Alliance',
+    slot: 'Crew'
+  }, {
+    name: 'Nien Nunb',
+    faction: 'Rebel Alliance',
+    slot: 'Crew'
+  }, {
+    name: 'R2-D2',
+    faction: 'Rebel Alliance',
+    slot: 'Crew'
+  }, {
+    name: 'Han Solo',
+    faction: 'Rebel Alliance',
+    slot: 'Gunner'
+  }, {
+    name: 'Luke Skywalker',
+    faction: 'Rebel Alliance',
+    slot: 'Gunner'
+  }, {
+    name: 'Millennium Falcon',
+    faction: 'Rebel Alliance',
+    slot: 'Title'
+  }
+];
+
+exportObj.hyperspaceExpansions = ['Second Edition Core Set', "Saw's Renegades Expansion Pack", 'TIE Reaper Expansion Pack', 'T-65 X-Wing Expansion Pack', 'BTL-A4 Y-Wing Expansion Pack', 'TIE/ln Fighter Expansion Pack', 'TIE Advanced x1 Expansion Pack', 'Slave I Expansion Pack', 'Fang Fighter Expansion Pack', "Lando's Millennium Falcon Expansion Pack", 'T-70 X-Wing Expansion Pack', 'RZ-2 A-Wing Expansion Pack', 'Mining Guild TIE Expansion Pack', 'TIE/FO Fighter Expansion Pack', 'First Order Conversion Kit', 'Resistance Conversion Kit'];
+
+exportObj.hyperspaceCheck = function(data, faction) {
+  var exc, inc, ship, source, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref2, _ref3;
   if (faction == null) {
     faction = '';
   }
-  if (data.name === 'Y-Wing' && faction === 'Scum and Villainy') {
-    return false;
-  } else if (data.name === 'TIE Fighter' && faction === 'Rebel Alliance') {
-    return false;
-  }
-  _ref = data.sources;
+  _ref = exportObj.hyperspaceExclusions;
   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-    source = _ref[_i];
-    if (__indexOf.call(exportObj.secondEditionExpansions, source) >= 0) {
+    exc = _ref[_i];
+    if (data.name === exc.name && (exc.faction === faction || exc.faction === '')) {
+      return false;
+    }
+  }
+  if (data.ship !== null) {
+    _ref1 = exportObj.hyperspaceShipInclusions;
+    for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+      ship = _ref1[_j];
+      if ((data.name === ship.name || data.ship === ship.name) && (ship.faction === faction || ship.faction === '')) {
+        return true;
+      }
+    }
+  }
+  _ref2 = exportObj.hyperspaceUpgradeInclusions;
+  for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
+    inc = _ref2[_k];
+    if (data.name === inc.name && (inc.faction === faction) && (data.slot === inc.slot)) {
+      return true;
+    }
+  }
+  _ref3 = data.sources;
+  for (_l = 0, _len3 = _ref3.length; _l < _len3; _l++) {
+    source = _ref3[_l];
+    if (__indexOf.call(exportObj.hyperspaceExpansions, source) >= 0) {
       return true;
     }
   }
   return false;
-};
-
-exportObj.hyperspaceCheck = function(data, faction) {
-  if (faction == null) {
-    faction = '';
-  }
-  if (data.name === 'Y-Wing' && faction === 'Scum and Villainy') {
-    return false;
-  } else if (data.name === 'TIE Fighter' && faction === 'Rebel Alliance') {
-    return false;
-  }
-  return data.isHyperspace;
 };
 
 String.prototype.canonicalize = function() {
@@ -1649,8 +1804,7 @@ exportObj.basicCardData = function() {
         shields: 2,
         actions: ["Focus", "Lock", "Barrel Roll"],
         actionsred: [],
-        maneuvers: [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 2, 2, 2, 0, 0, 0, 0, 0, 0], [1, 2, 2, 2, 1, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 0, 0, 0, 3, 3], [0, 0, 1, 0, 0, 3, 0, 0, 0, 0]],
-        isHyperspace: true
+        maneuvers: [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 2, 2, 2, 0, 0, 0, 0, 0, 0], [1, 2, 2, 2, 1, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 0, 0, 0, 3, 3], [0, 0, 1, 0, 0, 3, 0, 0, 0, 0]]
       },
       "Y-Wing": {
         name: "Y-Wing",
@@ -1662,8 +1816,7 @@ exportObj.basicCardData = function() {
         shields: 2,
         actions: ["Focus", "Lock"],
         actionsred: ["Barrel Roll", "Reload"],
-        maneuvers: [[0, 0, 0, 0, 0, 0], [0, 2, 2, 2, 0, 0], [1, 1, 2, 1, 1, 0], [3, 1, 1, 1, 3, 0], [0, 0, 3, 0, 0, 3]],
-        isHyperspace: true
+        maneuvers: [[0, 0, 0, 0, 0, 0], [0, 2, 2, 2, 0, 0], [1, 1, 2, 1, 1, 0], [3, 1, 1, 1, 3, 0], [0, 0, 3, 0, 0, 3]]
       },
       "A-Wing": {
         name: "A-Wing",
@@ -1688,8 +1841,7 @@ exportObj.basicCardData = function() {
         actions: ["Focus", "Lock", "Rotate Arc"],
         actionsred: ["Boost"],
         maneuvers: [[0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 2, 1, 0, 0, 0, 0], [1, 2, 2, 2, 1, 0, 0, 0], [1, 1, 2, 1, 1, 0, 3, 3], [0, 0, 1, 0, 0, 3, 0, 0]],
-        large: true,
-        isHyperspace: true
+        large: true
       },
       "Customized YT-1300": {
         name: "Customized YT-1300",
@@ -1703,8 +1855,7 @@ exportObj.basicCardData = function() {
         actions: ["Focus", "Lock", "Rotate Arc"],
         actionsred: ["Boost"],
         maneuvers: [[0, 0, 0, 0, 0, 0, 0, 0], [0, 2, 2, 2, 0, 0, 0, 0], [1, 1, 2, 1, 1, 0, 0, 0], [1, 1, 2, 1, 1, 0, 3, 3], [0, 0, 1, 0, 0, 3, 0, 0]],
-        large: true,
-        isHyperspace: true
+        large: true
       },
       "TIE Fighter": {
         name: "TIE Fighter",
@@ -1716,8 +1867,7 @@ exportObj.basicCardData = function() {
         shields: 0,
         actions: ["Focus", "Barrel Roll", "Evade"],
         actionsred: [],
-        maneuvers: [[0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 1, 0], [1, 2, 2, 2, 1, 0], [1, 1, 2, 1, 1, 3], [0, 0, 1, 0, 0, 3], [0, 0, 1, 0, 0, 0]],
-        isHyperspace: true
+        maneuvers: [[0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 1, 0], [1, 2, 2, 2, 1, 0], [1, 1, 2, 1, 1, 3], [0, 0, 1, 0, 0, 3], [0, 0, 1, 0, 0, 0]]
       },
       "TIE Advanced": {
         name: "TIE Advanced",
@@ -1729,8 +1879,7 @@ exportObj.basicCardData = function() {
         shields: 2,
         actions: ["Focus", "R> Barrel Roll", "Lock", "Barrel Roll"],
         actionsred: [],
-        maneuvers: [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 2, 1, 2, 0, 0, 0, 0, 0, 0], [1, 2, 2, 2, 1, 0, 0, 0, 0, 0], [1, 1, 2, 1, 1, 0, 0, 0, 3, 3], [0, 0, 1, 0, 0, 3, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0, 0, 0]],
-        isHyperspace: true
+        maneuvers: [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 2, 1, 2, 0, 0, 0, 0, 0, 0], [1, 2, 2, 2, 1, 0, 0, 0, 0, 0], [1, 1, 2, 1, 1, 0, 0, 0, 3, 3], [0, 0, 1, 0, 0, 3, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0, 0, 0]]
       },
       "TIE Interceptor": {
         name: "TIE Interceptor",
@@ -1756,8 +1905,7 @@ exportObj.basicCardData = function() {
         medium: true,
         actions: ["Focus", "Lock", "Boost"],
         actionsred: ["Reinforce"],
-        maneuvers: [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 2, 2, 2, 1, 0, 0, 0, 0, 0], [1, 1, 2, 1, 1, 0, 0, 0, 0, 0], [0, 1, 2, 1, 0, 0, 0, 0, 3, 3], [0, 0, 1, 0, 0, 3, 0, 0, 0, 0]],
-        isHyperspace: true
+        maneuvers: [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 2, 2, 2, 1, 0, 0, 0, 0, 0], [1, 1, 2, 1, 1, 0, 0, 0, 0, 0], [0, 1, 2, 1, 0, 0, 0, 0, 3, 3], [0, 0, 1, 0, 0, 3, 0, 0, 0, 0]]
       },
       "HWK-290": {
         name: "HWK-290",
@@ -2059,8 +2207,7 @@ exportObj.basicCardData = function() {
         shields: 0,
         actions: ["Focus", "Lock", "Barrel Roll", "R> Focus", "Boost", "R> Focus"],
         actionsred: [],
-        maneuvers: [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 1, 0, 0, 0, 0, 0], [2, 2, 2, 2, 2, 0, 0, 0, 3, 3], [1, 1, 2, 1, 1, 0, 0, 0, 0, 0], [0, 0, 1, 0, 0, 3, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0, 0, 0]],
-        isHyperspace: true
+        maneuvers: [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 1, 0, 0, 0, 0, 0], [2, 2, 2, 2, 2, 0, 0, 0, 3, 3], [1, 1, 2, 1, 1, 0, 0, 0, 0, 0], [0, 0, 1, 0, 0, 3, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0, 0, 0]]
       },
       "Lancer-Class Pursuit Craft": {
         name: "Lancer-Class Pursuit Craft",
@@ -2099,8 +2246,7 @@ exportObj.basicCardData = function() {
         shields: 3,
         actions: ["Focus", "Lock"],
         actionsred: ["Coordinate"],
-        maneuvers: [[0, 0, 3, 0, 0], [0, 2, 2, 2, 0], [1, 2, 2, 2, 1], [0, 1, 1, 1, 0], [0, 0, 1, 0, 0]],
-        isHyperspace: true
+        maneuvers: [[0, 0, 3, 0, 0], [0, 2, 2, 2, 0], [1, 2, 2, 2, 1], [0, 1, 1, 1, 0], [0, 0, 1, 0, 0]]
       },
       "TIE Striker": {
         name: "TIE Striker",
@@ -2112,8 +2258,7 @@ exportObj.basicCardData = function() {
         shields: 0,
         actions: ["Focus", "Evade", "Barrel Roll"],
         actionsred: [],
-        maneuvers: [[0, 0, 0, 0, 0, 0, 0, 0], [1, 2, 2, 2, 1, 3, 0, 0], [1, 2, 2, 2, 1, 0, 3, 3], [0, 1, 2, 1, 0, 0, 0, 0]],
-        isHyperspace: true
+        maneuvers: [[0, 0, 0, 0, 0, 0, 0, 0], [1, 2, 2, 2, 1, 3, 0, 0], [1, 2, 2, 2, 1, 0, 3, 3], [0, 1, 2, 1, 0, 0, 0, 0]]
       },
       "Auzituck Gunship": {
         name: "Auzituck Gunship",
@@ -2201,8 +2346,7 @@ exportObj.basicCardData = function() {
         medium: true,
         actions: ["Focus", "Evade", "Jam"],
         actionsred: ["Coordinate"],
-        maneuvers: [[0, 0, 3, 0, 0, 0, 0, 0], [3, 2, 2, 2, 3, 0, 3, 3], [3, 1, 2, 1, 3, 0, 0, 0], [0, 1, 2, 1, 0, 0, 0, 0]],
-        isHyperspace: true
+        maneuvers: [[0, 0, 3, 0, 0, 0, 0, 0], [3, 2, 2, 2, 3, 0, 3, 3], [3, 1, 2, 1, 3, 0, 0, 0], [0, 1, 2, 1, 0, 0, 0, 0]]
       },
       "Escape Craft": {
         name: "Escape Craft",
@@ -2214,8 +2358,7 @@ exportObj.basicCardData = function() {
         shields: 2,
         actions: ["Focus", "Barrel Roll"],
         actionsred: ["Coordinate"],
-        maneuvers: [[0, 0, 3, 0, 0, 0, 0, 0], [0, 2, 2, 2, 0, 0, 0, 0], [3, 1, 2, 1, 3, 0, 0, 0], [0, 1, 1, 1, 0, 3, 0, 0]],
-        isHyperspace: true
+        maneuvers: [[0, 0, 3, 0, 0, 0, 0, 0], [0, 2, 2, 2, 0, 0, 0, 0], [3, 1, 2, 1, 3, 0, 0, 0], [0, 1, 1, 1, 0, 3, 0, 0]]
       },
       "T-70 X-Wing": {
         name: "T-70 X-Wing",
@@ -2227,8 +2370,7 @@ exportObj.basicCardData = function() {
         shields: 3,
         actions: ["Focus", "Lock", "Boost"],
         actionsred: [],
-        maneuvers: [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 2, 2, 2, 0, 0, 0, 0, 0, 0], [1, 2, 2, 2, 1, 0, 0, 0, 0, 0], [1, 1, 2, 1, 1, 0, 0, 0, 3, 3], [0, 0, 1, 0, 0, 3, 0, 0, 0, 0]],
-        isHyperspace: true
+        maneuvers: [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 2, 2, 2, 0, 0, 0, 0, 0, 0], [1, 2, 2, 2, 1, 0, 0, 0, 0, 0], [1, 1, 2, 1, 1, 0, 0, 0, 3, 3], [0, 0, 1, 0, 0, 3, 0, 0, 0, 0]]
       },
       "RZ-2 A-Wing": {
         name: "RZ-2 A-Wing",
@@ -2240,8 +2382,7 @@ exportObj.basicCardData = function() {
         shields: 2,
         actions: ["Focus", "Evade", "Lock", "Barrel Roll", "Boost"],
         actionsred: [],
-        maneuvers: [[0, 0, 0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 1, 0, 0, 0], [2, 2, 2, 2, 2, 0, 0, 0], [1, 2, 2, 2, 1, 0, 3, 3], [0, 0, 2, 0, 0, 0, 0, 0], [0, 0, 2, 0, 0, 3, 0, 0]],
-        isHyperspace: true
+        maneuvers: [[0, 0, 0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 1, 0, 0, 0], [2, 2, 2, 2, 2, 0, 0, 0], [1, 2, 2, 2, 1, 0, 3, 3], [0, 0, 2, 0, 0, 0, 0, 0], [0, 0, 2, 0, 0, 3, 0, 0]]
       },
       "TIE/FO Fighter": {
         name: "TIE/FO Fighter",
@@ -2253,12 +2394,11 @@ exportObj.basicCardData = function() {
         shields: 1,
         actions: ["Focus", "Evade", "Lock", "Barrel Roll"],
         actionsred: [],
-        maneuvers: [[0, 0, 0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 1, 0, 0, 0], [2, 2, 2, 2, 2, 0, 3, 3], [1, 1, 2, 1, 1, 0, 0, 0], [0, 0, 1, 0, 0, 3, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0]],
-        isHyperspace: true
+        maneuvers: [[0, 0, 0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 1, 0, 0, 0], [2, 2, 2, 2, 2, 0, 3, 3], [1, 1, 2, 1, 1, 0, 0, 0], [0, 0, 1, 0, 0, 3, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0]]
       },
-      "TIE Silencer": {
-        name: "TIE Silencer",
-        xws: "TIE Silencer".canonicalize(),
+      "TIE/VN Silencer": {
+        name: "TIE/VN Silencer",
+        xws: "TIE/VN Silencer".canonicalize(),
         factions: ["First Order"],
         attack: 3,
         agility: 3,
@@ -2266,8 +2406,7 @@ exportObj.basicCardData = function() {
         shields: 2,
         actions: ["Focus", "Boost", "Lock", "Barrel Roll"],
         actionsred: [],
-        maneuvers: [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 1, 0, 0, 0, 0, 0], [2, 2, 2, 2, 2, 0, 0, 0, 0, 0], [1, 1, 2, 1, 1, 0, 0, 0, 3, 3], [0, 0, 2, 0, 0, 3, 0, 0, 0, 0], [0, 0, 2, 0, 0, 0, 0, 0, 0, 0]],
-        isHyperspace: true
+        maneuvers: [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 1, 0, 0, 0, 0, 0], [2, 2, 2, 2, 2, 0, 0, 0, 0, 0], [1, 1, 2, 1, 1, 0, 0, 0, 3, 3], [0, 0, 2, 0, 0, 3, 0, 0, 0, 0], [0, 0, 2, 0, 0, 0, 0, 0, 0, 0]]
       },
       "TIE/SF Fighter": {
         name: "TIE/SF Fighter",
@@ -2280,8 +2419,7 @@ exportObj.basicCardData = function() {
         shields: 3,
         actions: ["Focus", "> Rotate Arc", "Evade", "> Rotate Arc", "Lock", "> Rotate Arc", "Barrel Roll", "> Rotate Arc"],
         actionsred: [],
-        maneuvers: [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [3, 2, 2, 2, 3, 0, 0, 0, 0, 0], [1, 2, 2, 2, 1, 0, 0, 0, 0, 0], [1, 1, 2, 1, 1, 0, 3, 3, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0, 0, 0]],
-        isHyperspace: true
+        maneuvers: [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [3, 2, 2, 2, 3, 0, 0, 0, 0, 0], [1, 2, 2, 2, 1, 0, 0, 0, 0, 0], [1, 1, 2, 1, 1, 0, 3, 3, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0, 0, 0]]
       },
       "Upsilon-Class Shuttle": {
         name: "Upsilon-Class Shuttle",
@@ -2294,8 +2432,7 @@ exportObj.basicCardData = function() {
         actions: ["Focus", "Lock", "Reinforce", "Coordinate", "Jam"],
         actionsred: [],
         maneuvers: [[0, 0, 3, 0, 0, 0, 0, 0, 0, 0], [3, 1, 2, 1, 3, 0, 0, 0, 0, 0], [1, 2, 2, 2, 1, 0, 0, 0, 0, 0], [3, 1, 1, 1, 3, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
-        large: true,
-        isHyperspace: true
+        large: true
       },
       "MG-100 StarFortress": {
         name: "MG-100 StarFortress",
@@ -2309,8 +2446,7 @@ exportObj.basicCardData = function() {
         actions: ["Focus", "Lock", "Rotate Arc", "Reload"],
         actionsred: [],
         maneuvers: [[0, 0, 3, 0, 0, 0, 0, 0, 0, 0], [3, 2, 2, 2, 3, 0, 0, 0, 0, 0], [1, 1, 2, 1, 1, 0, 0, 0, 0, 0], [0, 3, 1, 3, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
-        large: true,
-        isHyperspace: true
+        large: true
       },
       "Scavenged YT-1300": {
         name: "Scavenged YT-1300",
@@ -2324,8 +2460,7 @@ exportObj.basicCardData = function() {
         actions: ["Focus", "Lock"],
         actionsred: ["Boost", "Rotate Arc"],
         maneuvers: [[0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 2, 1, 0, 0, 0, 0], [1, 2, 2, 2, 1, 0, 0, 0], [1, 1, 1, 1, 1, 0, 3, 3], [0, 0, 3, 0, 0, 0, 0, 0]],
-        large: true,
-        isHyperspace: true
+        large: true
       },
       "Mining Guild TIE Fighter": {
         name: "Mining Guild TIE Fighter",
@@ -2337,8 +2472,7 @@ exportObj.basicCardData = function() {
         shields: 0,
         actions: ["Focus", "Barrel Roll", "Evade"],
         actionsred: [],
-        maneuvers: [[0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 1, 0], [1, 2, 2, 2, 1, 0], [1, 1, 2, 1, 1, 3], [0, 0, 1, 0, 0, 0], [0, 0, 3, 0, 0, 0]],
-        isHyperspace: true
+        maneuvers: [[0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 1, 0], [1, 2, 2, 2, 1, 0], [1, 1, 2, 1, 1, 3], [0, 0, 1, 0, 0, 0], [0, 0, 3, 0, 0, 0]]
       },
       "V-19 Torrent": {
         name: "V-19 Torrent",
@@ -2397,8 +2531,7 @@ exportObj.basicCardData = function() {
         ship: "X-Wing",
         skill: 1,
         points: 41,
-        slots: ["Illicit", "Torpedo", "Astromech", "Modification", "Configuration"],
-        isHyperspace: true
+        slots: ["Illicit", "Torpedo", "Astromech", "Modification", "Configuration"]
       }, {
         name: "Blue Squadron Escort",
         id: 1,
@@ -2406,8 +2539,7 @@ exportObj.basicCardData = function() {
         ship: "X-Wing",
         skill: 2,
         points: 41,
-        slots: ["Torpedo", "Astromech", "Modification", "Configuration"],
-        isHyperspace: true
+        slots: ["Torpedo", "Astromech", "Modification", "Configuration"]
       }, {
         name: "Red Squadron Veteran",
         id: 2,
@@ -2415,8 +2547,7 @@ exportObj.basicCardData = function() {
         ship: "X-Wing",
         skill: 3,
         points: 43,
-        slots: ["Talent", "Torpedo", "Astromech", "Modification", "Configuration"],
-        isHyperspace: true
+        slots: ["Talent", "Torpedo", "Astromech", "Modification", "Configuration"]
       }, {
         name: "Jek Porkins",
         id: 3,
@@ -2425,8 +2556,7 @@ exportObj.basicCardData = function() {
         ship: "X-Wing",
         skill: 4,
         points: 46,
-        slots: ["Talent", "Torpedo", "Astromech", "Modification", "Configuration"],
-        isHyperspace: true
+        slots: ["Talent", "Torpedo", "Astromech", "Modification", "Configuration"]
       }, {
         name: "Luke Skywalker",
         id: 4,
@@ -2436,8 +2566,7 @@ exportObj.basicCardData = function() {
         skill: 5,
         force: 2,
         points: 62,
-        slots: ["Force", "Torpedo", "Astromech", "Modification", "Configuration"],
-        isHyperspace: true
+        slots: ["Force", "Torpedo", "Astromech", "Modification", "Configuration"]
       }, {
         name: "Wedge Antilles",
         id: 5,
@@ -2446,8 +2575,7 @@ exportObj.basicCardData = function() {
         ship: "X-Wing",
         skill: 6,
         points: 52,
-        slots: ["Talent", "Torpedo", "Astromech", "Modification", "Configuration"],
-        isHyperspace: true
+        slots: ["Talent", "Torpedo", "Astromech", "Modification", "Configuration"]
       }, {
         name: "Garven Dreis (X-Wing)",
         canonical_name: 'Garven Dreis'.canonicalize(),
@@ -2458,8 +2586,7 @@ exportObj.basicCardData = function() {
         ship: "X-Wing",
         skill: 4,
         points: 47,
-        slots: ["Talent", "Torpedo", "Astromech", "Modification", "Configuration"],
-        isHyperspace: true
+        slots: ["Talent", "Torpedo", "Astromech", "Modification", "Configuration"]
       }, {
         name: "Biggs Darklighter",
         id: 7,
@@ -2468,8 +2595,7 @@ exportObj.basicCardData = function() {
         ship: "X-Wing",
         skill: 3,
         points: 48,
-        slots: ["Torpedo", "Astromech", "Modification", "Configuration"],
-        isHyperspace: true
+        slots: ["Torpedo", "Astromech", "Modification", "Configuration"]
       }, {
         name: "Edrio Two-Tubes",
         id: 8,
@@ -2478,8 +2604,7 @@ exportObj.basicCardData = function() {
         ship: "X-Wing",
         skill: 2,
         points: 45,
-        slots: ["Illicit", "Torpedo", "Astromech", "Modification", "Configuration"],
-        isHyperspace: true
+        slots: ["Illicit", "Torpedo", "Astromech", "Modification", "Configuration"]
       }, {
         name: "Thane Kyrell",
         id: 9,
@@ -2488,8 +2613,7 @@ exportObj.basicCardData = function() {
         ship: "X-Wing",
         skill: 5,
         points: 48,
-        slots: ["Talent", "Torpedo", "Astromech", "Modification", "Configuration"],
-        isHyperspace: true
+        slots: ["Talent", "Torpedo", "Astromech", "Modification", "Configuration"]
       }, {
         name: "Leevan Tenza",
         id: 10,
@@ -2498,8 +2622,7 @@ exportObj.basicCardData = function() {
         ship: "X-Wing",
         skill: 3,
         points: 46,
-        slots: ["Illicit", "Talent", "Torpedo", "Astromech", "Modification", "Configuration"],
-        isHyperspace: true
+        slots: ["Illicit", "Talent", "Torpedo", "Astromech", "Modification", "Configuration"]
       }, {
         name: "whoops",
         id: 11,
@@ -2512,8 +2635,7 @@ exportObj.basicCardData = function() {
         ship: "X-Wing",
         skill: 4,
         points: 48,
-        slots: ["Illicit", "Talent", "Torpedo", "Astromech", "Modification", "Configuration"],
-        isHyperspace: true
+        slots: ["Illicit", "Talent", "Torpedo", "Astromech", "Modification", "Configuration"]
       }, {
         name: "Sabine Wren (TIE Fighter)",
         canonical_name: 'Sabine Wren'.canonicalize(),
@@ -2632,8 +2754,7 @@ exportObj.basicCardData = function() {
         ship: "Y-Wing",
         skill: 5,
         points: 43,
-        slots: ["Talent", "Turret", "Torpedo", "Astromech", "Modification", "Device", "Gunner"],
-        isHyperspace: true
+        slots: ["Talent", "Turret", "Torpedo", "Astromech", "Modification", "Device", "Gunner"]
       }, {
         name: "Horton Salm",
         id: 26,
@@ -2642,8 +2763,7 @@ exportObj.basicCardData = function() {
         ship: "Y-Wing",
         skill: 4,
         points: 38,
-        slots: ["Talent", "Turret", "Torpedo", "Astromech", "Modification", "Device", "Gunner"],
-        isHyperspace: true
+        slots: ["Talent", "Turret", "Torpedo", "Astromech", "Modification", "Device", "Gunner"]
       }, {
         name: '"Dutch" Vander',
         id: 27,
@@ -2652,8 +2772,7 @@ exportObj.basicCardData = function() {
         ship: "Y-Wing",
         skill: 4,
         points: 42,
-        slots: ["Talent", "Turret", "Torpedo", "Astromech", "Modification", "Device", "Gunner"],
-        isHyperspace: true
+        slots: ["Talent", "Turret", "Torpedo", "Astromech", "Modification", "Device", "Gunner"]
       }, {
         name: "Evaan Verlaine",
         id: 28,
@@ -2662,8 +2781,7 @@ exportObj.basicCardData = function() {
         ship: "Y-Wing",
         skill: 3,
         points: 36,
-        slots: ["Talent", "Turret", "Torpedo", "Astromech", "Modification", "Device", "Gunner"],
-        isHyperspace: true
+        slots: ["Talent", "Turret", "Torpedo", "Astromech", "Modification", "Device", "Gunner"]
       }, {
         name: "Gold Squadron Veteran",
         id: 29,
@@ -2671,8 +2789,7 @@ exportObj.basicCardData = function() {
         ship: "Y-Wing",
         skill: 3,
         points: 34,
-        slots: ["Talent", "Turret", "Torpedo", "Astromech", "Modification", "Device", "Gunner"],
-        isHyperspace: true
+        slots: ["Talent", "Turret", "Torpedo", "Astromech", "Modification", "Device", "Gunner"]
       }, {
         name: "Gray Squadron Bomber",
         id: 30,
@@ -2680,8 +2797,7 @@ exportObj.basicCardData = function() {
         ship: "Y-Wing",
         skill: 2,
         points: 32,
-        slots: ["Turret", "Torpedo", "Astromech", "Modification", "Device", "Gunner"],
-        isHyperspace: true
+        slots: ["Turret", "Torpedo", "Astromech", "Modification", "Device", "Gunner"]
       }, {
         name: "Bodhi Rook",
         id: 31,
@@ -2690,8 +2806,7 @@ exportObj.basicCardData = function() {
         ship: "U-Wing",
         skill: 4,
         points: 49,
-        slots: ["Talent", "Sensor", "Crew", "Crew", "Modification", "Configuration"],
-        isHyperspace: false
+        slots: ["Talent", "Sensor", "Crew", "Crew", "Modification", "Configuration"]
       }, {
         name: "Cassian Andor",
         id: 32,
@@ -2700,8 +2815,7 @@ exportObj.basicCardData = function() {
         ship: "U-Wing",
         skill: 3,
         points: 47,
-        slots: ["Talent", "Sensor", "Crew", "Crew", "Modification", "Configuration"],
-        isHyperspace: false
+        slots: ["Talent", "Sensor", "Crew", "Crew", "Modification", "Configuration"]
       }, {
         name: "Heff Tobber",
         id: 33,
@@ -2710,8 +2824,7 @@ exportObj.basicCardData = function() {
         ship: "U-Wing",
         skill: 2,
         points: 45,
-        slots: ["Talent", "Sensor", "Crew", "Crew", "Modification", "Configuration"],
-        isHyperspace: false
+        slots: ["Talent", "Sensor", "Crew", "Crew", "Modification", "Configuration"]
       }, {
         name: "Magva Yarro",
         id: 34,
@@ -2720,8 +2833,7 @@ exportObj.basicCardData = function() {
         ship: "U-Wing",
         skill: 3,
         points: 50,
-        slots: ["Talent", "Sensor", "Crew", "Crew", "Modification", "Configuration", "Illicit"],
-        isHyperspace: true
+        slots: ["Talent", "Sensor", "Crew", "Crew", "Modification", "Configuration", "Illicit"]
       }, {
         name: "Saw Gerrera",
         id: 35,
@@ -2730,8 +2842,7 @@ exportObj.basicCardData = function() {
         ship: "U-Wing",
         skill: 4,
         points: 52,
-        slots: ["Talent", "Sensor", "Crew", "Crew", "Modification", "Configuration", "Illicit"],
-        isHyperspace: true
+        slots: ["Talent", "Sensor", "Crew", "Crew", "Modification", "Configuration", "Illicit"]
       }, {
         name: "Benthic Two-Tubes",
         id: 36,
@@ -2740,8 +2851,7 @@ exportObj.basicCardData = function() {
         ship: "U-Wing",
         skill: 2,
         points: 47,
-        slots: ["Illicit", "Sensor", "Crew", "Crew", "Modification", "Configuration"],
-        isHyperspace: true
+        slots: ["Illicit", "Sensor", "Crew", "Crew", "Modification", "Configuration"]
       }, {
         name: "Blue Squadron Scout",
         id: 37,
@@ -2749,8 +2859,7 @@ exportObj.basicCardData = function() {
         ship: "U-Wing",
         skill: 2,
         points: 43,
-        slots: ["Sensor", "Crew", "Crew", "Modification", "Configuration"],
-        isHyperspace: false
+        slots: ["Sensor", "Crew", "Crew", "Modification", "Configuration"]
       }, {
         name: "Partisan Renegade",
         id: 38,
@@ -2758,8 +2867,7 @@ exportObj.basicCardData = function() {
         ship: "U-Wing",
         skill: 1,
         points: 43,
-        slots: ["Illicit", "Sensor", "Crew", "Crew", "Modification", "Configuration"],
-        isHyperspace: true
+        slots: ["Illicit", "Sensor", "Crew", "Crew", "Modification", "Configuration"]
       }, {
         name: "Dash Rendar",
         id: 39,
@@ -2798,8 +2906,7 @@ exportObj.basicCardData = function() {
         ship: "YT-1300",
         skill: 6,
         points: 92,
-        slots: ["Talent", "Missile", "Gunner", "Crew", "Crew", "Modification", "Title", "Illicit"],
-        isHyperspace: true
+        slots: ["Talent", "Missile", "Gunner", "Crew", "Crew", "Modification", "Title", "Illicit"]
       }, {
         name: "Lando Calrissian",
         id: 43,
@@ -2809,8 +2916,7 @@ exportObj.basicCardData = function() {
         ship: "YT-1300",
         skill: 5,
         points: 92,
-        slots: ["Talent", "Missile", "Gunner", "Crew", "Crew", "Modification", "Title", "Illicit"],
-        isHyperspace: true
+        slots: ["Talent", "Missile", "Gunner", "Crew", "Crew", "Modification", "Title", "Illicit"]
       }, {
         name: "Chewbacca",
         id: 44,
@@ -2821,8 +2927,7 @@ exportObj.basicCardData = function() {
         charge: 1,
         recurring: true,
         points: 84,
-        slots: ["Talent", "Missile", "Gunner", "Crew", "Crew", "Modification", "Title", "Illicit"],
-        isHyperspace: true
+        slots: ["Talent", "Missile", "Gunner", "Crew", "Crew", "Modification", "Title", "Illicit"]
       }, {
         name: "Outer Rim Smuggler",
         id: 45,
@@ -2830,8 +2935,7 @@ exportObj.basicCardData = function() {
         ship: "YT-1300",
         skill: 1,
         points: 78,
-        slots: ["Missile", "Gunner", "Crew", "Crew", "Modification", "Title", "Illicit"],
-        isHyperspace: true
+        slots: ["Missile", "Gunner", "Crew", "Crew", "Modification", "Title", "Illicit"]
       }, {
         name: "Jan Ors",
         id: 46,
@@ -3234,8 +3338,7 @@ exportObj.basicCardData = function() {
         ship: "Customized YT-1300",
         skill: 6,
         points: 54,
-        slots: ["Talent", "Missile", "Crew", "Crew", "Gunner", "Illicit", "Modification", "Title"],
-        isHyperspace: true
+        slots: ["Talent", "Missile", "Crew", "Crew", "Gunner", "Illicit", "Modification", "Title"]
       }, {
         name: "Lando Calrissian (Scum)",
         id: 90,
@@ -3245,8 +3348,7 @@ exportObj.basicCardData = function() {
         ship: "Customized YT-1300",
         skill: 4,
         points: 49,
-        slots: ["Talent", "Missile", "Crew", "Crew", "Gunner", "Illicit", "Modification", "Title"],
-        isHyperspace: true
+        slots: ["Talent", "Missile", "Crew", "Crew", "Gunner", "Illicit", "Modification", "Title"]
       }, {
         name: "L3-37",
         id: 91,
@@ -3258,8 +3360,7 @@ exportObj.basicCardData = function() {
         slots: ["Missile", "Crew", "Crew", "Gunner", "Illicit", "Modification", "Title"],
         ship_override: {
           actions: ["Calculate", "Lock", "Rotate Arc"]
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Freighter Captain",
         id: 92,
@@ -3267,8 +3368,7 @@ exportObj.basicCardData = function() {
         ship: "Customized YT-1300",
         skill: 1,
         points: 46,
-        slots: ["Missile", "Crew", "Crew", "Gunner", "Illicit", "Modification", "Title"],
-        isHyperspace: true
+        slots: ["Missile", "Crew", "Crew", "Gunner", "Illicit", "Modification", "Title"]
       }, {
         name: "Lando Calrissian (Scum) (Escape Craft)",
         canonical_name: 'Lando Calrissian (Scum)'.canonicalize(),
@@ -3279,8 +3379,7 @@ exportObj.basicCardData = function() {
         ship: "Escape Craft",
         skill: 4,
         points: 26,
-        slots: ["Talent", "Crew", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Crew", "Modification"]
       }, {
         name: "Outer Rim Pioneer",
         id: 94,
@@ -3289,8 +3388,7 @@ exportObj.basicCardData = function() {
         ship: "Escape Craft",
         skill: 3,
         points: 24,
-        slots: ["Talent", "Crew", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Crew", "Modification"]
       }, {
         name: "L3-37 (Escape Craft)",
         canonical_name: 'L3-37'.canonicalize(),
@@ -3304,8 +3402,7 @@ exportObj.basicCardData = function() {
         slots: ["Talent", "Crew", "Modification"],
         ship_override: {
           actions: ["Calculate", "Barrel Roll"]
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Autopilot Drone",
         id: 96,
@@ -3318,8 +3415,7 @@ exportObj.basicCardData = function() {
         slots: [],
         ship_override: {
           actions: ["Calculate", "Barrel Roll"]
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Fenn Rau",
         id: 97,
@@ -3328,8 +3424,7 @@ exportObj.basicCardData = function() {
         ship: "Fang Fighter",
         skill: 6,
         points: 68,
-        slots: ["Talent", "Torpedo"],
-        isHyperspace: true
+        slots: ["Talent", "Torpedo"]
       }, {
         name: "Old Teroch",
         id: 98,
@@ -3338,8 +3433,7 @@ exportObj.basicCardData = function() {
         ship: "Fang Fighter",
         skill: 5,
         points: 56,
-        slots: ["Talent", "Torpedo"],
-        isHyperspace: true
+        slots: ["Talent", "Torpedo"]
       }, {
         name: "Kad Solus",
         id: 99,
@@ -3348,8 +3442,7 @@ exportObj.basicCardData = function() {
         ship: "Fang Fighter",
         skill: 4,
         points: 54,
-        slots: ["Talent", "Torpedo"],
-        isHyperspace: true
+        slots: ["Talent", "Torpedo"]
       }, {
         name: "Joy Rekkoff",
         id: 100,
@@ -3358,8 +3451,7 @@ exportObj.basicCardData = function() {
         ship: "Fang Fighter",
         skill: 4,
         points: 52,
-        slots: ["Talent", "Torpedo"],
-        isHyperspace: true
+        slots: ["Talent", "Torpedo"]
       }, {
         name: "Skull Squadron Pilot",
         id: 101,
@@ -3367,8 +3459,7 @@ exportObj.basicCardData = function() {
         ship: "Fang Fighter",
         skill: 4,
         points: 50,
-        slots: ["Talent", "Torpedo"],
-        isHyperspace: true
+        slots: ["Talent", "Torpedo"]
       }, {
         name: "Zealous Recruit",
         id: 102,
@@ -3376,8 +3467,7 @@ exportObj.basicCardData = function() {
         ship: "Fang Fighter",
         skill: 1,
         points: 44,
-        slots: ["Torpedo"],
-        isHyperspace: true
+        slots: ["Torpedo"]
       }, {
         name: "Boba Fett",
         id: 103,
@@ -3386,8 +3476,7 @@ exportObj.basicCardData = function() {
         ship: "Firespray-31",
         skill: 5,
         points: 80,
-        slots: ["Talent", "Cannon", "Missile", "Crew", "Device", "Illicit", "Modification", "Title"],
-        isHyperspace: true
+        slots: ["Talent", "Cannon", "Missile", "Crew", "Device", "Illicit", "Modification", "Title"]
       }, {
         name: "Emon Azzameen",
         id: 104,
@@ -3396,8 +3485,7 @@ exportObj.basicCardData = function() {
         ship: "Firespray-31",
         skill: 4,
         points: 76,
-        slots: ["Talent", "Cannon", "Missile", "Crew", "Device", "Illicit", "Modification", "Title"],
-        isHyperspace: true
+        slots: ["Talent", "Cannon", "Missile", "Crew", "Device", "Illicit", "Modification", "Title"]
       }, {
         name: "Kath Scarlet",
         id: 105,
@@ -3406,8 +3494,7 @@ exportObj.basicCardData = function() {
         ship: "Firespray-31",
         skill: 4,
         points: 74,
-        slots: ["Talent", "Cannon", "Missile", "Crew", "Device", "Illicit", "Modification", "Title"],
-        isHyperspace: true
+        slots: ["Talent", "Cannon", "Missile", "Crew", "Device", "Illicit", "Modification", "Title"]
       }, {
         name: "Koshka Frost",
         id: 106,
@@ -3416,8 +3503,7 @@ exportObj.basicCardData = function() {
         ship: "Firespray-31",
         skill: 3,
         points: 71,
-        slots: ["Talent", "Cannon", "Missile", "Crew", "Device", "Illicit", "Modification", "Title"],
-        isHyperspace: true
+        slots: ["Talent", "Cannon", "Missile", "Crew", "Device", "Illicit", "Modification", "Title"]
       }, {
         name: "Krassis Trelix",
         id: 107,
@@ -3426,8 +3512,7 @@ exportObj.basicCardData = function() {
         ship: "Firespray-31",
         skill: 3,
         points: 70,
-        slots: ["Talent", "Cannon", "Missile", "Crew", "Device", "Illicit", "Modification", "Title"],
-        isHyperspace: true
+        slots: ["Talent", "Cannon", "Missile", "Crew", "Device", "Illicit", "Modification", "Title"]
       }, {
         name: "Bounty Hunter",
         id: 108,
@@ -3435,8 +3520,7 @@ exportObj.basicCardData = function() {
         ship: "Firespray-31",
         skill: 2,
         points: 66,
-        slots: ["Cannon", "Missile", "Crew", "Device", "Illicit", "Modification", "Title"],
-        isHyperspace: true
+        slots: ["Cannon", "Missile", "Crew", "Device", "Illicit", "Modification", "Title"]
       }, {
         name: "4-LOM",
         id: 109,
@@ -3907,7 +3991,27 @@ exportObj.basicCardData = function() {
         ship: "Z-95 Headhunter",
         skill: 1,
         points: 6,
-        slots: ["Missile", "Illicit", "Modification"]
+        slots: ["Missile", "Illicit", "Modification"],
+        restriction_func: function(ship) {
+          var builder, t, thing, things, _ref;
+          builder = ship.builder;
+          _ref = builder.uniques_in_use;
+          for (t in _ref) {
+            things = _ref[t];
+            if (__indexOf.call((function() {
+              var _i, _len, _results;
+              _results = [];
+              for (_i = 0, _len = things.length; _i < _len; _i++) {
+                thing = things[_i];
+                _results.push(thing.canonical_name.getXWSBaseName());
+              }
+              return _results;
+            })(), 'houndstooth') >= 0) {
+              return true;
+            }
+          }
+          return false;
+        }
       }, {
         name: "Major Vynder",
         id: 161,
@@ -4024,8 +4128,7 @@ exportObj.basicCardData = function() {
         skill: 6,
         points: 70,
         force: 3,
-        slots: ["Force", "Sensor", "Missile", "Modification"],
-        isHyperspace: true
+        slots: ["Force", "Sensor", "Missile", "Modification"]
       }, {
         name: "Maarek Stele",
         id: 174,
@@ -4034,8 +4137,7 @@ exportObj.basicCardData = function() {
         ship: "TIE Advanced",
         skill: 5,
         points: 50,
-        slots: ["Talent", "Sensor", "Missile", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Sensor", "Missile", "Modification"]
       }, {
         name: "Ved Foslo",
         id: 175,
@@ -4044,8 +4146,7 @@ exportObj.basicCardData = function() {
         ship: "TIE Advanced",
         skill: 4,
         points: 47,
-        slots: ["Talent", "Sensor", "Missile", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Sensor", "Missile", "Modification"]
       }, {
         name: "Zertik Strom",
         id: 176,
@@ -4054,8 +4155,7 @@ exportObj.basicCardData = function() {
         ship: "TIE Advanced",
         skill: 3,
         points: 45,
-        slots: ["Sensor", "Missile", "Modification"],
-        isHyperspace: true
+        slots: ["Sensor", "Missile", "Modification"]
       }, {
         name: "Storm Squadron Ace",
         id: 177,
@@ -4063,8 +4163,7 @@ exportObj.basicCardData = function() {
         ship: "TIE Advanced",
         skill: 3,
         points: 43,
-        slots: ["Talent", "Sensor", "Missile", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Sensor", "Missile", "Modification"]
       }, {
         name: "Tempest Squadron Pilot",
         id: 178,
@@ -4072,8 +4171,7 @@ exportObj.basicCardData = function() {
         ship: "TIE Advanced",
         skill: 2,
         points: 41,
-        slots: ["Sensor", "Missile", "Modification"],
-        isHyperspace: true
+        slots: ["Sensor", "Missile", "Modification"]
       }, {
         name: "Soontir Fel",
         id: 179,
@@ -4116,8 +4214,7 @@ exportObj.basicCardData = function() {
         ship: "TIE Reaper",
         skill: 4,
         points: 49,
-        slots: ["Talent", "Crew", "Crew", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Crew", "Crew", "Modification"]
       }, {
         name: "Captain Feroph",
         id: 184,
@@ -4126,8 +4223,7 @@ exportObj.basicCardData = function() {
         ship: "TIE Reaper",
         skill: 3,
         points: 47,
-        slots: ["Talent", "Crew", "Crew", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Crew", "Crew", "Modification"]
       }, {
         name: '"Vizier"',
         id: 185,
@@ -4136,8 +4232,7 @@ exportObj.basicCardData = function() {
         ship: "TIE Reaper",
         skill: 2,
         points: 45,
-        slots: ["Crew", "Crew", "Modification"],
-        isHyperspace: true
+        slots: ["Crew", "Crew", "Modification"]
       }, {
         name: "Scarif Base Pilot",
         id: 186,
@@ -4145,8 +4240,7 @@ exportObj.basicCardData = function() {
         ship: "TIE Reaper",
         skill: 1,
         points: 41,
-        slots: ["Crew", "Crew", "Modification"],
-        isHyperspace: true
+        slots: ["Crew", "Crew", "Modification"]
       }, {
         name: "Lieutenant Kestal",
         id: 187,
@@ -4344,8 +4438,7 @@ exportObj.basicCardData = function() {
         ship: "TIE Striker",
         skill: 4,
         points: 44,
-        slots: ["Talent", "Gunner", "Device", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Gunner", "Device", "Modification"]
       }, {
         name: '"Pure Sabacc"',
         id: 210,
@@ -4354,8 +4447,7 @@ exportObj.basicCardData = function() {
         ship: "TIE Striker",
         skill: 4,
         points: 44,
-        slots: ["Talent", "Gunner", "Device", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Gunner", "Device", "Modification"]
       }, {
         name: '"Duchess"',
         id: 211,
@@ -4364,8 +4456,7 @@ exportObj.basicCardData = function() {
         ship: "TIE Striker",
         skill: 5,
         points: 42,
-        slots: ["Talent", "Gunner", "Device", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Gunner", "Device", "Modification"]
       }, {
         name: "Black Squadron Scout",
         id: 212,
@@ -4373,8 +4464,7 @@ exportObj.basicCardData = function() {
         ship: "TIE Striker",
         skill: 3,
         points: 38,
-        slots: ["Talent", "Gunner", "Device", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Gunner", "Device", "Modification"]
       }, {
         name: "Planetary Sentinel",
         id: 213,
@@ -4382,8 +4472,7 @@ exportObj.basicCardData = function() {
         ship: "TIE Striker",
         skill: 1,
         points: 34,
-        slots: ["Gunner", "Device", "Modification"],
-        isHyperspace: true
+        slots: ["Gunner", "Device", "Modification"]
       }, {
         name: "Rear Admiral Chiraneau",
         id: 214,
@@ -4418,8 +4507,7 @@ exportObj.basicCardData = function() {
         ship: "TIE Fighter",
         skill: 5,
         points: 40,
-        slots: ["Talent", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Modification"]
       }, {
         name: "Iden Versio",
         id: 218,
@@ -4429,8 +4517,7 @@ exportObj.basicCardData = function() {
         skill: 4,
         charge: 1,
         points: 40,
-        slots: ["Talent", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Modification"]
       }, {
         name: '"Mauler" Mithel',
         id: 219,
@@ -4439,8 +4526,7 @@ exportObj.basicCardData = function() {
         ship: "TIE Fighter",
         skill: 5,
         points: 32,
-        slots: ["Talent", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Modification"]
       }, {
         name: '"Scourge" Skutu',
         id: 220,
@@ -4449,8 +4535,7 @@ exportObj.basicCardData = function() {
         ship: "TIE Fighter",
         skill: 5,
         points: 32,
-        slots: ["Talent", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Modification"]
       }, {
         name: '"Wampa"',
         id: 221,
@@ -4461,8 +4546,7 @@ exportObj.basicCardData = function() {
         recurring: true,
         charge: 1,
         points: 30,
-        slots: ["Modification"],
-        isHyperspace: true
+        slots: ["Modification"]
       }, {
         name: "Del Meeko",
         id: 222,
@@ -4471,8 +4555,7 @@ exportObj.basicCardData = function() {
         ship: "TIE Fighter",
         skill: 4,
         points: 30,
-        slots: ["Talent", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Modification"]
       }, {
         name: "Gideon Hask",
         id: 223,
@@ -4481,8 +4564,7 @@ exportObj.basicCardData = function() {
         ship: "TIE Fighter",
         skill: 4,
         points: 30,
-        slots: ["Talent", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Modification"]
       }, {
         name: "Seyn Marana",
         id: 224,
@@ -4491,8 +4573,7 @@ exportObj.basicCardData = function() {
         ship: "TIE Fighter",
         skill: 4,
         points: 30,
-        slots: ["Talent", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Modification"]
       }, {
         name: "Valen Rudor",
         id: 225,
@@ -4501,8 +4582,7 @@ exportObj.basicCardData = function() {
         ship: "TIE Fighter",
         skill: 3,
         points: 28,
-        slots: ["Talent", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Modification"]
       }, {
         name: '"Night Beast"',
         id: 226,
@@ -4511,8 +4591,7 @@ exportObj.basicCardData = function() {
         ship: "TIE Fighter",
         skill: 2,
         points: 26,
-        slots: ["Modification"],
-        isHyperspace: true
+        slots: ["Modification"]
       }, {
         name: "Black Squadron Ace",
         id: 227,
@@ -4520,8 +4599,7 @@ exportObj.basicCardData = function() {
         ship: "TIE Fighter",
         skill: 3,
         points: 26,
-        slots: ["Talent", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Modification"]
       }, {
         name: "Obsidian Squadron Pilot",
         id: 228,
@@ -4529,8 +4607,7 @@ exportObj.basicCardData = function() {
         ship: "TIE Fighter",
         skill: 2,
         points: 24,
-        slots: ["Modification"],
-        isHyperspace: true
+        slots: ["Modification"]
       }, {
         name: "Academy Pilot",
         id: 229,
@@ -4538,8 +4615,7 @@ exportObj.basicCardData = function() {
         ship: "TIE Fighter",
         skill: 1,
         points: 23,
-        slots: ["Modification"],
-        isHyperspace: true
+        slots: ["Modification"]
       }, {
         name: "Spice Runner",
         id: 230,
@@ -4558,8 +4634,7 @@ exportObj.basicCardData = function() {
         points: 68,
         charge: 1,
         recurring: true,
-        slots: ["Talent", "Astromech", "Modification", "Configuration", "Tech", "Title", "Hardpoint"],
-        isHyperspace: true
+        slots: ["Talent", "Astromech", "Modification", "Configuration", "Tech", "Title", "Hardpoint"]
       }, {
         name: "Lieutenant Bastian",
         id: 232,
@@ -4568,8 +4643,7 @@ exportObj.basicCardData = function() {
         ship: "T-70 X-Wing",
         skill: 2,
         points: 1,
-        slots: ["Astromech", "Modification", "Configuration", "Tech", "Hardpoint"],
-        isHyperspace: true
+        slots: ["Astromech", "Modification", "Configuration", "Tech", "Hardpoint"]
       }, {
         name: '"Midnight"',
         id: 233,
@@ -4578,8 +4652,7 @@ exportObj.basicCardData = function() {
         ship: "TIE/FO Fighter",
         skill: 6,
         points: 44,
-        slots: ["Talent", "Tech", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Tech", "Modification"]
       }, {
         name: '"Longshot"',
         id: 234,
@@ -4588,8 +4661,7 @@ exportObj.basicCardData = function() {
         ship: "TIE/FO Fighter",
         skill: 3,
         points: 33,
-        slots: ["Talent", "Tech", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Tech", "Modification"]
       }, {
         name: '"Muse"',
         id: 235,
@@ -4598,30 +4670,27 @@ exportObj.basicCardData = function() {
         ship: "TIE/FO Fighter",
         skill: 2,
         points: 32,
-        slots: ["Talent", "Tech", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Tech", "Modification"]
       }, {
         name: "Kylo Ren",
         id: 236,
         unique: true,
         faction: "First Order",
-        ship: "TIE Silencer",
+        ship: "TIE/VN Silencer",
         skill: 5,
         force: 2,
         points: 82,
         applies_condition: 'I\'ll Show You the Dark Side'.canonicalize(),
-        slots: ["Force", "Tech", "Torpedo", "Missile", "Modification"],
-        isHyperspace: true
+        slots: ["Force", "Tech", "Torpedo", "Missile", "Modification"]
       }, {
         name: '"Blackout"',
         id: 237,
         unique: true,
         faction: "First Order",
-        ship: "TIE Silencer",
+        ship: "TIE/VN Silencer",
         skill: 5,
         points: 70,
-        slots: ["Talent", "Tech", "Torpedo", "Missile", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Tech", "Torpedo", "Missile", "Modification"]
       }, {
         name: "Lieutenant Dormitz",
         id: 238,
@@ -4630,8 +4699,7 @@ exportObj.basicCardData = function() {
         ship: "Upsilon-Class Shuttle",
         skill: 2,
         points: 60,
-        slots: ["Tech", "Tech", "Crew", "Crew", "Crew", "Cannon", "Sensor", "Modification"],
-        isHyperspace: true
+        slots: ["Tech", "Tech", "Crew", "Crew", "Crew", "Cannon", "Sensor", "Modification"]
       }, {
         name: "L'ulo L'ampar",
         id: 239,
@@ -4640,8 +4708,7 @@ exportObj.basicCardData = function() {
         ship: "RZ-2 A-Wing",
         skill: 5,
         points: 38,
-        slots: ["Talent", "Talent", "Missile", "Tech"],
-        isHyperspace: true
+        slots: ["Talent", "Talent", "Missile", "Tech"]
       }, {
         name: "Tallissan Lintra",
         id: 240,
@@ -4652,8 +4719,7 @@ exportObj.basicCardData = function() {
         charge: 1,
         recurring: true,
         points: 35,
-        slots: ["Talent", "Talent", "Missile", "Tech"],
-        isHyperspace: true
+        slots: ["Talent", "Talent", "Missile", "Tech"]
       }, {
         name: "blanks",
         id: 241,
@@ -4666,8 +4732,7 @@ exportObj.basicCardData = function() {
         ship: "TIE/SF Fighter",
         skill: 4,
         points: 41,
-        slots: ["Talent", "Tech", "Missile", "Gunner", "Sensor", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Tech", "Missile", "Gunner", "Sensor", "Modification"]
       }, {
         name: '"Quickdraw"',
         id: 243,
@@ -4678,8 +4743,7 @@ exportObj.basicCardData = function() {
         charge: 1,
         recurring: true,
         points: 45,
-        slots: ["Talent", "Tech", "Missile", "Gunner", "Sensor", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Tech", "Missile", "Gunner", "Sensor", "Modification"]
       }, {
         name: "Rey",
         id: 244,
@@ -4689,28 +4753,27 @@ exportObj.basicCardData = function() {
         skill: 5,
         points: 80,
         force: 2,
-        slots: ["Force", "Crew", "Crew", "Gunner", "Illicit", "Modification", "Title"],
-        isHyperspace: true
+        slots: ["Force", "Missile", "Crew", "Crew", "Gunner", "Illicit", "Modification", "Title"]
       }, {
         name: "Han Solo (Resistance)",
         id: 245,
         unique: true,
+        xws: "hansolo-scavengedyt1300",
         faction: "Resistance",
         ship: "Scavenged YT-1300",
         skill: 6,
         points: 76,
-        slots: ["Talent", "Crew", "Crew", "Gunner", "Illicit", "Modification", "Title"],
-        isHyperspace: true
+        slots: ["Talent", "Missile", "Crew", "Crew", "Gunner", "Illicit", "Modification", "Title"]
       }, {
         name: "Chewbacca (Resistance)",
         id: 246,
         unique: true,
         faction: "Resistance",
+        xws: "chewbacca-scavengedyt1300",
         ship: "Scavenged YT-1300",
         skill: 4,
         points: 72,
-        slots: ["Talent", "Crew", "Crew", "Gunner", "Illicit", "Modification", "Title"],
-        isHyperspace: true
+        slots: ["Talent", "Missile", "Crew", "Crew", "Gunner", "Illicit", "Modification", "Title"]
       }, {
         name: "Captain Seevor",
         id: 247,
@@ -4721,8 +4784,7 @@ exportObj.basicCardData = function() {
         charge: 1,
         recurring: true,
         points: 28,
-        slots: ["Talent", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Modification"]
       }, {
         name: "Mining Guild Surveyor",
         id: 248,
@@ -4730,8 +4792,7 @@ exportObj.basicCardData = function() {
         ship: "Mining Guild TIE Fighter",
         skill: 2,
         points: 25,
-        slots: ["Talent", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Modification"]
       }, {
         name: "Ahhav",
         id: 249,
@@ -4740,8 +4801,7 @@ exportObj.basicCardData = function() {
         ship: "Mining Guild TIE Fighter",
         skill: 3,
         points: 30,
-        slots: ["Talent", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Modification"]
       }, {
         name: "Finch Dallow",
         id: 250,
@@ -4750,8 +4810,7 @@ exportObj.basicCardData = function() {
         ship: "MG-100 StarFortress",
         skill: 4,
         points: 70,
-        slots: ["Sensor", "Tech", "Crew", "Gunner", "Gunner", "Device", "Device", "Modification"],
-        isHyperspace: true
+        slots: ["Sensor", "Tech", "Crew", "Gunner", "Gunner", "Device", "Device", "Modification"]
       }, {
         name: "Major Stridan",
         id: 251,
@@ -4760,8 +4819,7 @@ exportObj.basicCardData = function() {
         ship: "Upsilon-Class Shuttle",
         skill: 4,
         points: 63,
-        slots: ["Tech", "Tech", "Crew", "Crew", "Crew", "Cannon", "Sensor", "Modification"],
-        isHyperspace: true
+        slots: ["Tech", "Tech", "Crew", "Crew", "Crew", "Cannon", "Sensor", "Modification"]
       }, {
         name: "Kare Kun",
         id: 252,
@@ -4770,8 +4828,7 @@ exportObj.basicCardData = function() {
         ship: "T-70 X-Wing",
         skill: 4,
         points: 53,
-        slots: ["Talent", "Astromech", "Modification", "Configuration", "Tech", "Title", "Hardpoint"],
-        isHyperspace: true
+        slots: ["Talent", "Astromech", "Modification", "Configuration", "Tech", "Title", "Hardpoint"]
       }, {
         name: "Joph Seastriker",
         id: 253,
@@ -4780,8 +4837,7 @@ exportObj.basicCardData = function() {
         ship: "T-70 X-Wing",
         skill: 3,
         points: 52,
-        slots: ["Talent", "Astromech", "Modification", "Configuration", "Tech", "Title", "Hardpoint"],
-        isHyperspace: true
+        slots: ["Talent", "Astromech", "Modification", "Configuration", "Tech", "Title", "Hardpoint"]
       }, {
         name: "Lieutenant Bastian",
         id: 254,
@@ -4790,8 +4846,7 @@ exportObj.basicCardData = function() {
         ship: "T-70 X-Wing",
         skill: 2,
         points: 48,
-        slots: ["Astromech", "Modification", "Configuration", "Tech", "Title", "Hardpoint"],
-        isHyperspace: true
+        slots: ["Astromech", "Modification", "Configuration", "Tech", "Title", "Hardpoint"]
       }, {
         name: "Jaycris Tubbs",
         id: 255,
@@ -4800,17 +4855,16 @@ exportObj.basicCardData = function() {
         ship: "T-70 X-Wing",
         skill: 1,
         points: 50,
-        slots: ["Astromech", "Modification", "Configuration", "Tech", "Title", "Hardpoint"],
-        isHyperspace: true
+        slots: ["Astromech", "Modification", "Configuration", "Tech", "Title", "Hardpoint"]
       }, {
         name: "Black Squadron Ace (T-70)",
         id: 256,
         faction: "Resistance",
+        xws: "blacksquadronace-t70xwing",
         ship: "T-70 X-Wing",
         skill: 4,
         points: 50,
-        slots: ["Talent", "Astromech", "Modification", "Configuration", "Tech", "Title", "Hardpoint"],
-        isHyperspace: true
+        slots: ["Talent", "Astromech", "Modification", "Configuration", "Tech", "Title", "Hardpoint"]
       }, {
         name: "Red Squadron Expert",
         id: 257,
@@ -4818,8 +4872,7 @@ exportObj.basicCardData = function() {
         ship: "T-70 X-Wing",
         skill: 3,
         points: 48,
-        slots: ["Talent", "Astromech", "Modification", "Configuration", "Tech", "Title", "Hardpoint"],
-        isHyperspace: true
+        slots: ["Talent", "Astromech", "Modification", "Configuration", "Tech", "Title", "Hardpoint"]
       }, {
         name: "Blue Squadron Rookie",
         id: 258,
@@ -4827,8 +4880,7 @@ exportObj.basicCardData = function() {
         ship: "T-70 X-Wing",
         skill: 1,
         points: 46,
-        slots: ["Astromech", "Modification", "Configuration", "Tech", "Title", "Hardpoint"],
-        isHyperspace: true
+        slots: ["Astromech", "Modification", "Configuration", "Tech", "Title", "Hardpoint"]
       }, {
         name: "Zeta Squadron Survivor",
         id: 259,
@@ -4836,8 +4888,7 @@ exportObj.basicCardData = function() {
         ship: "TIE/SF Fighter",
         skill: 2,
         points: 34,
-        slots: ["Tech", "Gunner", "Missile", "Sensor", "Modification"],
-        isHyperspace: true
+        slots: ["Tech", "Gunner", "Missile", "Sensor", "Modification"]
       }, {
         name: "Cobalt Squadron Bomber",
         id: 260,
@@ -4845,8 +4896,7 @@ exportObj.basicCardData = function() {
         ship: "MG-100 StarFortress",
         skill: 1,
         points: 63,
-        slots: ["Sensor", "Tech", "Crew", "Gunner", "Gunner", "Device", "Device", "Modification"],
-        isHyperspace: true
+        slots: ["Sensor", "Tech", "Crew", "Gunner", "Gunner", "Device", "Device", "Modification"]
       }, {
         name: "TN-3465",
         id: 261,
@@ -4864,8 +4914,7 @@ exportObj.basicCardData = function() {
         ship: "TIE/FO Fighter",
         skill: 4,
         points: 35,
-        slots: ["Talent", "Tech", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Tech", "Modification"]
       }, {
         name: '"Longshot"',
         id: 263,
@@ -4874,8 +4923,7 @@ exportObj.basicCardData = function() {
         ship: "TIE/FO Fighter",
         skill: 3,
         points: 33,
-        slots: ["Talent", "Tech", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Tech", "Modification"]
       }, {
         name: '"Static"',
         id: 264,
@@ -4884,8 +4932,7 @@ exportObj.basicCardData = function() {
         ship: "TIE/FO Fighter",
         skill: 4,
         points: 35,
-        slots: ["Talent", "Tech", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Tech", "Modification"]
       }, {
         name: "Lieutenant Rivas",
         id: 265,
@@ -4894,8 +4941,7 @@ exportObj.basicCardData = function() {
         ship: "TIE/FO Fighter",
         skill: 1,
         points: 30,
-        slots: ["Tech", "Modification"],
-        isHyperspace: true
+        slots: ["Tech", "Modification"]
       }, {
         name: "Commander Malarus",
         id: 266,
@@ -4905,8 +4951,7 @@ exportObj.basicCardData = function() {
         skill: 5,
         points: 41,
         charge: 2,
-        slots: ["Talent", "Tech", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Tech", "Modification"]
       }, {
         name: "Omega Squadron Ace",
         id: 267,
@@ -4914,8 +4959,7 @@ exportObj.basicCardData = function() {
         ship: "TIE/FO Fighter",
         skill: 3,
         points: 31,
-        slots: ["Talent", "Tech", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Tech", "Modification"]
       }, {
         name: "Zeta Squadron Pilot",
         id: 268,
@@ -4923,8 +4967,7 @@ exportObj.basicCardData = function() {
         ship: "TIE/FO Fighter",
         skill: 2,
         points: 29,
-        slots: ["Tech", "Modification"],
-        isHyperspace: true
+        slots: ["Tech", "Modification"]
       }, {
         name: "Epsilon Squadron Cadet",
         id: 269,
@@ -4932,8 +4975,7 @@ exportObj.basicCardData = function() {
         ship: "TIE/FO Fighter",
         skill: 1,
         points: 28,
-        slots: ["Tech", "Modification"],
-        isHyperspace: true
+        slots: ["Tech", "Modification"]
       }, {
         name: "Greer Sonnel",
         id: 270,
@@ -5047,8 +5089,7 @@ exportObj.basicCardData = function() {
         points: 60,
         charge: 1,
         recurring: true,
-        slots: ["Tech", "Tech", "Crew", "Crew", "Crew", "Cannon", "Sensor", "Modification"],
-        isHyperspace: true
+        slots: ["Tech", "Tech", "Crew", "Crew", "Crew", "Cannon", "Sensor", "Modification"]
       }, {
         name: "Captain Cardinal",
         id: 282,
@@ -5058,28 +5099,25 @@ exportObj.basicCardData = function() {
         skill: 4,
         points: 64,
         charge: 2,
-        slots: ["Tech", "Tech", "Crew", "Crew", "Crew", "Cannon", "Sensor", "Modification"],
-        isHyperspace: true
+        slots: ["Tech", "Tech", "Crew", "Crew", "Crew", "Cannon", "Sensor", "Modification"]
       }, {
         name: '"Avenger"',
         id: 283,
         unique: true,
         faction: "First Order",
-        ship: "TIE Silencer",
+        ship: "TIE/VN Silencer",
         skill: 3,
         points: 62,
-        slots: ["Talent", "Tech", "Torpedo", "Missile", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Tech", "Torpedo", "Missile", "Modification"]
       }, {
         name: '"Recoil"',
         id: 284,
         unique: true,
         faction: "First Order",
-        ship: "TIE Silencer",
+        ship: "TIE/VN Silencer",
         skill: 4,
         points: 63,
-        slots: ["Talent", "Tech", "Torpedo", "Missile", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Tech", "Torpedo", "Missile", "Modification"]
       }, {
         name: "Omega Squadron Expert",
         id: 285,
@@ -5087,26 +5125,23 @@ exportObj.basicCardData = function() {
         ship: "TIE/SF Fighter",
         skill: 3,
         points: 36,
-        slots: ["Talent", "Tech", "Gunner", "Missile", "Sensor", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Tech", "Gunner", "Missile", "Sensor", "Modification"]
       }, {
         name: "Sienar-Jaemus Engineer",
         id: 286,
         faction: "First Order",
-        ship: "TIE Silencer",
+        ship: "TIE/VN Silencer",
         skill: 1,
         points: 56,
-        slots: ["Tech", "Torpedo", "Missile", "Modification"],
-        isHyperspace: true
+        slots: ["Tech", "Torpedo", "Missile", "Modification"]
       }, {
         name: "First Order Test Pilot",
         id: 287,
         faction: "First Order",
-        ship: "TIE Silencer",
+        ship: "TIE/VN Silencer",
         skill: 4,
         points: 62,
-        slots: ["Talent", "Tech", "Torpedo", "Missile", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Tech", "Torpedo", "Missile", "Modification"]
       }, {
         name: "Starkiller Base Pilot",
         id: 288,
@@ -5114,20 +5149,18 @@ exportObj.basicCardData = function() {
         ship: "Upsilon-Class Shuttle",
         skill: 2,
         points: 56,
-        slots: ["Tech", "Tech", "Crew", "Crew", "Crew", "Cannon", "Sensor", "Modification"],
-        isHyperspace: true
+        slots: ["Tech", "Tech", "Crew", "Crew", "Crew", "Cannon", "Sensor", "Modification"]
       }, {
         name: "Lieutenant Tavson",
         id: 289,
         unique: true,
         faction: "First Order",
         ship: "Upsilon-Class Shuttle",
-        skill: 2,
+        skill: 3,
         charge: 2,
         recurring: true,
         points: 62,
-        slots: ["Tech", "Tech", "Crew", "Crew", "Crew", "Cannon", "Sensor", "Modification"],
-        isHyperspace: true
+        slots: ["Tech", "Tech", "Crew", "Crew", "Crew", "Cannon", "Sensor", "Modification"]
       }, {
         name: '"Null"',
         id: 290,
@@ -5136,8 +5169,7 @@ exportObj.basicCardData = function() {
         ship: "TIE/FO Fighter",
         skill: 0,
         points: 31,
-        slots: ["Talent", "Tech", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Tech", "Modification"]
       }, {
         name: "Cat",
         id: 291,
@@ -5146,8 +5178,7 @@ exportObj.basicCardData = function() {
         ship: "MG-100 StarFortress",
         skill: 1,
         points: 64,
-        slots: ["Sensor", "Tech", "Crew", "Gunner", "Gunner", "Device", "Device", "Modification"],
-        isHyperspace: true
+        slots: ["Sensor", "Tech", "Crew", "Gunner", "Gunner", "Device", "Device", "Modification"]
       }, {
         name: "Ben Teene",
         id: 292,
@@ -5157,7 +5188,7 @@ exportObj.basicCardData = function() {
         skill: 3,
         points: 68,
         slots: ["Sensor", "Tech", "Crew", "Gunner", "Gunner", "Device", "Device", "Modification"],
-        isHyperspace: true
+        applies_condition: 'Rattled'.canonicalize()
       }, {
         name: "Edon Kappehl",
         id: 293,
@@ -5166,8 +5197,7 @@ exportObj.basicCardData = function() {
         ship: "MG-100 StarFortress",
         skill: 3,
         points: 69,
-        slots: ["Sensor", "Tech", "Crew", "Gunner", "Gunner", "Device", "Device", "Modification"],
-        isHyperspace: true
+        slots: ["Sensor", "Tech", "Crew", "Gunner", "Gunner", "Device", "Device", "Modification"]
       }, {
         name: "Vennie",
         id: 294,
@@ -5176,8 +5206,7 @@ exportObj.basicCardData = function() {
         ship: "MG-100 StarFortress",
         skill: 2,
         points: 67,
-        slots: ["Sensor", "Tech", "Crew", "Gunner", "Gunner", "Device", "Device", "Modification"],
-        isHyperspace: true
+        slots: ["Sensor", "Tech", "Crew", "Gunner", "Gunner", "Device", "Device", "Modification"]
       }, {
         name: "Resistance Sympathizer",
         id: 295,
@@ -5185,8 +5214,7 @@ exportObj.basicCardData = function() {
         ship: "Scavenged YT-1300",
         skill: 2,
         points: 68,
-        slots: ["Crew", "Crew", "Gunner", "Illicit", "Modification", "Title"],
-        isHyperspace: true
+        slots: ["Missile", "Crew", "Crew", "Gunner", "Illicit", "Modification", "Title"]
       }, {
         name: "Jessika Pava",
         id: 296,
@@ -5197,8 +5225,7 @@ exportObj.basicCardData = function() {
         points: 52,
         charge: 1,
         recurring: true,
-        slots: ["Astromech", "Modification", "Configuration", "Tech", "Title", "Hardpoint"],
-        isHyperspace: true
+        slots: ["Astromech", "Modification", "Configuration", "Tech", "Title", "Hardpoint"]
       }, {
         name: "Temmin Wexley",
         id: 297,
@@ -5207,18 +5234,16 @@ exportObj.basicCardData = function() {
         ship: "T-70 X-Wing",
         skill: 4,
         points: 54,
-        slots: ["Talent", "Astromech", "Modification", "Configuration", "Tech", "Title", "Hardpoint"],
-        isHyperspace: true
+        slots: ["Talent", "Astromech", "Modification", "Configuration", "Tech", "Title", "Hardpoint"]
       }, {
-        name: "Nien Numb",
+        name: "Nien Nunb",
         id: 298,
         unique: true,
         faction: "Resistance",
         ship: "T-70 X-Wing",
         skill: 5,
         points: 55,
-        slots: ["Talent", "Astromech", "Modification", "Configuration", "Tech", "Title", "Hardpoint"],
-        isHyperspace: true
+        slots: ["Talent", "Astromech", "Modification", "Configuration", "Tech", "Title", "Hardpoint"]
       }, {
         name: "Ello Asty",
         id: 299,
@@ -5227,8 +5252,7 @@ exportObj.basicCardData = function() {
         ship: "T-70 X-Wing",
         skill: 5,
         points: 56,
-        slots: ["Talent", "Astromech", "Modification", "Configuration", "Tech", "Title", "Hardpoint"],
-        isHyperspace: true
+        slots: ["Talent", "Astromech", "Modification", "Configuration", "Tech", "Title", "Hardpoint"]
       }, {
         name: "Green Squadron Expert",
         id: 300,
@@ -5236,8 +5260,7 @@ exportObj.basicCardData = function() {
         ship: "RZ-2 A-Wing",
         skill: 3,
         points: 34,
-        slots: ["Talent", "Talent", "Missile", "Tech"],
-        isHyperspace: true
+        slots: ["Talent", "Talent", "Missile", "Tech"]
       }, {
         name: "Blue Squadron Recruit",
         id: 301,
@@ -5245,8 +5268,7 @@ exportObj.basicCardData = function() {
         ship: "RZ-2 A-Wing",
         skill: 1,
         points: 32,
-        slots: ["Missile", "Tech"],
-        isHyperspace: true
+        slots: ["Missile", "Tech"]
       }, {
         name: "Foreman Proach",
         id: 302,
@@ -5255,8 +5277,7 @@ exportObj.basicCardData = function() {
         ship: "Mining Guild TIE Fighter",
         skill: 4,
         points: 32,
-        slots: ["Talent", "Modification"],
-        isHyperspace: true
+        slots: ["Talent", "Modification"]
       }, {
         name: "Overseer Yushyn",
         id: 303,
@@ -5267,8 +5288,7 @@ exportObj.basicCardData = function() {
         charge: 1,
         recurring: true,
         points: 26,
-        slots: ["Modification"],
-        isHyperspace: true
+        slots: ["Modification"]
       }, {
         name: "Mining Guild Sentry",
         id: 304,
@@ -5276,8 +5296,7 @@ exportObj.basicCardData = function() {
         ship: "Mining Guild TIE Fighter",
         skill: 1,
         points: 24,
-        slots: ["Modification"],
-        isHyperspace: true
+        slots: ["Modification"]
       }
     ],
     upgradesById: [
@@ -5301,8 +5320,7 @@ exportObj.basicCardData = function() {
         id: 2,
         slot: "Astromech",
         points: 6,
-        charge: 2,
-        isHyperspace: true
+        charge: 2
       }, {
         name: "R2-D2",
         id: 3,
@@ -5310,14 +5328,12 @@ exportObj.basicCardData = function() {
         slot: "Astromech",
         points: 8,
         charge: 3,
-        faction: "Rebel Alliance",
-        isHyperspace: true
+        faction: "Rebel Alliance"
       }, {
         name: "R3 Astromech",
         id: 4,
         slot: "Astromech",
-        points: 3,
-        isHyperspace: true
+        points: 3
       }, {
         name: "R4 Astromech",
         id: 5,
@@ -5351,15 +5367,13 @@ exportObj.basicCardData = function() {
             }
           }
           return _results;
-        },
-        isHyperspace: true
+        }
       }, {
         name: "R5 Astromech",
         id: 6,
         slot: "Astromech",
         points: 5,
-        charge: 2,
-        isHyperspace: true
+        charge: 2
       }, {
         name: "R5-D8",
         id: 7,
@@ -5367,8 +5381,7 @@ exportObj.basicCardData = function() {
         slot: "Astromech",
         points: 7,
         charge: 3,
-        faction: "Rebel Alliance",
-        isHyperspace: true
+        faction: "Rebel Alliance"
       }, {
         name: "R5-P8",
         id: 8,
@@ -5390,32 +5403,28 @@ exportObj.basicCardData = function() {
         slot: "Cannon",
         points: 4,
         attackbull: 4,
-        range: "2-3",
-        isHyperspace: true
+        range: "2-3"
       }, {
         name: "Ion Cannon",
         id: 11,
         slot: "Cannon",
         points: 5,
         attack: 3,
-        range: "1-3",
-        isHyperspace: false
+        range: "1-3"
       }, {
         name: "Jamming Beam",
         id: 12,
         slot: "Cannon",
         points: 2,
         attack: 3,
-        range: "1-2",
-        isHyperspace: false
+        range: "1-2"
       }, {
         name: "Tractor Beam",
         id: 13,
         slot: "Cannon",
         points: 3,
         attack: 3,
-        range: "1-3",
-        isHyperspace: false
+        range: "1-3"
       }, {
         name: "Admiral Sloane",
         id: 14,
@@ -5437,8 +5446,7 @@ exportObj.basicCardData = function() {
         slot: "Crew",
         points: 4,
         unique: true,
-        faction: "Scum and Villainy",
-        isHyperspace: true
+        faction: "Scum and Villainy"
       }, {
         name: "Baze Malbus",
         id: 17,
@@ -5457,8 +5465,7 @@ exportObj.basicCardData = function() {
           if (__indexOf.call(stats.actions, 'Calculate') < 0) {
             return stats.actions.push('Calculate');
           }
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Cassian Andor",
         id: 19,
@@ -5481,8 +5488,7 @@ exportObj.basicCardData = function() {
         unique: true,
         faction: "Rebel Alliance",
         charge: 2,
-        recurring: true,
-        isHyperspace: true
+        recurring: true
       }, {
         name: "Chewbacca (Scum)",
         id: 22,
@@ -5490,8 +5496,7 @@ exportObj.basicCardData = function() {
         xws: "chewbacca-crew",
         points: 4,
         unique: true,
-        faction: "Scum and Villainy",
-        isHyperspace: true
+        faction: "Scum and Villainy"
       }, {
         name: '"Chopper" (Crew)',
         id: 23,
@@ -5542,8 +5547,7 @@ exportObj.basicCardData = function() {
         validation_func: function(ship, upgrade_obj) {
           return upgrade_obj.occupiesAnotherUpgradeSlot();
         },
-        also_occupies_upgrades: ["Crew"],
-        isHyperspace: true
+        also_occupies_upgrades: ["Crew"]
       }, {
         name: "Director Krennic",
         id: 28,
@@ -5556,8 +5560,7 @@ exportObj.basicCardData = function() {
           if (__indexOf.call(stats.actions, 'Lock') < 0) {
             return stats.actions.push('Lock');
           }
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Emperor Palpatine",
         id: 29,
@@ -5580,8 +5583,7 @@ exportObj.basicCardData = function() {
         name: "Freelance Slicer",
         id: 30,
         slot: "Crew",
-        points: 3,
-        isHyperspace: false
+        points: 3
       }, {
         name: "4-LOM",
         id: 31,
@@ -5594,8 +5596,7 @@ exportObj.basicCardData = function() {
         id: 32,
         slot: "Crew",
         points: 10,
-        charge: 1,
-        isHyperspace: false
+        charge: 1
       }, {
         name: "Grand Inquisitor",
         id: 33,
@@ -5644,15 +5645,13 @@ exportObj.basicCardData = function() {
         slot: "Crew",
         points: 5,
         unique: true,
-        applies_condition: 'Listening Device'.canonicalize(),
-        isHyperspace: true
+        applies_condition: 'Listening Device'.canonicalize()
       }, {
         name: "ISB Slicer",
         id: 38,
         slot: "Crew",
         points: 3,
-        faction: "Galactic Empire",
-        isHyperspace: true
+        faction: "Galactic Empire"
       }, {
         name: "Jabba the Hutt",
         id: 39,
@@ -5699,8 +5698,7 @@ exportObj.basicCardData = function() {
         slot: "Crew",
         points: 4,
         unique: true,
-        faction: "Scum and Villainy",
-        isHyperspace: true
+        faction: "Scum and Villainy"
       }, {
         name: "Lando Calrissian",
         id: 44,
@@ -5708,8 +5706,7 @@ exportObj.basicCardData = function() {
         xws: "landocalrissian",
         points: 5,
         unique: true,
-        faction: "Rebel Alliance",
-        isHyperspace: true
+        faction: "Rebel Alliance"
       }, {
         name: "Lando Calrissian (Scum)",
         id: 45,
@@ -5717,8 +5714,7 @@ exportObj.basicCardData = function() {
         xws: "landocalrissian-crew",
         points: 8,
         unique: true,
-        faction: "Scum and Villainy",
-        isHyperspace: true
+        faction: "Scum and Villainy"
       }, {
         name: "Leia Organa",
         id: 46,
@@ -5727,8 +5723,7 @@ exportObj.basicCardData = function() {
         unique: true,
         faction: "Rebel Alliance",
         charge: 3,
-        recurring: true,
-        isHyperspace: true
+        recurring: true
       }, {
         name: "Latts Razzi",
         id: 47,
@@ -5831,28 +5826,24 @@ exportObj.basicCardData = function() {
             }
           }
           return _results;
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Novice Technician",
         id: 53,
         slot: "Crew",
-        points: 4,
-        isHyperspace: false
+        points: 4
       }, {
         name: "Perceptive Copilot",
         id: 54,
         slot: "Crew",
-        points: 10,
-        isHyperspace: true
+        points: 10
       }, {
         name: "Qi'ra",
         id: 55,
         slot: "Crew",
         points: 2,
         unique: true,
-        faction: "Scum and Villainy",
-        isHyperspace: true
+        faction: "Scum and Villainy"
       }, {
         name: "R2-D2 (Crew)",
         id: 56,
@@ -5861,8 +5852,7 @@ exportObj.basicCardData = function() {
         xws: "r2d2-crew",
         points: 8,
         unique: true,
-        faction: "Rebel Alliance",
-        isHyperspace: true
+        faction: "Rebel Alliance"
       }, {
         name: "Sabine Wren",
         id: 57,
@@ -5881,8 +5871,7 @@ exportObj.basicCardData = function() {
         name: "Seasoned Navigator",
         id: 59,
         slot: "Crew",
-        points: 5,
-        isHyperspace: true
+        points: 5
       }, {
         name: "Seventh Sister",
         id: 60,
@@ -5906,16 +5895,14 @@ exportObj.basicCardData = function() {
           if (__indexOf.call(stats.actions, 'Coordinate') < 0) {
             return stats.actions.push('Coordinate');
           }
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Tobias Beckett",
         id: 62,
         slot: "Crew",
         points: 2,
         unique: true,
-        faction: "Scum and Villainy",
-        isHyperspace: true
+        faction: "Scum and Villainy"
       }, {
         name: "0-0-0",
         id: 63,
@@ -5979,52 +5966,45 @@ exportObj.basicCardData = function() {
         validation_func: function(ship, upgrade_obj) {
           return upgrade_obj.occupiesAnotherUpgradeSlot();
         },
-        also_occupies_upgrades: ["Device"],
-        isHyperspace: false
+        also_occupies_upgrades: ["Device"]
       }, {
         name: "Conner Nets",
         id: 68,
         slot: "Device",
         points: 6,
         charge: 1,
-        applies_condition: 'Conner Net'.canonicalize(),
-        isHyperspace: true
+        applies_condition: 'Conner Net'.canonicalize()
       }, {
         name: "Proton Bombs",
         id: 69,
         slot: "Device",
         points: 5,
         charge: 2,
-        applies_condition: 'Proton Bomb'.canonicalize(),
-        isHyperspace: true
+        applies_condition: 'Proton Bomb'.canonicalize()
       }, {
         name: "Proximity Mines",
         id: 70,
         slot: "Device",
         points: 6,
         charge: 2,
-        applies_condition: 'Proximity Mine'.canonicalize(),
-        isHyperspace: true
+        applies_condition: 'Proximity Mine'.canonicalize()
       }, {
         name: "Seismic Charges",
         id: 71,
         slot: "Device",
         points: 3,
         charge: 2,
-        applies_condition: 'Seismic Charge'.canonicalize(),
-        isHyperspace: true
+        applies_condition: 'Seismic Charge'.canonicalize()
       }, {
         name: "Heightened Perception",
         id: 72,
         slot: "Force",
-        points: 3,
-        isHyperspace: true
+        points: 3
       }, {
         name: "Instinctive Aim",
         id: 73,
         slot: "Force",
-        points: 2,
-        isHyperspace: true
+        points: 2
       }, {
         name: "Supernatural Reflexes",
         id: 74,
@@ -6032,20 +6012,17 @@ exportObj.basicCardData = function() {
         points: 12,
         restriction_func: function(ship) {
           return !((ship.data.large != null) || (ship.data.medium != null));
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Sense",
         id: 75,
         slot: "Force",
-        points: 6,
-        isHyperspace: true
+        points: 6
       }, {
         name: "Agile Gunner",
         id: 76,
         slot: "Gunner",
-        points: 10,
-        isHyperspace: true
+        points: 10
       }, {
         name: "Bistan",
         id: 77,
@@ -6136,8 +6113,7 @@ exportObj.basicCardData = function() {
         xws: "hansolo",
         points: 12,
         unique: true,
-        faction: "Rebel Alliance",
-        isHyperspace: true
+        faction: "Rebel Alliance"
       }, {
         name: "Han Solo (Scum)",
         id: 85,
@@ -6145,14 +6121,12 @@ exportObj.basicCardData = function() {
         xws: "hansolo-gunner",
         points: 4,
         unique: true,
-        faction: "Scum and Villainy",
-        isHyperspace: true
+        faction: "Scum and Villainy"
       }, {
         name: "Hotshot Gunner",
         id: 86,
         slot: "Gunner",
-        points: 7,
-        isHyperspace: true
+        points: 7
       }, {
         name: "Luke Skywalker",
         id: 87,
@@ -6161,7 +6135,6 @@ exportObj.basicCardData = function() {
         force: 1,
         unique: true,
         faction: "Rebel Alliance",
-        isHyperspace: true,
         modifier_func: function(stats) {
           return stats.force += 1;
         }
@@ -6169,8 +6142,7 @@ exportObj.basicCardData = function() {
         name: "Skilled Bombardier",
         id: 88,
         slot: "Gunner",
-        points: 2,
-        isHyperspace: true
+        points: 2
       }, {
         name: "Veteran Tail Gunner",
         id: 89,
@@ -6178,8 +6150,7 @@ exportObj.basicCardData = function() {
         points: 4,
         restriction_func: function(ship) {
           return ship.data.attackb != null;
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Veteran Turret Gunner",
         id: 90,
@@ -6187,8 +6158,7 @@ exportObj.basicCardData = function() {
         points: 8,
         restriction_func: function(ship) {
           return __indexOf.call(ship.effectiveStats().actions, "Rotate Arc") >= 0 || __indexOf.call(ship.effectiveStats().actionsred, "Rotate Arc") >= 0;
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Cloaking Device",
         id: 91,
@@ -6198,33 +6168,28 @@ exportObj.basicCardData = function() {
         charge: 2,
         restriction_func: function(ship) {
           return !(ship.data.large != null);
-        },
-        isHyperspace: false
+        }
       }, {
         name: "Contraband Cybernetics",
         id: 92,
         slot: "Illicit",
         points: 5,
-        charge: 1,
-        isHyperspace: false
+        charge: 1
       }, {
         name: "Deadman's Switch",
         id: 93,
         slot: "Illicit",
-        points: 2,
-        isHyperspace: true
+        points: 2
       }, {
         name: "Feedback Array",
         id: 94,
         slot: "Illicit",
-        points: 4,
-        isHyperspace: false
+        points: 4
       }, {
         name: "Inertial Dampeners",
         id: 95,
         slot: "Illicit",
-        points: 1,
-        isHyperspace: true
+        points: 1
       }, {
         name: "Rigged Cargo Chute",
         id: 96,
@@ -6233,8 +6198,7 @@ exportObj.basicCardData = function() {
         charge: 1,
         restriction_func: function(ship) {
           return (ship.data.medium != null) || (ship.data.large != null);
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Barrage Rockets",
         id: 97,
@@ -6250,8 +6214,7 @@ exportObj.basicCardData = function() {
         validation_func: function(ship, upgrade_obj) {
           return upgrade_obj.occupiesAnotherUpgradeSlot();
         },
-        also_occupies_upgrades: ['Missile'],
-        isHyperspace: false
+        also_occupies_upgrades: ['Missile']
       }, {
         name: "Cluster Missiles",
         id: 98,
@@ -6260,8 +6223,7 @@ exportObj.basicCardData = function() {
         attack: 3,
         range: "1-2",
         rangebonus: true,
-        charge: 4,
-        isHyperspace: true
+        charge: 4
       }, {
         name: "Concussion Missiles",
         id: 99,
@@ -6270,8 +6232,7 @@ exportObj.basicCardData = function() {
         attack: 3,
         range: "2-3",
         rangebonus: true,
-        charge: 3,
-        isHyperspace: true
+        charge: 3
       }, {
         name: "Homing Missiles",
         id: 100,
@@ -6280,8 +6241,7 @@ exportObj.basicCardData = function() {
         attack: 4,
         range: "2-3",
         rangebonus: true,
-        charge: 2,
-        isHyperspace: true
+        charge: 2
       }, {
         name: "Ion Missiles",
         id: 101,
@@ -6290,8 +6250,7 @@ exportObj.basicCardData = function() {
         attack: 3,
         range: "2-3",
         rangebonus: true,
-        charge: 3,
-        isHyperspace: true
+        charge: 3
       }, {
         name: "Proton Rockets",
         id: 102,
@@ -6300,8 +6259,7 @@ exportObj.basicCardData = function() {
         attackbull: 5,
         range: "1-2",
         rangebonus: true,
-        charge: 1,
-        isHyperspace: true
+        charge: 1
       }, {
         name: "Ablative Plating",
         id: 103,
@@ -6310,8 +6268,7 @@ exportObj.basicCardData = function() {
         charge: 2,
         restriction_func: function(ship) {
           return (ship.data.medium != null) || (ship.data.large != null);
-        },
-        isHyperspace: false
+        }
       }, {
         name: "Advanced SLAM",
         id: 104,
@@ -6319,8 +6276,7 @@ exportObj.basicCardData = function() {
         points: 3,
         restriction_func: function(ship) {
           return __indexOf.call(ship.effectiveStats().actions, "Slam") >= 0 || __indexOf.call(ship.effectiveStats().actionsred, "Slam") >= 0;
-        },
-        isHyperspace: false
+        }
       }, {
         name: "Afterburners",
         id: 105,
@@ -6330,14 +6286,12 @@ exportObj.basicCardData = function() {
         restriction_func: function(ship) {
           var _ref, _ref1;
           return !(((_ref = ship.data.large) != null ? _ref : false) || ((_ref1 = ship.data.medium) != null ? _ref1 : false));
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Electronic Baffle",
         id: 106,
         slot: "Modification",
-        points: 2,
-        isHyperspace: false
+        points: 2
       }, {
         name: "Engine Upgrade",
         id: 107,
@@ -6352,20 +6306,17 @@ exportObj.basicCardData = function() {
           if (__indexOf.call(stats.actions, 'Boost') < 0) {
             return stats.actions.push('Boost');
           }
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Munitions Failsafe",
         id: 108,
         slot: "Modification",
-        points: 2,
-        isHyperspace: true
+        points: 2
       }, {
         name: "Static Discharge Vanes",
         id: 109,
         slot: "Modification",
-        points: 6,
-        isHyperspace: true
+        points: 6
       }, {
         name: "Tactical Scrambler",
         id: 110,
@@ -6373,33 +6324,28 @@ exportObj.basicCardData = function() {
         points: 2,
         restriction_func: function(ship) {
           return (ship.data.medium != null) || (ship.data.large != null);
-        },
-        isHyperspace: false
+        }
       }, {
         name: "Advanced Sensors",
         id: 111,
         slot: "Sensor",
-        points: 8,
-        isHyperspace: true
+        points: 8
       }, {
         name: "Collision Detector",
         id: 112,
         slot: "Sensor",
         points: 5,
-        charge: 2,
-        isHyperspace: true
+        charge: 2
       }, {
         name: "Fire-Control System",
         id: 113,
         slot: "Sensor",
-        points: 3,
-        isHyperspace: true
+        points: 3
       }, {
         name: "Trajectory Simulator",
         id: 114,
         slot: "Sensor",
-        points: 3,
-        isHyperspace: true
+        points: 3
       }, {
         name: "Composure",
         id: 115,
@@ -6407,15 +6353,13 @@ exportObj.basicCardData = function() {
         points: 2,
         restriction_func: function(ship) {
           return __indexOf.call(ship.effectiveStats().actions, "Focus") >= 0 || __indexOf.call(ship.effectiveStats().actionsred, "Focus") >= 0;
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Crack Shot",
         id: 116,
         slot: "Talent",
         points: 1,
-        charge: 1,
-        isHyperspace: true
+        charge: 1
       }, {
         name: "Daredevil",
         id: 117,
@@ -6423,8 +6367,7 @@ exportObj.basicCardData = function() {
         points: 3,
         restriction_func: function(ship) {
           return __indexOf.call(ship.effectiveStats().actions, "Boost") >= 0 && !((ship.data.large != null) || (ship.data.medium != null));
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Debris Gambit",
         id: 118,
@@ -6437,8 +6380,7 @@ exportObj.basicCardData = function() {
           if (__indexOf.call(stats.actionsred, 'Evade') < 0) {
             return stats.actionsred.push('Evade');
           }
-        },
-        isHyperspace: false
+        }
       }, {
         name: "Elusive",
         id: 119,
@@ -6447,8 +6389,7 @@ exportObj.basicCardData = function() {
         charge: 1,
         restriction_func: function(ship) {
           return ship.data.large == null;
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Expert Handling",
         id: 120,
@@ -6463,21 +6404,18 @@ exportObj.basicCardData = function() {
           if (__indexOf.call(stats.actions, 'Barrel Roll') < 0) {
             return stats.actions.push('Barrel Roll');
           }
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Fearless",
         id: 121,
         slot: "Talent",
         points: 3,
-        faction: "Scum and Villainy",
-        isHyperspace: true
+        faction: "Scum and Villainy"
       }, {
         name: "Intimidation",
         id: 122,
         slot: "Talent",
-        points: 3,
-        isHyperspace: true
+        points: 3
       }, {
         name: "Juke",
         id: 123,
@@ -6485,8 +6423,7 @@ exportObj.basicCardData = function() {
         points: 4,
         restriction_func: function(ship) {
           return !(ship.data.large != null);
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Lone Wolf",
         id: 124,
@@ -6494,33 +6431,28 @@ exportObj.basicCardData = function() {
         points: 4,
         unique: true,
         recurring: true,
-        charge: 1,
-        isHyperspace: true
+        charge: 1
       }, {
         name: "Marksmanship",
         id: 125,
         slot: "Talent",
-        points: 1,
-        isHyperspace: true
+        points: 1
       }, {
         name: "Outmaneuver",
         id: 126,
         slot: "Talent",
-        points: 6,
-        isHyperspace: true
+        points: 6
       }, {
         name: "Predator",
         id: 127,
         slot: "Talent",
-        points: 2,
-        isHyperspace: true
+        points: 2
       }, {
         name: "Ruthless",
         id: 128,
         slot: "Talent",
         points: 1,
-        faction: "Galactic Empire",
-        isHyperspace: true
+        faction: "Galactic Empire"
       }, {
         name: "Saturation Salvo",
         id: 129,
@@ -6528,15 +6460,13 @@ exportObj.basicCardData = function() {
         points: 6,
         restriction_func: function(ship) {
           return __indexOf.call(ship.effectiveStats().actions, "Reload") >= 0 || __indexOf.call(ship.effectiveStats().actionsred, "Reload") >= 0;
-        },
-        isHyperspace: false
+        }
       }, {
         name: "Selfless",
         id: 130,
         slot: "Talent",
         points: 3,
-        faction: "Rebel Alliance",
-        isHyperspace: true
+        faction: "Rebel Alliance"
       }, {
         name: "Squad Leader",
         id: 131,
@@ -6549,20 +6479,17 @@ exportObj.basicCardData = function() {
               return stats.actionsred.push('Coordinate');
             }
           }
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Swarm Tactics",
         id: 132,
         slot: "Talent",
-        points: 3,
-        isHyperspace: true
+        points: 3
       }, {
         name: "Trick Shot",
         id: 133,
         slot: "Talent",
-        points: 1,
-        isHyperspace: true
+        points: 1
       }, {
         name: "Adv. Proton Torpedoes",
         id: 134,
@@ -6571,8 +6498,7 @@ exportObj.basicCardData = function() {
         attack: 5,
         range: "1",
         rangebonus: true,
-        charge: 1,
-        isHyperspace: false
+        charge: 1
       }, {
         name: "Ion Torpedoes",
         id: 135,
@@ -6581,8 +6507,7 @@ exportObj.basicCardData = function() {
         attack: 4,
         range: "2-3",
         rangebonus: true,
-        charge: 2,
-        isHyperspace: true
+        charge: 2
       }, {
         name: "Proton Torpedoes",
         id: 136,
@@ -6591,8 +6516,7 @@ exportObj.basicCardData = function() {
         attack: 4,
         range: "2-3",
         rangebonus: true,
-        charge: 2,
-        isHyperspace: true
+        charge: 2
       }, {
         name: "Dorsal Turret",
         id: 137,
@@ -6604,8 +6528,7 @@ exportObj.basicCardData = function() {
           if (__indexOf.call(stats.actions, 'Rotate Arc') < 0) {
             return stats.actions.push('Rotate Arc');
           }
-        },
-        isHyperspace: false
+        }
       }, {
         name: "Ion Cannon Turret",
         id: 138,
@@ -6617,8 +6540,7 @@ exportObj.basicCardData = function() {
           if (__indexOf.call(stats.actions, 'Rotate Arc') < 0) {
             return stats.actions.push('Rotate Arc');
           }
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Os-1 Arsenal Loadout",
         id: 139,
@@ -6639,8 +6561,7 @@ exportObj.basicCardData = function() {
         id: 140,
         points: 0,
         slot: "Configuration",
-        ship: "U-Wing",
-        isHyperspace: true
+        ship: "U-Wing"
       }, {
         name: "Pivot Wing (Open)",
         id: 141,
@@ -6651,8 +6572,7 @@ exportObj.basicCardData = function() {
         id: 142,
         points: 0,
         slot: "Configuration",
-        ship: "X-Wing",
-        isHyperspace: true
+        ship: "X-Wing"
       }, {
         name: "Blank",
         id: 143,
@@ -6694,8 +6614,7 @@ exportObj.basicCardData = function() {
           if (__indexOf.call(stats.actions, 'Reload') < 0) {
             return stats.actions.push('Reload');
           }
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Dauntless",
         id: 147,
@@ -6753,8 +6672,7 @@ exportObj.basicCardData = function() {
         points: 6,
         unique: true,
         faction: "Scum and Villainy",
-        ship: "Customized YT-1300",
-        isHyperspace: true
+        ship: "Customized YT-1300"
       }, {
         name: "Marauder",
         id: 153,
@@ -6768,8 +6686,7 @@ exportObj.basicCardData = function() {
             type: exportObj.Upgrade,
             slot: "Gunner"
           }
-        ],
-        isHyperspace: true
+        ]
       }, {
         name: "Millennium Falcon",
         id: 154,
@@ -6778,13 +6695,11 @@ exportObj.basicCardData = function() {
         unique: true,
         faction: "Rebel Alliance",
         ship: "YT-1300",
-        isHyperspace: true,
         modifier_func: function(stats) {
           if (__indexOf.call(stats.actions, 'Evade') < 0) {
             return stats.actions.push('Evade');
           }
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Mist Hunter",
         id: 155,
@@ -6868,8 +6783,7 @@ exportObj.basicCardData = function() {
             type: exportObj.Upgrade,
             slot: "Torpedo"
           }
-        ],
-        isHyperspace: true
+        ]
       }, {
         name: "ST-321",
         id: 162,
@@ -6904,8 +6818,7 @@ exportObj.basicCardData = function() {
         variableagility: true,
         modifier_func: function(stats) {
           return stats.hull += 1;
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Shield Upgrade",
         id: 165,
@@ -6915,8 +6828,7 @@ exportObj.basicCardData = function() {
         variableagility: true,
         modifier_func: function(stats) {
           return stats.shields += 1;
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Stealth Device",
         id: 166,
@@ -6927,8 +6839,7 @@ exportObj.basicCardData = function() {
         charge: 1,
         modifier_func: function(stats) {
           return stats.agility += 1;
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Phantom",
         id: 167,
@@ -6948,8 +6859,7 @@ exportObj.basicCardData = function() {
             type: exportObj.Upgrade,
             slot: "Cannon"
           }
-        ],
-        isHyperspace: true
+        ]
       }, {
         name: "Hardpoint: Torpedo",
         id: 169,
@@ -6961,8 +6871,7 @@ exportObj.basicCardData = function() {
             type: exportObj.Upgrade,
             slot: "Torpedo"
           }
-        ],
-        isHyperspace: true
+        ]
       }, {
         name: "Hardpoint: Missile",
         id: 170,
@@ -6974,8 +6883,7 @@ exportObj.basicCardData = function() {
             type: exportObj.Upgrade,
             slot: "Missile"
           }
-        ],
-        isHyperspace: true
+        ]
       }, {
         name: "Black One",
         id: 171,
@@ -6989,39 +6897,34 @@ exportObj.basicCardData = function() {
           if (__indexOf.call(stats.actions, 'Slam') < 0) {
             return stats.actions.push('Slam');
           }
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Heroic",
         id: 172,
         slot: "Talent",
         points: 1,
-        faction: "Resistance",
-        isHyperspace: true
+        faction: "Resistance"
       }, {
         name: "Rose Tico",
         id: 173,
         slot: "Crew",
         points: 9,
         unique: true,
-        faction: "Resistance",
-        isHyperspace: true
+        faction: "Resistance"
       }, {
         name: "Finn",
         id: 174,
         slot: "Gunner",
         points: 10,
         unique: true,
-        faction: "Resistance",
-        isHyperspace: true
+        faction: "Resistance"
       }, {
         name: "Integrated S-Foils",
         id: 175,
         slot: "Configuration",
         points: 0,
         faction: "Resistance",
-        ship: "T-70 X-Wing",
-        isHyperspace: true
+        ship: "T-70 X-Wing"
       }, {
         name: "Integrated S-Foils (Open)",
         id: 176,
@@ -7033,8 +6936,7 @@ exportObj.basicCardData = function() {
         points: 5,
         restriction_func: function(ship) {
           return __indexOf.call(ship.effectiveStats().actions, "Lock") >= 0 || __indexOf.call(ship.effectiveStats().actionsred, "Lock") >= 0;
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Primed Thrusters",
         id: 178,
@@ -7042,8 +6944,7 @@ exportObj.basicCardData = function() {
         points: 8,
         restriction_func: function(ship) {
           return !((ship.data.large != null) || (ship.data.medium != null));
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Kylo Ren",
         id: 179,
@@ -7055,8 +6956,7 @@ exportObj.basicCardData = function() {
         applies_condition: 'I\'ll Show You the Dark Side'.canonicalize(),
         modifier_func: function(stats) {
           return stats.force += 1;
-        },
-        isHyperspace: true
+        }
       }, {
         name: "General Hux",
         id: 180,
@@ -7066,31 +6966,27 @@ exportObj.basicCardData = function() {
         faction: "First Order",
         restriction_func: function(ship) {
           return __indexOf.call(ship.effectiveStats().actions, "Coordinate") >= 0;
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Fanatical",
         id: 181,
         slot: "Talent",
         points: 2,
-        faction: "First Order",
-        isHyperspace: true
+        faction: "First Order"
       }, {
         name: "Special Forces Gunner",
         id: 182,
         slot: "Gunner",
         points: 10,
         faction: "First Order",
-        ship: "TIE/SF Fighter",
-        isHyperspace: true
+        ship: "TIE/SF Fighter"
       }, {
         name: "Captain Phasma",
         id: 183,
         slot: "Crew",
         unique: true,
         points: 5,
-        faction: "First Order",
-        isHyperspace: true
+        faction: "First Order"
       }, {
         name: "Supreme Leader Snoke",
         id: 184,
@@ -7108,8 +7004,7 @@ exportObj.basicCardData = function() {
         also_occupies_upgrades: ["Crew"],
         modifier_func: function(stats) {
           return stats.force += 1;
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Hyperspace Tracking Data",
         id: 185,
@@ -7118,14 +7013,12 @@ exportObj.basicCardData = function() {
         points: 2,
         restriction_func: function(ship) {
           return ship.data.large != null;
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Advanced Optics",
         id: 186,
         slot: "Tech",
-        points: 4,
-        isHyperspace: true
+        points: 4
       }, {
         name: "Rey",
         id: 187,
@@ -7136,8 +7029,7 @@ exportObj.basicCardData = function() {
         faction: "Resistance",
         modifier_func: function(stats) {
           return stats.force += 1;
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Chewbacca (Resistance)",
         id: 188,
@@ -7145,24 +7037,21 @@ exportObj.basicCardData = function() {
         points: 5,
         charge: 2,
         unique: true,
-        faction: "Resistance",
-        isHyperspace: true
+        faction: "Resistance"
       }, {
         name: "Paige Tico",
         id: 189,
         slot: "Gunner",
         points: 7,
         unique: true,
-        faction: "Resistance",
-        isHyperspace: true
+        faction: "Resistance"
       }, {
         name: "R2-HA",
         id: 190,
         slot: "Astromech",
         points: 4,
         unique: true,
-        faction: "Resistance",
-        isHyperspace: true
+        faction: "Resistance"
       }, {
         name: "C-3PO (Resistance)",
         id: 191,
@@ -7177,8 +7066,7 @@ exportObj.basicCardData = function() {
           if (__indexOf.call(stats.actionsred, 'Coordinate') < 0) {
             return stats.actionsred.push('Coordinate');
           }
-        },
-        isHyperspace: true
+        }
       }, {
         name: "Han Solo (Resistance)",
         id: 192,
@@ -7190,25 +7078,22 @@ exportObj.basicCardData = function() {
           if (__indexOf.call(stats.actionsred, 'Evade') < 0) {
             return stats.actionsred.push('Evade');
           }
-        },
-        isHyperspace: true
+        }
       }, {
-        name: "Rey's Millenium Falcon",
+        name: "Rey's Millennium Falcon",
         id: 193,
         slot: "Title",
         points: 5,
         unique: true,
         ship: "Scavenged YT-1300",
-        faction: "Resistance",
-        isHyperspace: true
+        faction: "Resistance"
       }, {
         name: "Petty Officer Thanisson",
         id: 194,
         slot: "Crew",
         points: 4,
         unique: true,
-        faction: "First Order",
-        isHyperspace: true
+        faction: "First Order"
       }, {
         name: "BB-8",
         id: 195,
@@ -7216,31 +7101,27 @@ exportObj.basicCardData = function() {
         points: 8,
         charge: 2,
         unique: true,
-        faction: "Resistance",
-        isHyperspace: true
+        faction: "Resistance"
       }, {
         name: "BB Astromech",
         id: 196,
         slot: "Astromech",
         points: 5,
         charge: 2,
-        faction: "Resistance",
-        isHyperspace: true
+        faction: "Resistance"
       }, {
         name: "M9-G8",
         id: 197,
         slot: "Astromech",
         points: 7,
         unique: true,
-        faction: "Resistance",
-        isHyperspace: true
+        faction: "Resistance"
       }, {
         name: "Ferrosphere Paint",
         id: 198,
         slot: "Tech",
         points: 6,
-        faction: "Resistance",
-        isHyperspace: true
+        faction: "Resistance"
       }, {
         name: "Brilliant Evasion",
         id: 199,
@@ -7273,34 +7154,29 @@ exportObj.basicCardData = function() {
         faction: "First Order",
         restriction_func: function(ship) {
           return __indexOf.call(ship.effectiveStats().actions, "Lock") >= 0 || __indexOf.call(ship.effectiveStats().actionsred, "Lock") >= 0;
-        },
-        isHyperspace: false
+        }
       }, {
         name: "Predictive Shot",
         id: 203,
         slot: "Force",
-        points: 4,
-        isHyperspace: true
+        points: 4
       }, {
         name: "Hate",
         id: 204,
         slot: "Force",
-        points: 3,
-        isHyperspace: true
+        points: 3
       }, {
         name: "R5-X3",
         id: 205,
         slot: "Astromech",
         faction: "Resistance",
         charge: 2,
-        points: 5,
-        isHyperspace: true
+        points: 5
       }, {
         name: "Pattern Analyzer",
         id: 206,
         slot: "Tech",
-        points: 5,
-        isHyperspace: true
+        points: 5
       }
     ],
     conditionsById: [
@@ -7345,6 +7221,9 @@ exportObj.basicCardData = function() {
       }, {
         name: 'Proximity Mine',
         id: 11
+      }, {
+        name: 'Rattled',
+        id: 12
       }
     ]
   };
@@ -7829,51 +7708,60 @@ exportObj.cardLoaders.Deutsch = function() {
   basic_cards = exportObj.basicCardData();
   exportObj.canonicalizeShipNames(basic_cards);
   exportObj.ships = basic_cards.ships;
-  exportObj.renameShip('YT-1300', 'Modifizierter leichter YT-1300-Frachter');
-  exportObj.renameShip('StarViper', 'Angriffsplattform der Sternenviper-Klasse');
-  exportObj.renameShip('Scurrg H-6 Bomber', 'Scurrg-H-6-Bomber');
-  exportObj.renameShip('YT-2400', 'Leichter YT-2400-Frachter');
-  exportObj.renameShip('Auzituck Gunship', 'Auzituck-Kanonenboot');
-  exportObj.renameShip('Kihraxz Fighter', 'Kihraxz-Jäger');
-  exportObj.renameShip('Sheathipede-Class Shuttle', 'Raumfähre der Sheathipede-Klasse');
-  exportObj.renameShip('Quadjumper', 'Quadrijet-Transferschlepper');
-  exportObj.renameShip('Firespray-31', 'Patrouillenboot der Firespray-Klasse');
-  exportObj.renameShip('TIE Fighter', 'TIE/ln-Jäger');
-  exportObj.renameShip('Y-Wing', 'BTL-A4-Y-Flügler');
-  exportObj.renameShip('TIE Advanced', 'TIE-x1-Turbojäger');
-  exportObj.renameShip('Alpha-Class Star Wing', 'Sternflügler der Alpha-Klasse');
-  exportObj.renameShip('U-Wing', 'UT-60D-U-Flügler');
-  exportObj.renameShip('TIE Striker', 'TIE/sk-Stürmer');
-  exportObj.renameShip('B-Wing', 'A/SF-01-B-Flügler');
-  exportObj.renameShip('TIE Defender', 'TIE/D-Abwehrjäger');
-  exportObj.renameShip('TIE Bomber', 'TIE/sa-Bomber');
-  exportObj.renameShip('TIE Punisher', 'TIE/ca-Vergelter');
-  exportObj.renameShip('Aggressor', 'Aggressor-Angriffsjäger');
-  exportObj.renameShip('G-1A Starfighter', 'G-1A Sternenjäger');
-  exportObj.renameShip('VCX-100', 'Leichter VCX-100-Frachter');
-  exportObj.renameShip('YV-666', 'Leichter YV-666-Frachter');
-  exportObj.renameShip('TIE Advanced Prototype', 'TIE-v1-Turbojäger');
-  exportObj.renameShip('Lambda-Class Shuttle', 'T-4A-Raumfähre der Lambda-Klasse');
-  exportObj.renameShip('TIE Phantom', 'TIE/ph-Phantom');
-  exportObj.renameShip('VT-49 Decimator', 'VT-49-Decimator');
-  exportObj.renameShip('TIE Aggressor', 'TIE/ag-Agressor');
-  exportObj.renameShip('K-Wing', 'BTL-S8-K-Flügler');
-  exportObj.renameShip('ARC-170', 'ARC-170-Sternenjäger');
-  exportObj.renameShip('Attack Shuttle', 'Jagdshuttle');
-  exportObj.renameShip('X-Wing', 'T-65-X-Flügler');
-  exportObj.renameShip('HWK-290', 'Leichter HWK-290-Frachter');
-  exportObj.renameShip('A-Wing', 'RZ-1-A-Flügler');
-  exportObj.renameShip('Fang Fighter', 'Fangjäger');
-  exportObj.renameShip('Z-95 Headhunter', 'Z-95-AF4-Kopfjäger');
-  exportObj.renameShip('M12-L Kimogila Fighter', 'M12-L-Kimogila-Jäger');
-  exportObj.renameShip('E-Wing', 'E-Flügler');
-  exportObj.renameShip('TIE Interceptor', 'TIE-Abfangjäger');
-  exportObj.renameShip('Lancer-Class Pursuit Craft', 'Jagdschiff der Lanzen-Klasse');
-  exportObj.renameShip('TIE Reaper', 'TIE-Schnitter');
-  exportObj.renameShip('JumpMaster 5000', 'JumpMaster 5000');
-  exportObj.renameShip('M3-A Interceptor', 'M3-A-Abfangjäger');
-  exportObj.renameShip('Customized YT-1300', 'Modifizierter YT-1300-Frachter');
-  exportObj.renameShip('Escape Craft', 'Fluchtschiff');
+  exportObj.renameShip("YT-1300", "Modifizierter leichter YT-1300-Frachter");
+  exportObj.renameShip("StarViper", "Angriffsplattform der Sternenviper-Klasse");
+  exportObj.renameShip("Scurrg H-6 Bomber", "Scurrg-H-6-Bomber");
+  exportObj.renameShip("YT-2400", "Leichter YT-2400-Frachter");
+  exportObj.renameShip("Auzituck Gunship", "Auzituck-Kanonenboot");
+  exportObj.renameShip("Kihraxz Fighter", "Kihraxz-Jäger");
+  exportObj.renameShip("Sheathipede-Class Shuttle", "Raumfähre der Sheathipede-Klasse");
+  exportObj.renameShip("Quadjumper", "Quadrijet-Transferschlepper");
+  exportObj.renameShip("Firespray-31", "Patrouillenboot der Firespray-Klasse");
+  exportObj.renameShip("TIE Fighter", "TIE/ln-Jäger");
+  exportObj.renameShip("Y-Wing", "BTL-A4-Y-Flügler");
+  exportObj.renameShip("TIE Advanced", "TIE-x1-Turbojäger");
+  exportObj.renameShip("Alpha-Class Star Wing", "Sternflügler der Alpha-Klasse");
+  exportObj.renameShip("U-Wing", "UT-60D-U-Flügler");
+  exportObj.renameShip("TIE Striker", "TIE/sk-Stürmer");
+  exportObj.renameShip("B-Wing", "A/SF-01-B-Flügler");
+  exportObj.renameShip("TIE Defender", "TIE/D-Abwehrjäger");
+  exportObj.renameShip("TIE Bomber", "TIE/sa-Bomber");
+  exportObj.renameShip("TIE Punisher", "TIE/ca-Vergelter");
+  exportObj.renameShip("Aggressor", "Aggressor-Angriffsjäger");
+  exportObj.renameShip("G-1A Starfighter", "G-1A Sternenjäger");
+  exportObj.renameShip("VCX-100", "Leichter VCX-100-Frachter");
+  exportObj.renameShip("YV-666", "Leichter YV-666-Frachter");
+  exportObj.renameShip("TIE Advanced Prototype", "TIE-v1-Turbojäger");
+  exportObj.renameShip("Lambda-Class Shuttle", "T-4A-Raumfähre der Lambda-Klasse");
+  exportObj.renameShip("TIE Phantom", "TIE/ph-Phantom");
+  exportObj.renameShip("VT-49 Decimator", "VT-49-Decimator");
+  exportObj.renameShip("TIE Aggressor", "TIE/ag-Agressor");
+  exportObj.renameShip("K-Wing", "BTL-S8-K-Flügler");
+  exportObj.renameShip("ARC-170", "ARC-170-Sternenjäger");
+  exportObj.renameShip("Attack Shuttle", "Jagdshuttle");
+  exportObj.renameShip("X-Wing", "T-65-X-Flügler");
+  exportObj.renameShip("HWK-290", "Leichter HWK-290-Frachter");
+  exportObj.renameShip("A-Wing", "RZ-1-A-Flügler");
+  exportObj.renameShip("Fang Fighter", "Fangjäger");
+  exportObj.renameShip("Z-95 Headhunter", "Z-95-AF4-Kopfjäger");
+  exportObj.renameShip("M12-L Kimogila Fighter", "M12-L-Kimogila-Jäger");
+  exportObj.renameShip("E-Wing", "E-Flügler");
+  exportObj.renameShip("TIE Interceptor", "TIE-Abfangjäger");
+  exportObj.renameShip("Lancer-Class Pursuit Craft", "Jagdschiff der Lanzen-Klasse");
+  exportObj.renameShip("TIE Reaper", "TIE-Schnitter");
+  exportObj.renameShip("JumpMaster 5000", "JumpMaster 5000");
+  exportObj.renameShip("M3-A Interceptor", "M3-A-Abfangjäger");
+  exportObj.renameShip("Customized YT-1300", "Modifizierter YT-1300-Frachter");
+  exportObj.renameShip("Escape Craft", "Fluchtschiff");
+  exportObj.renameShip("TIE/FO Fighter", "TIE/eo-Jäger");
+  exportObj.renameShip("TIE/SF Fighter", "TIE/sf Jäger");
+  exportObj.renameShip("Upsilon-Class Shuttle", "Kommandoshuttle der Ypsilon-Klasse");
+  exportObj.renameShip("TIE/VN Silencer", "TIE/vn-Dämpfer");
+  exportObj.renameShip("T-70 X-Wing", "T-70-X-Flügler");
+  exportObj.renameShip("RZ-2 A-Wing", "RZ-2-A-Flügler");
+  exportObj.renameShip("MG-100 StarFortress", "MG-100-SternenFestung");
+  exportObj.renameShip("Mining Guild TIE Fighter", "Modifizierter TIE/ln-Jäger");
+  exportObj.renameShip("Scavenged YT-1300", "YT-1300 vom Schrottplatz");
   pilot_translations = {
     "4-LOM": {
       display_name: "4-LOM",
@@ -7889,7 +7777,11 @@ exportObj.cardLoaders.Deutsch = function() {
     },
     "Academy Pilot": {
       display_name: "Pilot der Akademie",
-      text: "<i class=flavor_text>Was Sternenjäger betrifft, setzt das Galaktische Imperium hauptsächlich auf den schnellen und wendigen TIE/ln von Sienar Flottensysteme und lässt ihn in erstaunlicher Stückzahl produzieren.</i>"
+      text: "<i class = flavor_text>Was Sternenjäger betrifft, setzt das Galaktische Imperium hauptsächlich auf den schnellen und wendigen TIE/ln von Sienar Flottensysteme und lässt ihn in erstaunlicher Stückzahl produzieren.</i>"
+    },
+    "Ahhav": {
+      display_name: "Ahhav",
+      text: "Solange du verteidigst oder einen Angriff durchführst, falls das feindliche Schiff eine größere Größenkategorie hat als du, wirf 1 zusätzlichen Würfel.%LINEBREAK%<strong>Stabilisatorkerbe:</strong> Solange du dich bewegst, ignorierst du Asteroiden."
     },
     "Airen Cracken": {
       display_name: "Airen Cracken",
@@ -7919,6 +7811,10 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "Imperialer Baron",
       text: "<i class = flavor_text>Sienars TIE-v1-Turbojäger war eine bahnbrechende Entwicklung auf dem Gebiet der Sternenjäger-Technologie. Er verfügt über stärkere Triebwerke, einen Raketenwerfer sowie klappbare S-Flügel.</i>"
     },
+    "Ben Teene": {
+      display_name: "Ben Teene",
+      text: "Nachdem du einen Angriff durchgeführt hast, falls der Verteidiger in deinem %SINGLETURRETARC% ist, ordne dem Verteidiger den Zustand <strong>Aus der Fassung</strong> zu."
+    },
     "Benthic Two-Tubes": {
       display_name: "Benthic Two Tubes",
       text: "Nachdem du eine %FOCUS%-Aktion durchgeführt hast, darfst du 1 deiner Fokusmarker auf ein befreundetes Schiff in Reichweite 1-2 transferieren."
@@ -7934,6 +7830,10 @@ exportObj.cardLoaders.Deutsch = function() {
     "Black Squadron Ace": {
       display_name: "Fliegerass der schwarzen Staffel",
       text: "<i class = flavor_text>In der Schlacht von Yavin begleiteten die Elite­-piloten der schwarzen Staffel mit ihren TIE/ln-Jägern Darth Vader auf seinem vernichtenden Schlag gegen die Rebellion.</i>"
+    },
+    "Black Squadron Ace": {
+      display_name: "Fliegerass der schwarzen Staffel",
+      text: "<i class = flavor_text>Während des Kalten Krieges führte Poe Damerons schwarze Staffel gewagte Geheimoperationen gegen die Erste Ordnung durch und verstieß dabei gegen Verträge, die vom Senat der Neuen Republik ratifiziert worden waren.</i>%LINEBREAK%<strong>Waffenaufhängung:</strong> Du kannst 1&nbsp;%CANNON%-, %TORPEDO%- oder %MISSILE%-Aufwertung ausrüsten."
     },
     "Black Squadron Scout": {
       display_name: "Aufklärer der schwarzen Staffel",
@@ -7967,6 +7867,14 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "Pilot der blauen Staffel",
       text: "<i class = flavor_text>Seine schweren Waffensysteme und unverwüstlichen Schilde machen den B-Flügler zu einer der innovativsten Jagdmaschinen der Allianz.</i>"
     },
+    "Blue Squadron Recruit": {
+      display_name: "Rekrut der blauen Staffel",
+      text: "<i class = flavor_text>Überall in der Galaxis wachsen junge Leute mit Geschichten über die Helden des Galaktischen Bürgerkriegs auf. Viele lernen das Fliegen in den Cockpits, in denen ihre Eltern einst das Imperium bekämpften.</i>%LINEBREAK%<strong>Optimierte Gyrostabilisatoren:</strong> Du kannst deinen %SINGLETURRETARC%-Anzeiger nur auf deinen %FRONTARC% oder %REARARC% rotieren. Nachdem du eine Aktion durchgeführt hast, darfst du eine rote %BOOST%- oder eine rote <rotate>-Aktion durchführen."
+    },
+    "Blue Squadron Rookie": {
+      display_name: "Anfängerpilot der blauen Staffel",
+      text: "<i class = flavor_text>Incom-FreiTek setzte bei der Entwicklung des T-70-X-Flüglers auf eine Verbesserung der taktischen Flexibilität des altehrwürdigen T-65-Modells. Sein moderner Droidenport ist mit fast allen gängigen Astromechs kompatibel, und dank seiner modularen Waffenkapseln kann er für jeden Einsatz mit maßgeschneiderter Bewaffnung ausgestattet werden.</i>%LINEBREAK%<strong>Waffenaufhängung:</strong> Du kannst 1&nbsp;%CANNON%-, %TORPEDO%- oder %MISSILE%-Aufwertung ausrüsten."
+    },
     "Blue Squadron Scout": {
       display_name: "Aufklärer der blauen ",
       text: "<i class = flavor_text>Der UT-60D-U-Flügler deckt den Bedarf der Rebellion an schnellen, unverwüstlichen Truppentransportern. Meistens wird er eingesetzt, um Soldaten im Schutz der Dunkelheit oder inmitten eines tobenden Gefechts an ihren Einsatzort zu befördern. </i>"
@@ -7990,6 +7898,10 @@ exportObj.cardLoaders.Deutsch = function() {
     "Braylen Stramm": {
       display_name: "Braylen Stramm",
       text: "Solange du verteidigst oder einen Angriff durchführst, falls du gestresst bist, darfst du bis zu 2&nbsp;deiner Würfel neu werfen."
+    },
+    "Captain Cardinal": {
+      display_name: "Captain Cardinal",
+      text: "Solange ein befreundetes Schiff in Reichweite 1-2 mit niedrigerer Initiative als du verteidigt oder einen Angriff durchführt, falls du mindestens 1&nbsp;%CHARGE% hast, darf jenes Schiff 1&nbsp;%FOCUS%-Ergebnis neu werfen.%LINEBREAK%Nachdem ein feindliches Schiff in Reichweite 0-3 zerstört worden ist, verliere 1&nbsp;%CHARGE%.%LINEBREAK%<strong>Gekoppelte Geschützbatterie:</strong> Solange du einen %CANNON%-Angriff durchführst, wirf 1 zusätzlichen Würfel."
     },
     "Captain Feroph": {
       display_name: "Captain Feroph",
@@ -8019,6 +7931,10 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "Captain Rex",
       text: "Nachdem du einen Angriff durchgeführt hast, ordne dem Verteidiger den Zustand <strong>Sperrfeuer</strong> zu."
     },
+    "Captain Seevor": {
+      display_name: "Captain Seevor",
+      text: "Solange du verteidigst oder einen Angriff durchführst, bevor die Angriffswürfel geworfen werden, falls du nicht im %BULLSEYEARC% des feindlichen Schiffes bist, darfst du 1&nbsp;%CHARGE% ausgeben. Falls du das tust, erhält das feindliche Schiff 1 Störsignalmarker.%LINEBREAK%<strong>Stabilisatorkerbe:</strong> Solange du dich bewegst, ignorierst du Asteroiden."
+    },
     "Cartel Executioner": {
       display_name: "Killer des Kartells",
       text: "<i class = flavor_text>Viele erfahrene Piloten, die im Dienst der huttischen Kajidics und anderer Verbrecherorganisationen stehen, entscheiden sich für den M12-L-Kimogila-Jäger aufgrund seiner beträchtlichen Feuerkraft und seines furchteinflößenden Rufes.</i>%LINEBREAK% <strong>Todsicherer Treffer:</strong> Solange du einen Angriff durchführst, falls der Verteidiger in deinem %BULLSEYEARC% ist, können Verteidigungswürfel nicht unter Verwendung von grünen Markern modifiziert werden."
@@ -8029,11 +7945,15 @@ exportObj.cardLoaders.Deutsch = function() {
     },
     "Cartel Spacer": {
       display_name: "Raumfahrer des Kartells",
-      text: "<i class = flavor_text>Der M3-A-„Scyk“-Abfangjäger von MandalMotors wurde in großer Stückzahl vom Hutt-Kartell und den Car'das-Schmugglern angeschafft. Grund dafür waren der günstige Einstiegspreis und die vielen Ausstattungsoptionen des Jägers. </i>%LINEBREAK%<strong>Waffenaufhängung:</strong> Du kannst 1&nbsp;%CANNON%-,&nbsp;%TORPEDO%- oder %MISSILE%-Aufwertung ausrüsten."
+      text: "<i class = flavor_text>Der M3-A-„Scyk“-Abfangjäger von MandalMotors wurde in großer Stückzahl vom Hutt-Kartell und den Car’das-Schmugglern angeschafft. Grund dafür waren der günstige Einstiegspreis und die vielen Ausstattungsoptionen des Jägers. </i>%LINEBREAK%<strong>Waffenaufhängung:</strong> Du kannst 1&nbsp;%CANNON%-,&nbsp;%TORPEDO%- oder %MISSILE%-Aufwertung ausrüsten."
     },
     "Cassian Andor": {
       display_name: "Cassian Andor",
       text: "Zu Beginn der Aktivierungsphase darfst du 1 befreundetes Schiff in Reichweite 1-3 wählen. Falls du das tust, entfernt jenes Schiff 1 Stressmarker."
+    },
+    "Cat": {
+      display_name: "Cat",
+      text: "While you perform a primary attack, if the defender is at range 0-1 of at least 1&nbsp;friendly device, roll 1 additional die."
     },
     "Cavern Angels Zealot": {
       display_name: "Fanatiker der Sturmengel",
@@ -8043,6 +7963,14 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "Chewbacca",
       text: "Bevor dir eine offene Schadenskarte zugeteilt werden würde, darfst du 1&nbsp;%CHARGE% ausgeben, um die Karte stattdessen verdeckt zugeteilt zu bekommen."
     },
+    "Chewbacca (Resistance)": {
+      display_name: "Chewbacca (Resistance)",
+      text: "Nachdem ein befreundetes Schiff in Reichweite 0-3 zerstört worden ist, darfst du eine Aktion durchführen. Dann darfst du einen Bonusangriff durchführen."
+    },
+    "Cobalt Squadron Bomber": {
+      display_name: "Bomber der Kobalt-Staffel",
+      text: "<i class = flavor_text>Egal ob sie Protonenbomben oder Hilfsgüter in den Abwurfsilos ihrer SternenFestungen geladen haben, die Helden der Kobalt-Staffel sind stets bereit, ihr Leben zu riskieren, um die Galaxis zu einem besseren Ort zu machen.</i>"
+    },
     "Colonel Jendon": {
       display_name: "Colonel Jendon",
       text: "Zu Beginn der Aktivierungsphase darfst du 1&nbsp;%CHARGE% ausgeben. Falls du das tust, <b>müssen</b> befreundete Schiffe, solange sie in dieser Runde Ziele erfassen, Ziele jenseits von Reichweite 3 erfassen, anstatt in Reichweite 0-3."
@@ -8050,6 +7978,10 @@ exportObj.cardLoaders.Deutsch = function() {
     "Colonel Vessery": {
       display_name: "Colonel Vessery",
       text: "Solange du einen Angriff gegen ein erfasstes Schiff durchführst, nachdem du Angriffswürfel geworfen hast, darfst du den Verteidiger als Ziel erfassen.%LINEBREAK%<strong>Vollgas:</strong> Nachdem du ein Manöver mit Geschwindigkeit 3-5 vollständig ausgeführt hast, darfst du eine %EVADE%-Aktion durchführen."
+    },
+    "Commander Malarus": {
+      display_name: "Commander Malarus",
+      text: "Zu Beginn der Kampfphase darfst du 1&nbsp;%CHARGE% ausgeben und 1 Stressmarker erhalten. Falls du das tust, darfst du bis zum Ende der Runde, solange du verteidigst oder einen Angriff durchführst, alle deine %FOCUS%-Ergebnisse in %EVADE%- oder %HIT%-Ergebnisse ändern."
     },
     "Constable Zuvio": {
       display_name: "Constable Zuvio",
@@ -8119,6 +8051,26 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "Emon Azzameen",
       text: "Falls du unter Verwendung der [1&nbsp;%STRAIGHT%]-Schablone ein Gerät abwerfen würdest, darfst du stattdessen die [3&nbsp;%TURNLEFT%]-, [3&nbsp;%STRAIGHT%]-&nbsp;oder [3&nbsp;%TURNRIGHT%]-Schablone verwenden."
     },
+    "Edon Kappehl": {
+      display_name: "Edon Kappehl",
+      text: "Nachdem du ein blaues oder weißes Manöver vollständig ausgeführt hast, falls du in dieser Runde noch kein Gerät abgeworfen oder gestartet hast, darfst du 1 Gerät abwerfen."
+    },
+    "Edrio Two-Tubes": {
+      display_name: "Edrio Two Tubes",
+      text: "Bevor du aktiviert wirst, falls du fokussiert bist, darfst du eine Aktion durchführen."
+    },
+    "Ello Asty": {
+      display_name: "Ello Asty",
+      text: "Nachdem du ein rotes Tallon-Rolle-Manöver [<lefttalon> oder <righttalon>] aufgedeckt hast, falls du 2 oder weniger Stressmarker hast, behandle jenes Manöver, als wäre es weiß.%LINEBREAK%<strong>Waffenaufhängung:</strong> Du kannst 1&nbsp;%CANNON%-, %TORPEDO%- oder %MISSILE%-Aufwertung ausrüsten."
+    },
+    "Emon Azzameen": {
+      display_name: "Emon Azzameen",
+      text: "Falls du unter Verwendung der [1&nbsp;%STRAIGHT%]-Schablone ein Gerät abwerfen würdest, darfst du stattdessen die [3&nbsp;%TURNLEFT%]-, [3&nbsp;%STRAIGHT%]-&nbsp;oder [3&nbsp;%TURNRIGHT%]-Schablone verwenden."
+    },
+    "Epsilon Squadron Cadet": {
+      display_name: "Kadett der Epsilon-Staffel",
+      text: "<i class = flavor_text>Viele Piloten der Ersten Ordnung werden von Kindesbeinen an auf einem Sternenzerstörer der Resurgent-Klasse ausgebildet und haben noch nie in ihrem Leben einen Fuß auf eine Planetenoberfläche gesetzt.</i>"
+    },
     "Esege Tuketu": {
       display_name: "Esege Tuketu",
       text: "Solange ein befreundetes Schiff in Reichweite 0-2 verteidigt oder einen Angriff durchführt, darf es deine Fokusmarker ausgeben, als ob jenes Schiff sie hätte."
@@ -8139,13 +8091,25 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "Ezra Bridger (TIE Fighter)",
       text: "Solange du verteidigst oder einen Angriff durchführst, falls du gestresst bist, darfst du 1&nbsp;%FORCE% ausgeben, um bis zu 2 deiner %FOCUS%-Ergebnisse in %EVADE%- oder %HIT%-Ergebnisse zu ändern."
     },
+    "Fenn Rau (Sheathipede)": {
+      display_name: "Fenn Rau (Sheathipede)",
+      text: "Nachdem ein feindliches Schiff in deinem Feuerwinkel begonnen hat zu kämpfen, falls du nicht gestresst bist, darfst du 1 Stressmarker erhalten. Falls du das tust, kann jenes Schiff keine Marker ausgeben, um Würfel zu modifizieren, solange es während dieser Phase einen Angriff durchführt.%LINEBREAK%<strong>Kommunikationsantennen:</strong> Solange du angedockt bist, erhält dein Trägerschiff %COORDINATE%. Bevor dein Trägerschiff aktiviert wird, darf es eine %COORDINATE%-Aktion durchführen."
+    },
     "Fenn Rau": {
       display_name: "Fenn Rau",
       text: "Solange du verteidigst oder einen Angriff durchführst, falls die Angriffsreichweite 1 ist, darfst du 1&nbsp;zusätzlichen Würfel werfen.%LINEBREAK%<strong>Concordianischer Wirbel:</strong> Solange du verteidigst, falls die Angriffsreichweite 1 ist und du im%FRONTARC%&nbsp;des Angreifers bist, ändere 1&nbsp;Ergebnis in ein %EVADE%-Ergebnis."
     },
-    "Fenn Rau (Sheathipede)": {
-      display_name: "Fenn Rau (Sheathipede)",
-      text: "Nachdem ein feindliches Schiff in deinem Feuerwinkel begonnen hat zu kämpfen, falls du nicht gestresst bist, darfst du 1 Stressmarker erhalten. Falls du das tust, kann jenes Schiff keine Marker ausgeben, um Würfel zu modifizieren, solange es während dieser Phase einen Angriff durchführt.%LINEBREAK%<strong>Kommunikationsantennen:</strong> Solange du angedockt bist, erhält dein Trägerschiff %COORDINATE%. Bevor dein Trägerschiff aktiviert wird, darf es eine %COORDINATE%-Aktion durchführen."
+    "Finch Dallow": {
+      display_name: "Finch Dallow",
+      text: "Bevor du eine Bombe abwerfen würdest, darfst du sie stattdessen so auf der Spielfläche platzieren, dass sie dich berührt."
+    },
+    "First Order Test Pilot": {
+      display_name: "Testpilot der Ersten Ordnung",
+      text: "<i class = flavor_text>Extreme Schubkraft und präzises Handling sind die Hauptmerkmale des TIE-Dämpfers, der sein volles Vernichtungspotential nur in den Händen eines wahren Spitzenpiloten entfaltet. Jeder andere wäre schnell überfordert und würde die Kontrolle über das wendige Schiff verlieren.</i>%LINEBREAK%<strong>Automatische Schubdüsen:</strong> Nachdem du eine Aktion durchgeführt hast, darfst du eine rote %BARRELROLL%-Aktion oder eine rote %BOOST%-Aktion durchführen."
+    },
+    "Foreman Proach": {
+      display_name: "Vorarbeiter Proach",
+      text: "Bevor du kämpfst, darfst du 1 feindliches Schiff in deinem %BULLSEYEARC% in Reichweite 1-2 wählen und 1 Entwaffnet-Marker erhalten. Falls du das tust, erhält jenes Schiff 1 Fangstrahlmarker.%LINEBREAK%<strong>Stabilisatorkerbe:</strong> Solange du dich bewegst, ignorierst du Asteroiden."
     },
     "Freighter Captain": {
       display_name: "Frachtercaptain",
@@ -8195,21 +8159,33 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "Graz",
       text: "Solange du verteidigst, falls du hinter dem Angreifer bist, wirf 1&nbsp;zusätzlichen Verteidigungswürfel.%LINEBREAK%Solange du einen Angriff durchführst, falls du hinter dem Angreifer bist, wirf 1&nbsp;zusätzlichen Angriffswürfel."
     },
+    "Green Squadron Expert": {
+      display_name: "Elitepilot der grünen Staffel",
+      text: "<i class = flavor_text>Viele langjährig bewährte Modifikationen wurden in die Serienausstattung des RZ-2 übernommen. Für waghalsige Piloten ist die höhere Stabilität des Jägers nur ein Anreiz, noch weiter an seine Grenzen zu gehen.</i>%LINEBREAK%<strong>Optimierte Gyrostabilisatoren:</strong> Du kannst deinen %SINGLETURRETARC%-Anzeiger nur auf deinen %FRONTARC% oder %REARARC% rotieren. Nachdem du eine Aktion durchgeführt hast, darfst du eine rote %BOOST%- oder eine rote <rotate>-Aktion durchführen."
+    },
     "Green Squadron Pilot": {
       display_name: "Pilot der grünen Staffel",
       text: "<i class = flavor_text>Aufgrund seiner empfindlichen Steuerung und extremen Wendigkeit war das Cockpit des A-Flüglers nur für besonders begabte Piloten bestimmt.</i>%LINEBREAK%<strong>Schwenkbare Schubdüsen:</strong> Nachdem du eine Aktion durchgeführt hast, darfst du eine rote %BOOST%-Aktion durchführen."
+    },
+    "Greer Sonnel": {
+      display_name: "Greer Sonnel",
+      text: "Nachdem du ein Manöver vollständig ausgeführt hast, darfst du deinen %SINGLETURRETARC% rotieren.%LINEBREAK%<strong>Optimierte Gyrostabilisatoren:</strong> Du kannst deinen %SINGLETURRETARC%-Anzeiger nur auf deinen %FRONTARC% oder %REARARC% rotieren. Nachdem du eine Aktion durchgeführt hast, darfst du eine rote %BOOST%- oder eine rote <rotate>-Aktion durchführen."
     },
     "Guri": {
       display_name: "Guri",
       text: "Zu Beginn der Kampfphase, falls mindestens 1 feindliches Schiff in Reichweite 0-1 ist, darfst du 1&nbsp;Fokusmarker erhalten.%LINEBREAK%<strong>Mikrodüsen:</strong> Solange du eine Fassrolle durchführst, <b>musst</b> du die %BANKLEFT%- oder %BANKRIGHT%-Schablone anstatt der %STRAIGHT%-Schablone verwenden."
     },
+    "Han Solo": {
+      display_name: "Han Solo",
+      text: "Nachdem du Würfel geworfen hast, falls du in Reichweite 0-1 eines Hindernisses bist, darfst du alle deine Würfel neu werfen. Dies zählt für alle anderen Effekte nicht als Neuwerfen."
+    },
     "Han Solo (Scum)": {
       display_name: "Han Solo (Scum)",
       text: "Solange du verteidigst oder einen Primärangriff durchführst, falls der Angriff durch ein Hindernis versperrt ist, darfst du 1 zusätzlichen Würfel werfen."
     },
-    "Han Solo": {
-      display_name: "Han Solo",
-      text: "Nachdem du Würfel geworfen hast, falls du in Reichweite 0-1 eines Hindernisses bist, darfst du alle deine Würfel neu werfen. Dies zählt für alle anderen Effekte nicht als Neuwerfen."
+    "Han Solo (Resistance)": {
+      display_name: "Han Solo (Resistance)",
+      text: "<strong>Aufbau:</strong> Du kannst irgendwo auf der Spielfläche jenseits von Reichweite 3 der feindlichen Schiffe platziert werden."
     },
     "Heff Tobber": {
       display_name: "Heff Tobber",
@@ -8279,16 +8255,28 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "Jan Ors",
       text: "Solange ein befreundetes Schiff in deinem Feuerwinkel einen Primärangriff durchführt, falls du nicht gestresst bist, darfst du 1&nbsp;Stressmarker erhalten. Falls du das tust, darf jenes Schiff 1&nbsp;zusätzlichen Angriffswürfel werfen."
     },
+    "Jaycris Tubbs": {
+      display_name: "Jaycris Tubbs",
+      text: "Nachdem du ein blaues Manöver vollständig ausgeführt hast, darfst du ein befreundetes Schiff in Reichweite 0-1 wählen. Falls du das tust, entfernt jenes Schiff 1 Stressmarker.%LINEBREAK%<strong>Waffenaufhängung:</strong> Du kannst 1&nbsp;%CANNON%-, %TORPEDO%- oder %MISSILE%-Aufwertung ausrüsten."
+    },
     "Jek Porkins": {
       display_name: "Jek Porkins",
       text: "Nachdem du einen Stressmarker bekommen hast, darfst du 1&nbsp;Angriffswürfel werfen, um ihn zu entfernen. Bei einem %HIT%-Ergebnis erleide 1&nbsp;%HIT%-Schaden."
+    },
+    "Jessika Pava": {
+      display_name: "Jessika Pava",
+      text: "Solange du verteidigst oder einen Angriff durchführst, darfst du 1&nbsp;%CHARGE% oder 1 nicht-wiederkehrende&nbsp;%CHARGE% von deiner ausgerüsteten %ASTROMECH%-Aufwertung ausgeben, um für jedes andere befreundete Schiff in Reichweite 0-1 bis zu 1&nbsp;deiner Würfel neu zu werfen.%LINEBREAK%<strong>Waffenaufhängung:</strong> Du kannst 1&nbsp;%CANNON%-, %TORPEDO%- oder %MISSILE%-Aufwertung ausrüsten."
+    },
+    "Joph Seastriker": {
+      display_name: "Joph Seastriker",
+      text: "Nachdem du 1 Schild verloren hast, erhalte 1 Ausweichmarker.%LINEBREAK%<strong>Waffenaufhängung:</strong> Du kannst 1&nbsp;%CANNON%-, %TORPEDO%- oder %MISSILE%-Aufwertung ausrüsten."
     },
     "Joy Rekkoff": {
       display_name: "Joy Rekkoff",
       text: "Solange du einen Angriff durchführst, darfst du 1&nbsp;%CHARGE% von einer ausgerüsteten %TORPEDO%-Aufwertung ausgeben. Falls du das tust, wirft der Verteidiger 1&nbsp;Verteidigungswürfel weniger.%LINEBREAK%<strong>Concordianischer Wirbel:</strong> Solange du verteidigst, falls die Angriffsreichweite 1 ist und du im %FRONTARC% des Angreifers bist, ändere 1&nbsp;Ergebnis in ein %EVADE%-Ergebnis."
     },
     "Kaa'to Leeachos": {
-      display_name: "Kaa'to Leeachos",
+      display_name: "Kaa’to Leeachos",
       text: "Zu Beginn der Kampfphase darfst du 1&nbsp;befreundetes Schiff in Reichweite 0-2 wählen. Falls du das tust, transferiere 1&nbsp;Fokus- oder Ausweichmarker von jenem Schiff auf dich selbst."
     },
     "Kad Solus": {
@@ -8298,6 +8286,10 @@ exportObj.cardLoaders.Deutsch = function() {
     "Kanan Jarrus": {
       display_name: "Kanan Jarrus",
       text: "Solange ein befreundetes Schiff in deinem Feuerwinkel verteidigt, darfst du 1&nbsp;%FORCE% ausgeben. Falls du das tust, wirft der Angreifer 1 Angriffswürfel weniger.%LINEBREAK%<strong>Heckgeschütz:</strong> Solange du ein angedocktes Schiff hast, hast du eine %REARARC%-Primärwaffe mit einem Angriffswert in Höhe des Angriffswertes der %FRONTARC%-Primärwaffe deines angedockten Schiffes."
+    },
+    "Kare Kun": {
+      display_name: "Kare Kun",
+      text: "Solange du Schub gibst, darfst du stattdessen die [1 %TURNLEFT%]- oder [1 %TURNRIGHT%]-Schablone verwenden.%LINEBREAK%<strong>Waffenaufhängung:</strong> Du kannst 1&nbsp;%CANNON%-, %TORPEDO%- oder %MISSILE%-Aufwertung ausrüsten."
     },
     "Kashyyyk Defender": {
       display_name: "Verteidiger von Kashyyyk",
@@ -8335,6 +8327,10 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "Kyle Katarn",
       text: "Zu Beginn der Kampfphase darfst du 1 deiner Fokusmarker auf ein&nbsp;befreundetes Schiff in deinem Feuerwinkel transferieren."
     },
+    "Kylo Ren": {
+      display_name: "Kylo Ren",
+      text: "Nachdem du verteidigt hast, darfst du 1&nbsp;%FORCE% ausgeben, um dem Angreifer den Zustand <strong>Ich zeige dir die dunkle Seite</strong> zuzuordnen.%LINEBREAK%<strong>Automatische Schubdüsen:</strong> Nachdem du eine Aktion durchgeführt hast, darfst du eine rote %BARRELROLL%-Aktion oder eine rote %BOOST%-Aktion durchführen."
+    },
     "L3-37": {
       display_name: "L3-37",
       text: "Falls du keine Schilde hast, verringere die Schwierigkeit deiner Drehmanöver (%BANKLEFT% und %BANKRIGHT%) ."
@@ -8344,7 +8340,7 @@ exportObj.cardLoaders.Deutsch = function() {
       text: "Falls du keine Schilde hast, verringere die Schwierigkeit deiner Drehmanöver (%BANKLEFT% und %BANKRIGHT%) .%LINEBREAK%<strong>Co-Pilot:</strong> Solange du angedockt bist, hat dein Träger-Schiff deine Piloten-Fähigkeit zusätzlich zu seiner eigenen."
     },
     "Laetin A'shera": {
-      display_name: "Laetin A'shera",
+      display_name: "Laetin A’shera",
       text: "Nachdem du verteidigt oder einen Angriff durchgeführt hast, falls der Angriff verfehlt hat, erhalte 1 Ausweichmarker.%LINEBREAK%<strong>Waffenaufhängung:</strong> Du kannst 1&nbsp;%CANNON%-,&nbsp;%TORPEDO%- oder %MISSILE%-Aufwertung ausrüsten."
     },
     "Lando Calrissian": {
@@ -8371,6 +8367,18 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "Lieutenant Blount",
       text: "Solange du einen Primärangriff durchführst, falls mindestens 1 anderes befreundetes Schiff in Reichweite 0-1 des Verteidigers ist, darfst du 1 zusätzlichen Angriffswürfel werfen."
     },
+    "Lieutenant Bastian": {
+      display_name: "Lieutenant Bastian",
+      text: "Nachdem einem Schiff in Reichweite 1-2 eine Schadenskarte zugeteilt worden ist, darfst du jenes Schiff als Ziel erfassen.%LINEBREAK%<strong>Waffenaufhängung:</strong> Du kannst 1&nbsp;%CANNON%-, %TORPEDO%- oder %MISSILE%-Aufwertung ausrüsten."
+    },
+    "Lieutenant Blount": {
+      display_name: "Lieutenant Blount",
+      text: "Solange du einen Primärangriff durchführst, falls mindestens 1 anderes befreundetes Schiff in Reichweite 0-1 des Verteidigers ist, darfst du 1 zusätzlichen Angriffswürfel werfen."
+    },
+    "Lieutenant Dormitz": {
+      display_name: "Lieutenant Dormitz",
+      text: "<strong>Aufbau</strong>: Nachdem du platziert worden bist, können andere befreundete Schiffe irgendwo auf der Spielfläche in Reichweite 0-2 von dir platziert werden.%LINEBREAK%<strong>Gekoppelte Geschützbatterie:</strong> Solange du einen %CANNON%-Angriff durchführst, wirf 1&nbsp;zusätzlichen Würfel."
+    },
     "Lieutenant Karsabi": {
       display_name: "Lieutenant Karsabi",
       text: "Nachdem du einen Entwaffnet-Marker erhalten hast, falls du nicht gestresst bist, darfst du 1 Stressmarker erhalten, um 1 Entwaffnet-Marker zu entfernen."
@@ -8379,9 +8387,17 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "Lieutenant Kestal",
       text: "Solange du einen Angriff durchführst, nachdem der Verteidiger Verteidigungswürfel geworfen hat, darfst du 1&nbsp;Fokusmarker ausgeben, um alle Leerseiten/%FOCUS%-Ergebnisse des Verteidigers zu negieren."
     },
+    "Lieutenant Rivas": {
+      display_name: "Lieutenant Rivas",
+      text: "Nachdem ein Schiff in Reichweite 1-2 einen roten oder orangefarbenen Marker erhalten hat, falls du jenes Schiff nicht als Ziel erfasst hast, darfst du jenes Schiff als Ziel erfassen."
+    },
     "Lieutenant Sai": {
       display_name: "Lieutenant Sai",
       text: "Nachdem du eine %COORDINATE%-Aktion durchgeführt hast, falls das von dir gewählte Schiff eine Aktion aus deiner Aktionsleiste durchgeführt hat, darfst du jene Aktion durchführen."
+    },
+    "Lieutenant Tavson": {
+      display_name: "Lieutenant Tavson",
+      text: "Nachdem du Schaden erlitten hast, darfst du 1&nbsp;%CHARGE% ausgeben, um eine Aktion durchzuführen.%LINEBREAK%<strong>Gekoppelte Geschützbatterie:</strong> Solange du einen %CANNON%-Angriff durchführst, wirf 1&nbsp;zusätzlichen Würfel."
     },
     "Lok Revenant": {
       display_name: "Lok-Pirat",
@@ -8399,6 +8415,10 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "Luke Skywalker",
       text: "Nachdem du zum Verteidiger geworden bist (bevor Würfel geworfen werden), darfst du 1&nbsp;%FORCE% wiederherstellen."
     },
+    "L'ulo L'ampar": {
+      display_name: "L’ulo L’ampar",
+      text: "Solange du verteidigst oder einen Primärangriff durchführst, falls du gestresst bist, <b>musst</b> du 1&nbsp;Verteidigungswürfel weniger oder 1&nbsp;zusätzlichen Angriffswürfel werfen.%LINEBREAK%<strong>Optimierte Gyrostabilisatoren:</strong> Du kannst deinen %SINGLETURRETARC%-Anzeiger nur auf deinen %FRONTARC% oder %REARARC% rotieren. Nachdem du eine Aktion durchgeführt hast, darfst du eine rote %BOOST%- oder eine rote <rotate>-Aktion durchführen."
+    },
     "Maarek Stele": {
       display_name: "Maarek Stele",
       text: "Solange du einen Angriff durchführst, falls dem Verteidiger eine offene Scha­dens­karte zugeteilt werden würde, ziehe stattdessen 3 Schadenskarten, wähle 1&nbsp;und lege die übrigen ab.%LINEBREAK%<strong>Verbesserter Zielcomputer:</strong> Solange du einen Primärangriff gegen einen Ver­tei­diger durchführst, den du als Ziel erfasst hast, wirf 1&nbsp;zusätzlichen An­griffs­würfel und ändere 1&nbsp;%HIT%-Ergebnis in ein %CRIT%-Ergebnis."
@@ -8410,6 +8430,10 @@ exportObj.cardLoaders.Deutsch = function() {
     "Major Rhymer": {
       display_name: "Major Rhymer",
       text: "Solange du einen %TORPEDO%- oder %MISSILE%-Angriff durchführst, darfst du die Reichweitenbedingung um 1 erhöhen oder verringern, bis zu einem Limit von 0-3. %LINEBREAK%<strong>Wendiger Bomber:</strong> Falls du unter Verwendung einer %STRAIGHT%-Schablone ein Gerät abwerfen würdest, darfst du stattdessen eine %BANKLEFT%- oder %BANKRIGHT%-Schablone derselben Geschwindigkeit verwenden."
+    },
+    "Major Stridan": {
+      display_name: "Major Stridan",
+      text: "Solange du koordinierst oder den Effekt 1&nbsp;deiner Aufwertungen abhandelst, darfst du befreundete Schiffe in Reichweite 2-3 behandeln, als wären sie in Reichweite 0 oder Reichweite 1.%LINEBREAK%<strong>Gekoppelte Geschützbatterie:</strong> Solange du einen %CANNON%-Angriff durchführst, wirf 1&nbsp;zusätzlichen Würfel."
     },
     "Major Vermeil": {
       display_name: "Major Vermeil",
@@ -8423,6 +8447,14 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "Manaroo",
       text: "Zu Beginn der Kampfphase darfst du ein befreundetes Schiff in Reichweite 0-1 wählen. Falls du das tust, transferiere alle grünen Marker, die dir zugeordnet sind, auf jenes Schiff."
     },
+    "Mining Guild Sentry": {
+      display_name: "Wachposten der Minengilde",
+      text: "<i class = flavor_text>Im Rahmen ihrer Kooperation mit dem Imperium erhält die Minengilde modifizierte TIE/ln-Jäger zum Schutz ihrer Anlagen. Aus den Stabilisatoren  dieser Schiffe wurden Solarzellen entfernt, um das Sichtfeld des Piloten zu vergrößern. Darüber hinaus profitieren die Firmenpiloten von einem deutlich umfangreicheren Lebenserhaltungssystem. </i>%LINEBREAK%<strong>Stabilisatorkerbe:</strong> Solange du dich bewegst, ignorierst du Asteroiden."
+    },
+    "Mining Guild Surveyor": {
+      display_name: "Rohstoffsucher der Minengilde",
+      text: "<i class = flavor_text>Da die Bauprojekte des Imperiums unglaubliche Mengen an Rohmaterial verschlingen, sucht die Minengilde aggressiv nach Vorkommen von Doonium-Erz und beutet neu entdeckte Adern auf Batonn, Lothal und Umbara gnadenlos aus.</i>%LINEBREAK%<strong>Stabilisatorkerbe:</strong> Solange du dich bewegst, ignorierst du Asteroiden."
+    },
     "Miranda Doni": {
       display_name: "Miranda Doni",
       text: "Solange du einen Primärangriff durchführst, darfst du entweder 1&nbsp;Schild ausgeben, um 1 zusätzlichen Angriffswürfel zu werfen, oder, falls du keine Schilde hast, du darfst 1&nbsp;Angriffswürfel weniger werfen, um 1&nbsp;Schild wiederherzustellen."
@@ -8430,6 +8462,10 @@ exportObj.cardLoaders.Deutsch = function() {
     "Moralo Eval": {
       display_name: "Moralo Eval",
       text: "Falls du fliehen würdest, darfst du 1&nbsp;%CHARGE%&nbsp;ausgeben. Falls du das tust, platziere dich selbst stattdessen in der Reserve. Zu Beginn der nächsten Planungsphase platziere dich selbst innerhalb von Reichweite 1 des Spielflächenrandes, über den du geflohen bist."
+    },
+    "Nien Nunb": {
+      display_name: "Nien Nunb",
+      text: "Nachdem du einen Stressmarker erhalten hast, falls ein feindliches Schiff in deinem %FRONTARC% in Reichweite 0-1 ist, darfst du jenen Stressmarker entfernen.%LINEBREAK%<strong>Waffenaufhängung:</strong> Du kannst 1&nbsp;%CANNON%-, %TORPEDO%- oder %MISSILE%-Aufwertung ausrüsten."
     },
     "Norra Wexley (Y-Wing)": {
       display_name: "Norra Wexley (Y-Wing)",
@@ -8444,7 +8480,7 @@ exportObj.cardLoaders.Deutsch = function() {
       text: "<i class = flavor_text>Inspiriert von anderen Modellen der Cygnus Raumwerften, ist der Sternflügler der Alpha-Klasse ein vielseitiges Kanonenboot, das für verschiedene Einsatzgebiete umgerüstet werden kann und somit ideal für die Spezialeinheiten der Imperialen Flotte ist.</i>"
     },
     "N'dru Suhlak": {
-      display_name: "N'dru Suhlak",
+      display_name: "N’dru Suhlak",
       text: "Solange du einen Primärangriff durchführst, falls keine anderen befreundeten Schiffe in Reichweite 0-2 sind, wirf 1 zusätzlichen Angriffswürfel."
     },
     "Obsidian Squadron Pilot": {
@@ -8454,6 +8490,14 @@ exportObj.cardLoaders.Deutsch = function() {
     "Old Teroch": {
       display_name: "Der alte Teroch",
       text: "Zu Beginn der Kampfphase darfst du 1&nbsp;feindliches Schiff in Reichweite 1 wählen. Falls du das tust und du in seinem %FRONTARC% bist, entfernt es alle seine grünen Marker.%LINEBREAK%<strong>Concordianischer Wirbel:</strong> Solange du verteidigst, falls die Angriffsreichweite 1 ist und du im %FRONTARC% des Angreifers bist, ändere 1&nbsp;Ergebnis in ein %EVADE%-Ergebnis."
+    },
+    "Omega Squadron Ace": {
+      display_name: "Fliegerass der Omega-Staffel",
+      text: "<i class = flavor_text>Nur die fähigsten und loyalsten Piloten der Ersten Ordnung dienen in den geheimen Staffeln, die im Schatten des Kalten Krieges verdeckte Operationen gegen die Neue Republik durchführen.</i>"
+    },
+    "Omega Squadron Expert": {
+      display_name: "Elitepilot der Omega-Staffel",
+      text: "<i class = flavor_text>Der TIE/se ist ein vielseitiger Jäger, der mit seinen spezialisierten Waffen und Bordsystemen bestens für die Einsätze der Spezialeinheiten ausgerüstet ist.</i>%LINEBREAK%<strong>Schwerer Geschützturm:</strong> Du kannst deinen %SINGLETURRETARC%-Anzeiger nur auf deinen %FRONTARC% oder %REARARC% rotieren. Du <b>musst</b> die %FRONTARC%-Voraussetzung deiner ausgerüsteten %MISSILE%-Aufwertungen behandeln, als wäre sie %SINGLETURRETARC%."
     },
     "Omicron Group Pilot": {
       display_name: "Pilot der Omicron-Gruppe",
@@ -8475,6 +8519,10 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "Schmuggler aus dem ",
       text: "<i class = flavor_text>Mit seiner robusten Bauweise und modularen Konstruktion gehört der YT-1300 zu den beliebtesten, weitverbreitetsten und am stärksten modifizierten Raumfrachtern der Galaxis. </i>"
     },
+    "Overseer Yushyn": {
+      display_name: "Raffineriebetreiber Yushyn",
+      text: "Bevor ein befreundetes Schiff in Reichweite 1 einen Entwaffnet-Marker erhalten würde, falls jenes Schiff nicht gestresst ist, darfst du 1&nbsp;%CHARGE% ausgeben. Falls du das tust, erhält jenes Schiff stattdessen 1 Stressmarker.%LINEBREAK%<strong>Stabilisatorkerbe:</strong> Solange du dich bewegst, ignorierst du Asteroiden."
+    },
     "Palob Godalhi": {
       display_name: "Palob Godalhi",
       text: "Zu Beginn der Kampfphase darfst du 1 feindliches Schiff in deinem Feuerwinkel in Reichweite 0-2 wählen. Falls du das tust, transferiere 1 Fokus- oder Ausweichmarker von jenem Schiff auf dich selbst."
@@ -8487,6 +8535,10 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "Patrouillenführer",
       text: "<i class = flavor_text>Das Kommando über einen VT-49-Decimator zu erhalten, gilt unter imperialen Flottenoffizieren der mittleren Rangebenen als äußerst erstrebenswertes Ziel.</i>"
     },
+    "Petty Officer Thanisson": {
+      display_name: "Unteroffizier Thanisson",
+      text: "Während der Aktivierungs- oder Kampfphase, nachdem ein Schiff in deinem %FRONTARC% in Reichweite 0-2 1 Stressmarker erhalten hat, darfst du 1&nbsp;%CHARGE% ausgeben. Falls du das tust, erhält jenes Schiff 1 Fangstrahlmarker.%LINEBREAK%<strong>Gekoppelte Geschützbatterie:</strong> Solange du einen %CANNON%-Angriff durchführst, wirf 1&nbsp;zusätzlichen Würfel."
+    },
     "Phoenix Squadron Pilot": {
       display_name: "Pilot der Phönix-Staffel",
       text: "<i class = flavor_text>Unter der Führung von Commander Jun Sato stellen sich die tapferen, aber unerfahrenen Piloten der Phönix-Staffel dem aussichtslosen Kampf gegen das Galaktische Imperium.</i>%LINEBREAK%<strong>Schwenkbare Schubdüsen:</strong> Nachdem du eine Aktion durchgeführt hast, darfst du eine rote %BOOST%-Aktion durchführen."
@@ -8494,6 +8546,10 @@ exportObj.cardLoaders.Deutsch = function() {
     "Planetary Sentinel": {
       display_name: "Planetarer Wachposten",
       text: "<i class = flavor_text>Zum Schutz seiner vielen militärischen Einrichtungen benötigt das Imperium eine mobile und wachsame Verteidigungsstreitmacht.</i>%LINEBREAK% <strong>Adaptive Querruder:</strong> Bevor du dein Rad aufdeckst, falls du nicht gestresst bist, <b>musst</b> du ein weißes [1&nbsp;%BANKLEFT%]-, [1&nbsp;%STRAIGHT%]- oder [1&nbsp;%BANKRIGHT%]-Manöver ausführen."
+    },
+    "Poe Dameron": {
+      display_name: "Poe Dameron",
+      text: "Nachdem du eine Aktion durchgeführt hast, darfst du 1&nbsp;%CHARGE% ausgeben, um eine weiße Aktion durchzuführen, wobei du sie behandelst, als wäre sie rot.%LINEBREAK%<strong>Waffenaufhängung:</strong> Du kannst 1&nbsp;%CANNON%-, %TORPEDO%- oder %MISSILE%-Aufwertung ausrüsten."
     },
     "Prince Xizor": {
       display_name: "Prinz Xizor",
@@ -8511,13 +8567,25 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "Rebellen-Aufklärer",
       text: "<i class = flavor_text>Ein Vogel mit ausgebreiteten Schwingen diente der Corellianischen Ingenieursgesellschaft als Vorbild für das Design der „Hawk“-Serie, einer Reihe von erstklassigen Transportschiffen. Der flinke und robuste HWK-290 wird oft von Rebellenagenten als mobile Operationsbasis eingesetzt.</i>"
     },
+    "Red Squadron Expert": {
+      display_name: "Elitepilot der roten Staffel",
+      text: "<i class = flavor_text>Hauptsächlich besteht das Sternenjägerkorps des Widerstands aus jungen Bürgern der Neuen Republik. Verstärkt werden sie von Veteranen des Galaktischen Bürgerkriegs, die fest entschlossen sind, zu beenden, was damals begonnen wurde.</i>%LINEBREAK%<strong>Waffenaufhängung:</strong> Du kannst 1&nbsp;%CANNON%-, %TORPEDO%- oder %MISSILE%-Aufwertung ausrüsten."
+    },
     "Red Squadron Veteran": {
       display_name: "Veteran der roten Staffel",
       text: "<i class = flavor_text>Die rote Staffel wurde als Elite-Jägerverband gegründet und zählt einige der besten Piloten der Allianz zu ihren Mitgliedern.</i>"
     },
+    "Resistance Sympathizer": {
+      display_name: "Sympathisant des Widerstands",
+      text: "<i class = flavor_text>Nach der Zerstörung des Hosnian-Systems stellten viele Raumfahrer bereitwillig ihre Schiffe dem Widerstand zur Verfügung.</i>"
+    },
     "Rexler Brath": {
       display_name: "Rexler Brath",
       text: "Nachdem du einen Angriff durchgeführt hast, der getroffen hat, falls du ausweichst, lege 1 der Schadenskarten des Verteidigers offen.%LINEBREAK%<strong>Vollgas:</strong> Nachdem du ein Manöver mit Geschwindigkeit 3-5 vollständig ausgeführt hast, darfst du eine %EVADE%-Aktion durchführen."
+    },
+    "Rey": {
+      display_name: "Rey",
+      text: "Solange du verteidigst oder einen Angriff durchführst, falls das feindliche Schiff in deinem %FRONTARC% ist, darfst du 1&nbsp;%FORCE% ausgeben, um 1 deiner Leerseiten-Ergebnisse in ein %EVADE%- oder %HIT%-Ergebnis zu ändern."
     },
     "Rho Squadron Pilot": {
       display_name: "Pilot der Rho-Staffel",
@@ -8587,6 +8655,10 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "Experte von Sienar",
       text: "<i class = flavor_text>Bei der Entwicklung des TIE-Aggressors setzte Sienar Flottensysteme mehr auf Vielseitigkeit und Leistung als auf reine Kosteneffizienz.</i>"
     },
+    "Sienar-Jaemus Engineer": {
+      display_name: "Ingenieur von Sienar-Jaemus",
+      text: "<i class = flavor_text>In einer geheimen Forschungseinrichtung in den Unbekannten Regionen entwickelte Sienar-Jaemus Flottensysteme einen Nachfolger des vielgerühmten TIE-Abwehrjägers, den hochmodernen TIE-Dämpfer.</i>%LINEBREAK%<strong>Automatische Schubdüsen:</strong> Nachdem du eine Aktion durchgeführt hast, darfst du eine rote %BARRELROLL%-Aktion oder eine rote %BOOST%-Aktion durchführen."
+    },
     "Sigma Squadron Ace": {
       display_name: "Fliegerass der Sigma-Staffel",
       text: "<i class = flavor_text>Der TIE-Phantom ist nicht nur mit Schilden und einem Hyperantrieb, sondern auch mit fünf Laserkanonen ausgestattet, was ihn zu einem der schlagkräftigsten Jäger des Imperiums macht.</i>%LINEBREAK%<strong>Stygium-Gitter:</strong> Nachdem du dich enttarnt hast, darfst du eine %EVADE%-Aktion durchführen. Zu Beginn der Endphase darfst du 1 Ausweichmarker ausgeben, um 1 Tarnungsmarker zu erhalten."
@@ -8607,6 +8679,10 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "Spiceschmuggler",
       text: "<i class = flavor_text>Trotz seines vergleichsweise kleinen Laderaums ist der HWK-290 ein beliebtes Modell unter Schmugglern, die sich auf den diskreten Transport von hochwertigen Gütern spezialisiert haben.</i>"
     },
+    "Starkiller Base Pilot": {
+      display_name: "Pilot der Starkiller-Basis",
+      text: "<i class = flavor_text>Das Kommandoshuttle der Ypsilon-Klasse dient als mobile Einsatzbasis für viele leitende Offiziere und Agenten der Ersten Ordnung. Sie nutzen seine leistungsstarken Sensoren und Kommunikationsanlagen, um die Verbreitung von Angst und Schrecken in der Galaxis zu koordinieren.</i>%LINEBREAK%<strong>Gekoppelte Geschützbatterie:</strong> Solange du einen %CANNON%-Angriff durchführst, wirf 1&nbsp;zusätzlichen Würfel."
+    },
     "Storm Squadron Ace": {
       display_name: "Fliegerass der Storm-Staffel",
       text: "<i class = flavor_text>Der TIE-x1-Turbojäger wurde nur in geringer Stückzahl produziert, dafür wurden viele seiner Innovationen bei der Entwicklung von Sienars nächstem TIE-Modell, dem TIE-Abfangjäger, übernommen.</i>%LINEBREAK%<strong>Verbesserter Zielcomputer:</strong> Solange du einen Primärangriff gegen einen Verteidiger durchführst, den du als Ziel erfasst hast, wirf 1 zusätzlichen Angriffswürfel und ändere 1&nbsp;%HIT%-Ergebnis in ein %CRIT%-Ergebnis."
@@ -8615,9 +8691,17 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "Sunny Bounder",
       text: "Solange du verteidigst oder einen Angriff durchführst, nachdem du deine Würfel geworfen oder neu geworfen hast, falls du auf jedem deiner Würfel dasselbe Ergebnis hast, darfst du 1&nbsp;passendes Ergebnis hinzufügen.%LINEBREAK%<strong>Waffenaufhängung:</strong> Du kannst 1&nbsp;%CANNON%-,&nbsp;%TORPEDO%- oder %MISSILE%-Aufwertung ausrüsten."
     },
+    "TN-3465": {
+      display_name: "TN-3465",
+      text: "Solange ein anderes befreundetes Schiff einen Angriff durchführt, falls du in Reichweite 0-1 des Verteidigers bist, darfst du 1&nbsp;%CRIT%-Schaden erleiden, um 1 der Ergebnisse des Angreifers in ein %CRIT%-Ergebnis zu ändern."
+    },
     "Tala Squadron Pilot": {
       display_name: "Pilot der Tala-Staffel",
       text: "<i class = flavor_text>Die AF4-Serie ist das jüngste Modell der bewährten Kopfjäger-Produktreihe, die mit ihrem günstigen Preis und ihrer robusten Bauweise zu den Favoriten vieler unabhängiger Organisationen wie der Rebellion gehört.</i>"
+    },
+    "Tallissan Lintra": {
+      display_name: "Tallissan Lintra",
+      text: "Solange ein feindliches Schiff in deinem %BULLSEYEARC% einen Angriff durchführt, darfst du 1&nbsp;%CHARGE% ausgeben. Falls du das tust, wirft der Verteidiger 1 zusätzlichen Würfel.%LINEBREAK%<strong>Optimierte Gyrostabilisatoren:</strong> Du kannst deinen %SINGLETURRETARC%-Anzeiger nur auf deinen %FRONTARC% oder %REARARC% rotieren. Nachdem du eine Aktion durchgeführt hast, darfst du eine rote %BOOST%- oder eine rote <rotate>-Aktion durchführen."
     },
     "Talonbane Cobra": {
       display_name: "Talonbane Cobra",
@@ -8625,11 +8709,15 @@ exportObj.cardLoaders.Deutsch = function() {
     },
     "Tansarii Point Veteran": {
       display_name: "Veteran von Tansarii ",
-      text: "<i class = flavor_text>Mit dem Abschuss von Talonbane Cobra, einem Spitzenpiloten der Schwarzen Sonne, entschieden die Car'das-Schmuggler die Schlacht um Tansarii Point für sich. Bis heute sind die Veteranen dieses Scharmützels im ganzen Sektor hochangesehen. </i>%LINEBREAK%<strong>Waffenaufhängung:</strong> Du kannst 1&nbsp;%CANNON%-,&nbsp;%TORPEDO%- oder %MISSILE%-Aufwertung ausrüsten."
+      text: "<i class = flavor_text>Mit dem Abschuss von Talonbane Cobra, einem Spitzenpiloten der Schwarzen Sonne, entschieden die Car’das-Schmuggler die Schlacht um Tansarii Point für sich. Bis heute sind die Veteranen dieses Scharmützels im ganzen Sektor hochangesehen. </i>%LINEBREAK%<strong>Waffenaufhängung:</strong> Du kannst 1&nbsp;%CANNON%-,&nbsp;%TORPEDO%- oder %MISSILE%-Aufwertung ausrüsten."
     },
     "Tel Trevura": {
       display_name: "Tel Trevura",
       text: "Falls du zerstört werden würdest, darfst du 1&nbsp;%CHARGE% ausgeben. Falls du das tust, lege stattdessen alle deine Schadenskarten ab, erleide 5&nbsp;%HIT%-Schaden und platziere dich selbst in der Reserve. Zu Beginn der nächsten Planungsphase platziere dich selbst innerhalb von Reichweite 1 deines Spielflächenrandes."
+    },
+    "Temmin Wexley": {
+      display_name: "Temmin Wexley",
+      text: "Nachdem du ein Manöver mit Geschwindigkeit 2-4 vollständig ausgeführt hast, darfst du eine %BOOST%-Aktion durchführen.%LINEBREAK%<strong>Waffenaufhängung:</strong> Du kannst 1&nbsp;%CANNON%-, %TORPEDO%- oder %MISSILE%-Aufwertung ausrüsten."
     },
     "Tempest Squadron Pilot": {
       display_name: "Pilot der Tornado-Staffel",
@@ -8675,6 +8763,10 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "Ved Foslo",
       text: "Solange du ein Manöver ausführst, darfst du stattdessen ein Manöver derselben Flugrichtung und Schwierigkeit, aber einer um 1 höheren oder niedrigeren Geschwindigkeit ausführen.%LINEBREAK%<strong>Verbesserter Zielcomputer:</strong> Solange du einen Primärangriff gegen einen Verteidiger durchführst, den du als Ziel erfasst hast, wirf 1 zusätzlichen Angriffswürfel und ändere 1&nbsp;%HIT%-Ergebnis in ein %CRIT%-Ergebnis."
     },
+    "Vennie": {
+      display_name: "Vennie",
+      text: "Solange du verteidigst, falls der Angreifer im %SINGLETURRETARC% eines befreundeten Schiffes ist, darfst du 1 %FOCUS%-Ergebnis zu deinen Würfelergebnissen hinzufügen."
+    },
     "Viktor Hel": {
       display_name: "Viktor Hel",
       text: "Nachdem du verteidigt hast, falls du nicht genau 2 Verteidigungswürfel geworfen hast, erhält der Angreifer 1 Stressmarker."
@@ -8695,6 +8787,10 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "Lowhhrick",
       text: "Nachdem ein befreundetes Schiff in Reichweite 0-1 zum Verteidiger geworden ist, darfst du 1 Verstärkungsmarker ausgeben. Falls du das tust, erhält jenes Schiff 1 Ausweichmarker."
     },
+    "Zari Bangel": {
+      display_name: "Zari Bangel",
+      text: "Du überspringst deinen Schritt „Aktion durchführen“ nicht, nachdem du ein Manöver teilweise ausgeführt hast.%LINEBREAK%<strong>Optimierte Gyrostabilisatoren:</strong> Du kannst deinen %SINGLETURRETARC%-Anzeiger nur auf deinen %FRONTARC% oder %REARARC% rotieren. Nachdem du eine Aktion durchgeführt hast, darfst du eine rote %BOOST%- oder eine rote <rotate>-Aktion durchführen."
+    },
     "Zealous Recruit": {
       display_name: "Fanatischer Rekrut",
       text: "<i class = flavor_text>Jeder Pilot eines mandalorianischen Fangjägers beherrscht den Concordianischen Wirbel, ein Manöver, bei dem das schmale Profil des Jägers für einen tödlichen Frontalangriff genutzt wird. </i>%LINEBREAK% <strong>Concordianischer Wirbel:</strong> Solange du verteidigst, falls die Angriffsreichweite 1 ist und du im %FRONTARC% des Angreifers bist, ändere 1&nbsp;Ergebnis in ein %EVADE%-Ergebnis."
@@ -8706,6 +8802,30 @@ exportObj.cardLoaders.Deutsch = function() {
     "Zuckuss": {
       display_name: "Zuckuss",
       text: "Solange du einen Primärangriff durchführst, darfst du 1 zusätzlichen Angriffswürfel werfen. Falls du das tust, wirft der Verteidiger 1&nbsp;zusätzlichen Verteidigungswürfel."
+    },
+    "Zeta Squadron Pilot": {
+      display_name: "Pilot der Zeta-Staffel",
+      text: "<i class = flavor_text>Frei von den Hürden der galaktischen Bürokratie kann die Erste Ordnung Technologien, die ursprünglich für den imperialen TIE-Turbojäger entwickelt wurden, in Massen produzieren lassen. Das Ergebnis ist der TIE/eo, dessen Piloten eine deutlich höhere Lebenserwartung genießen als ihre Vorgänger zu Zeiten des Imperiums.</i>"
+    },
+    "Zeta Squadron Survivor": {
+      display_name: "Überlebender der Zeta-Staffel",
+      text: "<i class = flavor_text>Seit ihrer beschämenden Niederlage kämpfen die Piloten der Starkiller-Basis noch erbitterter gegen den Widerstand, um sich zu rehabilitieren.</i>%LINEBREAK%<strong>Schwerer Geschützturm:</strong> Du kannst deinen %SINGLETURRETARC%-Anzeiger nur auf deinen %FRONTARC% oder %REARARC% rotieren. Du <b>musst</b> die %FRONTARC%-Voraussetzung deiner ausgerüsteten %MISSILE%-Aufwertungen behandeln, als wäre sie %SINGLETURRETARC%."
+    },
+    "Zuckuss": {
+      display_name: "Zuckuss",
+      text: "Solange du einen Primärangriff durchführst, darfst du 1 zusätzlichen Angriffswürfel werfen. Falls du das tust, wirft der Verteidiger 1&nbsp;zusätzlichen Verteidigungswürfel."
+    },
+    '"Avenger"': {
+      display_name: "„Avenger“",
+      text: "Nachdem ein anderes befreundetes Schiff zerstört worden ist, darfst du eine Aktion durchführen, auch solange du gestresst bist.%LINEBREAK%<strong>Automatische Schubdüsen:</strong> Nachdem du eine Aktion durchgeführt hast, darfst du eine rote %BARRELROLL%-Aktion oder eine rote %BOOST%-Aktion durchführen."
+    },
+    '"Backdraft"': {
+      display_name: "„Backdraft“",
+      text: "Solange du einen %SINGLETURRETARC%-Primärangriff durchführst, falls der Verteidiger in deinem %REARARC% ist, wirf 1 zusätzlichen Würfel.%LINEBREAK%<strong>Schwerer Geschützturm:</strong> Du kannst deinen %SINGLETURRETARC%-Anzeiger nur auf deinen %FRONTARC% oder %REARARC% rotieren. Du <b>musst</b> die %FRONTARC%-Voraussetzung deiner ausgerüsteten %MISSILE%-Aufwertungen behandeln, als wäre sie %SINGLETURRETARC%."
+    },
+    '"Blackout"': {
+      display_name: "„Blackout“",
+      text: "Solange du einen Angriff durchführst, falls der Angriff durch ein Hindernis versperrt ist, wirft der Verteidiger 2&nbsp;Verteidigungswürfel weniger.%LINEBREAK%<strong>Automatische Schubdüsen:</strong> Nachdem du eine Aktion durchgeführt hast, darfst du eine rote %BARRELROLL%-Aktion oder eine rote %BOOST%-Aktion durchführen."
     },
     '"Chopper"': {
       display_name: "„Chopper“",
@@ -8747,25 +8867,57 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "„Leebo“",
       text: "Nachdem du verteidigt oder einen Angriff durchgeführt hast, falls du einen Berechnungsmarker ausgegeben hast, erhalte 1 Berechnungsmarker.%LINEBREAK%<strong>Toter Winkel:</strong> Solange du einen Primärangriff in Reichweite 0-1 durchführst, wende den Bonus für Reichweite 0-1 nicht an und wirf 1 Angriffswürfel weniger."
     },
+    '"Longshot"': {
+      display_name: "„Longshot“",
+      text: "Solange du einen Primärangriff in Angriffsreichweite 3 durchführst, wirf 1&nbsp;zusätzlichen Angriffswürfel."
+    },
     '"Mauler" Mithel': {
       display_name: "„Mauler“ Mithel",
       text: "Solange du einen Angriff in Angriffsreichweite 1 durchführst, wirf 1 zusätzlichen Angriffswürfel."
+    },
+    '"Midnight"': {
+      display_name: "„Midnight“",
+      text: "Solange du verteidigst oder einen Angriff durchführst, falls du das feindliche Schiff als Ziel erfasst hast, können die Würfel jenes Schiffes nicht modifiziert werden."
+    },
+    '"Muse"': {
+      display_name: "„Muse“",
+      text: "Zu Beginn der Kampfphase darfst du ein befreundetes Schiff in Reichweite 0-1 wählen. Falls du das tust, entfernt jenes Schiff 1 Stressmarker."
     },
     '"Night Beast"': {
       display_name: "„Nachtbestie“",
       text: "Nachdem du ein blaues Manöver vollständig ausgeführt hast, darfst du eine %FOCUS%-Aktion durchführen."
     },
+    '"Null"': {
+      display_name: "„Null“",
+      text: "Solange du nicht beschädigt bist, behandle deinen Initiativwert, als wäre er 7."
+    },
     '"Pure Sabacc"': {
       display_name: "„Voller Sabacc“",
       text: "Solange du einen Angriff durchführst, falls du 1 oder weniger Schadenskarten hast, darfst du 1 zusätzlichen Angriffswürfel werfen.%LINEBREAK%<strong>Adaptive Querruder:</strong> Bevor du dein Rad aufdeckst, falls du nicht gestresst bist, <b>musst</b> du ein weißes [1&nbsp;%BANKLEFT%]-, [1&nbsp;%STRAIGHT%]- oder [1&nbsp;%BANKRIGHT%]-Manöver ausführen."
+    },
+    '"Quickdraw"': {
+      display_name: "„Quickdraw“",
+      text: "Nachdem du ein Schild verloren hast, darfst du 1&nbsp;%CHARGE% ausgeben. Falls du das tust, darfst du einen Bonus-Primärangriff durchführen.%LINEBREAK%<strong>Schwerer Geschützturm:</strong> Du kannst deinen %SINGLETURRETARC%-Anzeiger nur auf deinen %FRONTARC% oder %REARARC% rotieren. Du <b>musst</b> die %FRONTARC%-Voraussetzung deiner ausgerüsteten %MISSILE%-Aufwertungen behandeln, als wäre sie %SINGLETURRETARC%."
+    },
+    '"Recoil"': {
+      display_name: "„Recoil“",
+      text: "Solange du gestresst bist, darfst du feindliche Schiffe in deinem %FRONTARC% in Reichweite 0-1 behandeln, als wären sie in deinem %BULLSEYEARC%.%LINEBREAK%<strong>Automatische Schubdüsen:</strong> Nachdem du eine Aktion durchgeführt hast, darfst du eine rote %BARRELROLL%-Aktion oder eine rote %BOOST%-Aktion durchführen."
     },
     '"Redline"': {
       display_name: "„Rote Linie“",
       text: "Du kannst bis zu 2 Zielerfassungen aufrechterhalten. %LINEBREAK%Nachdem du eine Aktion durchgeführt hast, darfst du ein Ziel erfassen."
     },
+    '"Scorch"': {
+      display_name: "„Scorch“",
+      text: "Solange du einen Primärangriff durchführst, falls du nicht gestresst bist, darfst du 1 Stressmarker erhalten, um 1&nbsp;zusätzlichen Angriffswürfel zu werfen."
+    },
     '"Scourge" Skutu': {
       display_name: "„Geißel“ Skutu ",
       text: "Solange du einen Angriff gegen einen Verteidiger in deinem %BULLSEYEARC% durchführst, wirf 1 zusätzlichen Angriffswürfel."
+    },
+    '"Static"': {
+      display_name: "„Static“",
+      text: "Solange du einen Primärangriff durchführst, darfst du deine Zielerfassung auf dem Verteidiger und einen Fokusmarker ausgeben, um alle deine Ergebnisse in %CRIT%-Ergebnisse zu ändern."
     },
     '"Vizier"': {
       display_name: "„Wesir“",
@@ -8790,90 +8942,6 @@ exportObj.cardLoaders.Deutsch = function() {
     '"Zeb" Orrelios (TIE Fighter)': {
       display_name: "„Zeb“ Orrelios (TIE Fighter)",
       text: "Solange du verteidigst, werden %CRIT%-Ergebnisse neutralisiert, bevor %HIT%-Ergebnisse neutralisiert werden."
-    },
-    "Poe Dameron": {
-      text: "After you perform an action, you may spend 1 %CHARGE% to perform a white action, treating it as red. %LINEBREAK% WEAPON HARDPOINT: You can equip 1 %CANNON%, %TORPEDO% or %MISSILE% upgrade."
-    },
-    "Lieutenant Bastian": {
-      text: "After a ship at range 1-2 is dealt a damage card, you may acquire a lock on that ship. %LINEBREAK% WEAPON HARDPOINT: You can equip 1 %CANNON%, %TORPEDO% or %MISSILE% upgrade."
-    },
-    '"Midnight"': {
-      text: "While you defend or perform an attack, if you have a lock on the enemy ship, that ship's dice cannot be modified."
-    },
-    '"Longshot"': {
-      text: "While you perform a primary attack at attack range 3, roll 1 additional attack die."
-    },
-    '"Muse"': {
-      text: "At the start of the Engagement Phase, you may choose a friendly ship at range 0-1. If you do, that ship removes 1 stress token."
-    },
-    "Kylo Ren": {
-      text: " After you defend, you may spend 1 %FORCE% to assign the I'll Show You the Dark Side condition to the attacker. %LINEBREAK% AUTOTHRUSTERS: After you perform an action. you may perform a red %BARRELROLL% or a red %BOOST% action."
-    },
-    '"Blackout"': {
-      text: " ??? %LINEBREAK% AUTOTHRUSTERS: After you perform an action. you may perform a red %BARRELROLL% or a red %BOOST% action."
-    },
-    "Lieutenant Dormitz": {
-      text: " SETUP: After you are placed, other friendly ships can be placed anywhere in the play area at range 0-2 of you.  %LINEBREAK% LINKED BATTERY: While you perform a %CANNON% attack, roll 1 addtional die. "
-    },
-    '"Backdraft"': {
-      text: " ... perform a %TURRET% primary ... defender is in your %REARARC% ... additional dice. %LINEBREAK% HEAVY WEAPON TURRET: You can rotate your %SINGLETURRETARC% indicator only to your %FRONTARC% or %REARARC%. You must treat the %FRONTARC% requirement of your equipped %MISSILE% upgrades as %SINGLETURRETARC%.  "
-    },
-    '"Quickdraw"': {
-      text: " After you lose a shield, you may spend 1 %CHARGE%. If you do, you may perform a bonus primary attack. %LINEBREAK% HEAVY WEAPON TURRET: You can rotate your %SINGLETURRETARC% indicator only to your %FRONTARC% or %REARARC%. You must treat the %FRONTARC% requirement of your equipped %MISSILE% upgrades as %SINGLETURRETARC%. "
-    },
-    "Zeta Squadron Survivor": {
-      text: " ... %LINEBREAK% HEAVY WEAPON TURRET: You can rotate your %SINGLETURRETARC% indicator only to your %FRONTARC% or %REARARC%. You must treat the %FRONTARC% requirement of your equipped %MISSILE% upgrades as %SINGLETURRETARC%. "
-    },
-    "Rey": {
-      text: " While you defend or perform an attack, if the enemy ship in your %FRONTARC%, you may spend 1 %FORCE% change 1 of your blank results to an %EVADE% or %HIT% result. "
-    },
-    "Han Solo (Resistance)": {
-      text: " ??? "
-    },
-    "Chewbacca (Resistance)": {
-      text: " ??? "
-    },
-    "Captain Seevor": {
-      text: " While you defend or perform an attack, before the attack dice are rolled, if you are not in the enemy ship's %BULLSEYEARC%, you may spend 1 %CHARGE%. If you do, the enemy ship gains one jam token. "
-    },
-    "Mining Guild Surveyor": {
-      text: " "
-    },
-    "Ahhav": {
-      text: " ??? "
-    },
-    "Finch Dallow": {
-      text: " ... drop a bomb, you ... play area touching ... instead. "
-    },
-    "Major Stridan": {
-      text: " While you coordinate or resolve the effect of one of your upgrades, you may treat friendly ships at range 2-3 as being at range 0 or range 1. %LINEBREAK% LINKED BATTERY: While you perform a %CANNON% attack, roll 1 addtional die. "
-    },
-    "Kare Kun": {
-      text: " While you boost, you may use the (1 %TURNLEFT%) or (1 %TURNRIGHT%) template instead. %LINEBREAK% WEAPON HARDPOINT: You can equip 1 %CANNON%, %TORPEDO% or %MISSILE% upgrade."
-    },
-    "Joph Seastriker": {
-      text: " After you lose 1 shield, gain 1 evade token. %LINEBREAK% WEAPON HARDPOINT: You can equip 1 %CANNON%, %TORPEDO% or %MISSILE% upgrade."
-    },
-    "Lieutenant Bastian": {
-      text: " After a ship at range 1-2 is dealt a damage card, you may acquire a lock on that ship. %LINEBREAK% WEAPON HARDPOINT: You can equip 1 %CANNON%, %TORPEDO% or %MISSILE% upgrade."
-    },
-    "Jaycris Tubbs": {
-      text: " After you fully execute a blue maneuver, you may choose a friendly ship at range 0-1. If you do, that ship removes 1 stress token. %LINEBREAK% WEAPON HARDPOINT: You can equip 1 %CANNON%, %TORPEDO% or %MISSILE% upgrade."
-    },
-    "Joph Seastriker": {
-      text: " After you lose 1 shield, gain 1 evade token. %LINEBREAK% WEAPON HARDPOINT: You can equip 1 %CANNON%, %TORPEDO% or %MISSILE% upgrade."
-    },
-    "Black Squadron Ace (T-70)": {
-      text: " <i class = flavor_text>During the Cold War, Poe Dameron's Black Squadron conducted daring covert operations against the First Order in defiance of treaties ratified by the New Republic Senate.</i> %LINEBREAK% WEAPON HARDPOINT: You can equip 1 %CANNON%, %TORPEDO% or %MISSILE% upgrade."
-    },
-    "Red Squadron Expert": {
-      text: " <i class = flavor_text>Although the bulk of the Resistance Starfighter Corps is made up of young volunteers from the New Republic, their ranks are bolstered by the veterans of the Galactic Civil War determined to finish what they started decades ago.</i> %LINEBREAK% WEAPON HARDPOINT: You can equip 1 %CANNON%, %TORPEDO% or %MISSILE% upgrade."
-    },
-    "Blue Squadron Rookie": {
-      text: " <i class = flavor_text>The Incom-FreiTek T-70 X-Wing was designed to improve upon the tactical flexibility of the venerable T-65. The starfighters's advanced droid socket is compatible with a wide array of astromechs, and it's modular weapons pods allow for ground crews to tailor its payload for specific missions.</i> %LINEBREAK% WEAPON HARDPOINT: You can equip 1 %CANNON%, %TORPEDO% or %MISSILE% upgrade."
-    },
-    "Cobalt Squadron Bomber": {
-      text: " ... "
     }
   };
   upgrade_translations = {
@@ -8888,6 +8956,10 @@ exportObj.cardLoaders.Deutsch = function() {
     "Andrasta": {
       display_name: "Andrasta",
       text: "<i>Fügt %RELOAD% hinzu</i>%LINEBREAK%<i>Nur für Abschaum</i>%LINEBREAK%Füge den %DEVICE%-Slot hinzu."
+    },
+    "Black One": {
+      display_name: "Schwarz Eins",
+      text: "<i>Fügt %SLAM% hinzu</i>%LINEBREAK%<i>Nur für Widerstand</i>%LINEBREAK%Nachdem du eine %SLAM%-Aktion durchgeführt hast, verliere 1&nbsp;%CHARGE%. Dann darfst du 1&nbsp;Ionenmarker erhalten, um 1 Entwaffnet-Marker zu entfernen.%LINEBREAK%Falls deine %CHARGE% inaktiv ist, kannst du die %SLAM%-Aktion nicht durchführen."
     },
     "Dauntless": {
       display_name: "Dauntless",
@@ -8965,6 +9037,10 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "Verstärkte Protonentorpedos",
       text: "<strong>Angriff (</strong>%LOCK%<strong>):</strong> Gib 1&nbsp;%CHARGE% aus. Ändere 1&nbsp;%HIT%-Ergebnis in ein&nbsp;%CRIT%-Ergebnis."
     },
+    "Advanced Optics": {
+      display_name: "Verbesserte Optik",
+      text: "Solange du einen Angriff durchführst, darfst du 1 Fokusmarker ausgeben, um 1 deiner Leerseiten-Ergebnisse in ein %HIT%-Ergebnis zu ändern."
+    },
     "Advanced SLAM": {
       display_name: "Verbesserter SLAM",
       text: "<i>Benötigt %SLAM%</i>%LINEBREAK%Nachdem du eine %SLAM%-Aktion durchgeführt hast, falls du das Manöver vollständig ausgeführt hast, darfst du eine weiße Aktion aus deiner Aktionsleiste durchführen, wobei du jene Aktion behandelst, als wäre sie rot."
@@ -8985,6 +9061,14 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "Wendiger Schütze",
       text: "Während der Endphase darfst du deinen %SINGLETURRETARC%-Anzeiger drehen."
     },
+    "BB Astromech": {
+      display_name: "BB-Astromechdroide",
+      text: "<i>Nur für Widerstand</i>%LINEBREAK%Bevor du ein blaues Manöver ausführst, darfst du 1&nbsp;%CHARGE% ausgeben, um eine %BARRELROLL%-Aktion durchzuführen."
+    },
+    "BB-8": {
+      display_name: "BB-8",
+      text: "<i>Nur für Widerstand</i>%LINEBREAK%Bevor du ein blaues Manöver ausführst, darfst du 1&nbsp;%CHARGE% ausgeben, um eine&nbsp;%BARRELROLL%- oder&nbsp;%BOOST%-Ak­tion durch­zu­fü­hren."
+    },
     "BT-1": {
       display_name: "BT-1",
       text: "<i>Nur für Abschaum oder Staffel, die Darth Vader enthält</i>%LINEBREAK%Solange du einen Angriff durchführst, darfst du für jeden Stressmarker, den der Verteidiger hat, 1&nbsp;%HIT%-Ergebnis in ein %CRIT%-Ergebnis ändern."
@@ -8996,6 +9080,10 @@ exportObj.cardLoaders.Deutsch = function() {
     "Baze Malbus": {
       display_name: "Baze Malbus",
       text: "<i>Nur für Rebellen</i>%LINEBREAK%Solange du eine %FOCUS%-Aktion durchführst, darfst du sie behandeln, als wäre sie rot. Falls du das tust, erhalte 1 zusätzlichen Fokusmarker für jedes feindliche Schiff in Reichweite 0-1, bis zu einem Maximum von 2."
+    },
+    "Biohexacrypt Codes": {
+      display_name: "Bio-Hexakryptcode",
+      text: "<i>Benötigt %LOCK% oder <r>%LOCK%</r></i>%LINEBREAK%<i>Nur für Erste Ordnung</i>%LINEBREAK%Solange du koordinierst oder ein Störsignal sendest, falls du ein Schiff als Ziel erfasst hast, darfst du jene Zielerfassung ausgeben, um jenes Schiff zu wählen, wobei du die Reichweitenbeschränkung ignorierst."
     },
     "Bistan": {
       display_name: "Bistan",
@@ -9015,23 +9103,35 @@ exportObj.cardLoaders.Deutsch = function() {
     },
     "C-3PO": {
       display_name: "C-3PO",
-      text: "<i>Fügt %CALCULATE% hinzu</i>%LINEBREAK%<i>Nur für Rebellen</i>%LINEBREAK%Bevor du Verteidigungswürfel wirfst, darfst du 1&nbsp;Berechnungs­marker ausgeben, um laut eine Zahl von 1 oder höher zu raten. Falls du das tust und genau so viele %EVADE%-Ergebnisse wirfst, wie du geraten hast, füge 1&nbsp;%EVADE%-Ergebnis hinzu.%LINEBREAK%Nachdem du die %CALCULATE%-Aktion durchgeführt hast, erhalte 1&nbsp;%CALCULATE%-Marker"
+      text: "<i>Fügt %CALCULATE% hinzu</i>%LINEBREAK%<i>Nur für Rebellen</i>%LINEBREAK%Bevor du Verteidigungswürfel wirfst, darfst du 1&nbsp;Berechnungs­marker ausgeben, um laut eine Zahl von 1 oder höher zu raten. Falls du das tust und genau so viele %EVADE%-Ergebnisse wirfst, wie du geraten hast, füge 1&nbsp;%EVADE%-Ergebnis hinzu.%LINEBREAK%Nachdem du die %CALCULATE%-Aktion"
+    },
+    "C-3PO (Resistance)": {
+      display_name: "C-3PO (Resistance)",
+      text: "<i>Fügt %CALCULATE% ,  <r>%COORDINATE%</r> hinzu</i>%LINEBREAK%<i>Nur für Widerstand</i>%LINEBREAK%Solange du koordinierst, kannst du befreundete Schiffe jenseits von Reichweite 2 wählen, falls sie ein&nbsp;%CALCULATE% in ihrer Aktionsleiste haben.%LINEBREAK%Nachdem du die&nbsp;%CALCULATE%- oder&nbsp;%COORDINATE%-Aktion durchgeführt hast, erhalte 1 Berechnungsmarker."
     },
     "Cad Bane": {
       display_name: "Cad Bane",
       text: "<i>Nur für Abschaum</i>%LINEBREAK%Nachdem du ein Gerät abgeworfen oder gestartet hast, darfst du eine rote %BOOST%-Aktion durchführen."
     },
+    "Captain Phasma": {
+      display_name: "Captain Phasma",
+      text: "<i>Nur für Erste Ordnung</i>%LINEBREAK%Am Ende der Kampfphase erhält jedes nicht gestresste feindliche Schiff in Reichweite 0-1 1 Stressmarker."
+    },
     "Cassian Andor": {
       display_name: "Cassian Andor",
       text: "<i>Nur für Rebellen</i>%LINEBREAK%Während der Systemphase darfst du 1 feindliches Schiff in Reichweite 1-2 wählen und laut eine Flugrichtung und Geschwindigkeit raten, dann sieh dir das Rad jenes Schiffes an. Falls du die Flugrichtung und Geschwindigkeit des gewählten Schiffes richtig geraten hast, darfst du dein Rad auf ein anderes Manöver einstellen."
+    },
+    "Chewbacca": {
+      display_name: "Chewbacca",
+      text: "<i>Nur für Rebellen</i>%LINEBREAK%Zu Beginn der Kampfphase darfst du 2 %CHARGE% ausgeben, um 1 offene Schadenskarte zu reparieren."
     },
     "Chewbacca (Scum)": {
       display_name: "Chewbacca (Scum)",
       text: "<i>Nur für Abschaum</i>%LINEBREAK%Zu Beginn der Endphase darfst du 1&nbsp;Fokusmarker ausgeben, um 1&nbsp;deiner offenen Schadenskarten zu reparieren."
     },
-    "Chewbacca": {
-      display_name: "Chewbacca",
-      text: "<i>Nur für Rebellen</i>%LINEBREAK%Zu Beginn der Kampfphase darfst du 2 %CHARGE% ausgeben, um 1 offene Schadenskarte zu reparieren."
+    "Chewbacca (Resistance)": {
+      display_name: "Chewbacca (Resistance)",
+      text: "<i>Nur für Widerstand</i>%LINEBREAK%<strong>Aufbau:</strong> Verliere 1&nbsp;%CHARGE%.%LINEBREAK%Nachdem einem befreundeten Schiff in Reichweite 0-3 1&nbsp;Schadenskarte zugeteilt worden ist, stelle 1&nbsp;%CHARGE% wieder her.%LINEBREAK%Solange du einen Angriff durchführst, darfst du 2&nbsp;%CHARGE% ausgeben, um 1&nbsp;%FOCUS%-Ergebnis in ein&nbsp;%CRIT%-Ergebnis zu ändern."
     },
     "Ciena Ree": {
       display_name: "Ciena Ree",
@@ -9129,6 +9229,10 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "Ezra Bridger",
       text: "<i>Nur für Rebellen</i>%LINEBREAK%Nachdem du einen Primärangriff durchgeführt hast, darfst du 1&nbsp;%FORCE% ausgeben, um einen Bonus-%SINGLETURRETARC%-Angriff aus einem %SINGLETURRETARC%, aus dem du in dieser Runde noch nicht angegriffen hast, durchzuführen. Falls du das tust und gestresst bist, darfst du 1 Angriffswürfel neu werfen."
     },
+    "Fanatical": {
+      display_name: "Fanatisch",
+      text: "<i>Nur für Erste Ordnung</i>%LINEBREAK%Solange du einen Primärangriff durchführst, falls du keine Schilde hast, darfst du 1&nbsp;%FOCUS%-Ergebnis in ein %HIT%-Ergebnis ändern."
+    },
     "Fearless": {
       display_name: "Furchtlos",
       text: "<i>Nur für Abschaum</i>%LINEBREAK%Solange du einen %FRONTARC%-Primärangriff durchführst, falls die Angriffs­reichweite&nbsp;1 ist und du im %FRONTARC% des Verteidigers bist, darfst du 1 deiner Ergebnisse in ein %HIT%-Ergebnis ändern."
@@ -9141,6 +9245,18 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "Fünfter Bruder",
       text: "<i>Nur für Imperium</i>%LINEBREAK%Solange du einen Angriff durchführst, darfst du 1&nbsp;%FORCE%&nbsp;ausgeben, um 1&nbsp;deiner %FOCUS%-Ergebnisse in ein %CRIT%-Ergebnis zu ändern."
     },
+    "Ferrosphere Paint": {
+      display_name: "Ferrosphärenfarbe",
+      text: "<i>Nur für Widerstand</i>%LINEBREAK%Nachdem ein feindliches Schiff dich als Ziel erfasst hat, falls du nicht im %BULLSEYEARC%&nbsp;jenes Schiffes bist, erhält jenes Schiff 1 Stressmarker."
+    },
+    "Fifth Brother": {
+      display_name: "Fünfter Bruder",
+      text: "<i>Nur für Imperium</i>%LINEBREAK%Solange du einen Angriff durchführst, darfst du 1&nbsp;%FORCE%&nbsp;ausgeben, um 1&nbsp;deiner %FOCUS%-Ergebnisse in ein %CRIT%-Ergebnis zu ändern."
+    },
+    "Finn": {
+      display_name: "Finn",
+      text: "<i>Nur für Widerstand</i>%LINEBREAK%Solange du verteidigst oder einen Primärangriff durchführst, falls das feindliche Schiff in deinem %FRONTARC% ist, darfst du 1 Leerseiten-Ergebnis zu deinen Würfelergebnissen hinzufügen (dieser Würfel kann neu geworfen oder anderweitig modifiziert werden)."
+    },
     "Fire-Control System": {
       display_name: "Feuerkontrollsystem",
       text: "Solange du einen Angriff durchführst, falls du den Verteidiger als Ziel erfasst hast, darfst du 1&nbsp;Angriffswürfel neu werfen. Falls du das tust, kannst du während dieses Angriffs deine Zielerfassung nicht ausgeben."
@@ -9152,6 +9268,10 @@ exportObj.cardLoaders.Deutsch = function() {
     'GNK "Gonk" Droid': {
       display_name: "GNK-„Gonk“-Droide",
       text: "<strong>Aufbau:</strong> Verliere 1&nbsp;%CHARGE%.%LINEBREAK%<strong>Aktion:</strong> Stelle 1&nbsp;%CHARGE% wieder her.%LINEBREAK%<strong>Aktion:</strong> Gib 1&nbsp;%CHARGE% aus, um 1 Schild wiederherzustellen."
+    },
+    "General Hux": {
+      display_name: "General Hux",
+      text: "<i>Benötigt %COORDINATE% oder <r>%COORDINATE%</r></i>%LINEBREAK%<i>Nur für Erste Ordnung</i>%LINEBREAK%Solange du eine weiße %COORDINATE%-Aktion durchführst, darfst du sie behandeln, als wäre sie rot. Falls du das tust, darfst du bis zu 2 zusätzliche Schiffe desselben Schiffstyps koordinieren und jedes von dir koordinierte Schiff muss dieselbe Aktion durchführen, wobei es jene Aktion behandelt, als wäre sie rot."
     },
     "Grand Inquisitor": {
       display_name: "Großinquisitor",
@@ -9173,6 +9293,14 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "Han Solo (Scum)",
       text: "<i>Nur für Abschaum</i>%LINEBREAK%Bevor du kämpfst, darfst du eine rote&nbsp;%FOCUS%-Aktion durchführen."
     },
+    "Han Solo (Resistance)": {
+      display_name: "Han Solo (Resistance)",
+      text: "<i>Fügt <r>%EVADE%</r> hinzu</i>%LINEBREAK%<i>Nur für Widerstand</i>%LINEBREAK%Nachdem du eine %EVADE%-Aktion durchgeführt hast, erhalte zusätzliche Ausweichmarker in Höhe der Anzahl der feindlichen Schiffe in Reichweite 0-1."
+    },
+    "Hate": {
+      display_name: "Hass",
+      text: "Nachdem du 1 oder mehr Schaden erlitten hast, stelle ebenso viele %FORCE%&nbsp;wieder her."
+    },
     "Heavy Laser Cannon": {
       display_name: "Schwere Laserkanone",
       text: "<strong>Angriff:</strong> Nach dem Schritt „Angriffswürfel modifizieren“, ändere alle %CRIT%-Ergebnisse in %HIT%-Ergebnisse."
@@ -9185,6 +9313,10 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "Hera Syndulla",
       text: "<i>Nur für Rebellen</i>%LINEBREAK%Du kannst rote Manöver ausführen, auch solange du gestresst bist. Nachdem du ein rotes Manöver vollständig ausgeführt hast, falls du 3 oder mehr Stressmarker hast, entferne 1 Stressmarker und erleide 1&nbsp;%HIT%-Schaden."
     },
+    "Heroic": {
+      display_name: "Heroisch",
+      text: "<i>Nur für Widerstand</i>%LINEBREAK%Solange du verteidigst oder einen Angriff durchführst, falls du nur Leerseiten-Ergebnisse hast und 2 oder mehr Ergebnisse hast, darfst du beliebig viele deiner Würfel neu werfen."
+    },
     "Homing Missiles": {
       display_name: "Lenkraketen",
       text: "<strong>Angriff (</strong>%LOCK%<strong>):</strong> Gib 1&nbsp;%CHARGE% aus. Nachdem du den Verteidiger deklariert hast, darf der Verteidiger wählen, 1&nbsp;%HIT%-Schaden zu erleiden. Falls er das tut, überspringe die Schritte „Angriffswürfel“ und „Verteidigungswürfel“, und der Angriff wird behandelt, als hätte er getroffen."
@@ -9196,6 +9328,10 @@ exportObj.cardLoaders.Deutsch = function() {
     "Hull Upgrade": {
       display_name: "Verstärkte Hülle",
       text: "Diese Aufwertungskarte hat variable Punktekosten.%LINEBREAK%<i class = flavor_text>Auch wer sich keinen verbesserten Schildgenerator leisten kann, muss nicht auf erhöhten Schutz verzichten, sondern kann sich mit zusätzlichen Panzerplatten an der Schiffshülle behelfen.</i>"
+    },
+    "Hyperspace Tracking Data": {
+      display_name: "Hyperraum-Ortungsdaten",
+      text: "<i>Nur für großes Schiff</i>%LINEBREAK%<i>Nur für Erste Ordnung</i>%LINEBREAK%<strong>Aufbau:</strong> Bevor die Streitkräfte platziert werden, darfst du eine Zahl zwischen 0 und 6 wählen. Behandle deine Initiative, als hätte sie den Wert, den du während des Aufbaus gewählt hast.%LINEBREAK%Ordne nach dem Aufbau jedem befreundeten Schiff in Reichweite 0-2 1 Fokus- oder Ausweichmarker zu."
     },
     "IG-88D": {
       display_name: "IG-88D",
@@ -9216,6 +9352,10 @@ exportObj.cardLoaders.Deutsch = function() {
     "Instinctive Aim": {
       display_name: "Instinktives Zielen",
       text: "Solange du einen Spezialangriff durchführst, darfst du 1&nbsp;%FORCE% ausgeben, um die %FOCUS%- oder %LOCK%-Voraussetzung zu ignorieren."
+    },
+    "Integrated S-Foils": {
+      display_name: "Integrierte S-Flügel",
+      text: "<strong>Geöffnet: </strong>Bevor du aktiviert wirst, darfst du diese Karte umdrehen.%LINEBREAK%<strong>Geschlossen: </strong><i>Fügt %BARRELROLL% ,  %FOCUS%&nbsp;<i class=\"xwing-miniatures-font xwing-miniatures-font-linked red\"></i>&nbsp;<r>%BARRELROLL%</r> hinzu</i>%LINEBREAK%Solange du einen Primärangriff durchführst, falls der Verteidiger nicht in deinem %BULLSEYEARC% ist, wirf 1&nbsp;Angriffswürfel weniger.%LINEBREAK%Bevor du aktiviert wirst, darfst du diese Karte umdrehen."
     },
     "Intimidation": {
       display_name: "Furchteinflößend",
@@ -9265,6 +9405,10 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "L3-37",
       text: "<i>Nur für Abschaum</i>%LINEBREAK%<strong>Aufbau:</strong> Rüste diese Seite offen aus.%LINEBREAK%Solange du verteidigst, darfst du diese Karte umdrehen. Fall du das tust, muss der Angreifer alle Angriffswürfel neu werfen. %LINEBREAK% Programmierung von L3-37: Falls du keine Schilde hast, verringere die Schwierigkeit deiner Drehmanöver (%BANKLEFT% und %BANKRIGHT%)."
     },
+    "Kylo Ren": {
+      display_name: "Kylo Ren",
+      text: "<i>Nur für Erste Ordnung</i>%LINEBREAK%<strong>Aktion:</strong> Wähle 1&nbsp;feindliches Schiff in Reichweite 1-3. Falls du das tust, gib 1&nbsp;%FORCE% aus, um jenem Schiff den Zustand <strong>Ich zeige dir die dunkle Seite</strong> zuzuordnen."
+    },
     "Lando Calrissian": {
       display_name: "Lando Calrissian",
       text: "<i>Nur für Rebellen</i>%LINEBREAK%<strong>Aktion:</strong> Wirf 2 Verteidigungswürfel. Erhalte 1 Fokusmarker für jedes %FOCUS%-Ergebnis. Erhalte 1&nbsp;Ausweichmarker für jedes %EVADE%-Ergebnis. Falls beide Ergebnisse Leerseiten sind, wählt der Gegenspieler Fokus- oder Ausweichmarker. Du erhältst 1 Marker"
@@ -9292,6 +9436,10 @@ exportObj.cardLoaders.Deutsch = function() {
     "Luke Skywalker": {
       display_name: "Luke Skywalker",
       text: "<i>Nur für Rebellen</i>%LINEBREAK%Zu Beginn der Kampfphase darfst du 1&nbsp;%FORCE% ausgeben, um deinen %SINGLETURRETARC%-Anzeiger zu rotieren."
+    },
+    "M9-G8": {
+      display_name: "M9-G8",
+      text: "<i>Nur für Widerstand</i>%LINEBREAK%Solange ein Schiff, das du als Ziel erfasst hast, einen Angriff durchführt, darfst du 1 Angriffswürfel wählen. Falls du das tust, wirft der Angreifer jenen Würfel neu."
     },
     "Magva Yarro": {
       display_name: "Magva Yarro",
@@ -9333,9 +9481,21 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "Ausmanövrieren",
       text: "Solange du einen %FRONTARC%-Angriff durchführst, falls du nicht im Feuerwinkel des Verteidigers bist, wirft der Verteidiger 1&nbsp;Verteidigungswürfel weniger."
     },
+    "Paige Tico": {
+      display_name: "Paige Tico",
+      text: "<i>Nur für Widerstand</i>%LINEBREAK%Nachdem du einen Primärangriff durchgeführt hast, darfst du 1&nbsp;Bombe abwerfen oder deinen %SINGLETURRETARC%-Anzeiger rotieren.%LINEBREAK%Nachdem du zerstört worden bist, darfst du 1 Bombe abwerfen."
+    },
+    "Pattern Analyzer": {
+      display_name: "Mustererkennung",
+      text: "Solange du ein rotes Manöver vollständig ausführst, vor dem Schritt „Schwierigkeit überprüfen“, darfst du 1 Aktion durchführen."
+    },
     "Perceptive Copilot": {
       display_name: "Aufmerksamer Co-Pilot",
       text: "Nachdem du eine %FOCUS%-Aktion durchgeführt hast, erhalte 1 Fokusmarker."
+    },
+    "Petty Officer Thanisson": {
+      display_name: "Unteroffizier Thanisson",
+      text: "<i>Nur für Erste Ordnung</i>%LINEBREAK%Während der Aktivierungs- oder Kampfphase, nachdem ein feindliches Schiff in deinem %FRONTARC% in Reichweite 0-1 einen roten oder orangefarbenen Marker erhalten hat, falls du nicht gestresst bist, darfst du 1&nbsp;Stressmarker erhalten. Falls du das tust, erhält jenes Schiff 1 zusätzlichen Marker von der Art des soeben erhaltenen."
     },
     "Pivot Wing": {
       display_name: "Schwenkflügel",
@@ -9344,6 +9504,14 @@ exportObj.cardLoaders.Deutsch = function() {
     "Predator": {
       display_name: "Jagdinstinkt",
       text: "Solange du einen Primärangriff durchführst, falls der Verteidiger in deinem %BULLSEYEARC% ist, darfst du 1&nbsp;Angriffswürfel neu werfen."
+    },
+    "Predictive Shot": {
+      display_name: "Vorausschauender Schuss",
+      text: "Nachdem du einen Angriff deklariert hast, falls der Verteidiger in deinem %BULLSEYEARC%&nbsp;ist, darfst du 1&nbsp;%FORCE% ausgeben. Falls du das tust, kann der Verteidiger während des Schrittes „Verteidigungswürfel werfen“ nicht mehr Verteidigungswürfel werfen als die Anzahl deiner %HIT%/%CRIT%-Ergebnisse."
+    },
+    "Primed Thrusters": {
+      display_name: "Verbesserte Schubdüsen",
+      text: "<i>Nur für kleines Schiff</i>%LINEBREAK%Solange du 2 oder weniger Stressmarker hast, kannst du %BARRELROLL%- und %BOOST%-Aktionen durchführen, auch solange du gestresst bist."
     },
     "Proton Bombs": {
       display_name: "Protonenbomben",
@@ -9362,7 +9530,7 @@ exportObj.cardLoaders.Deutsch = function() {
       text: "<strong>Mine</strong>%LINEBREAK%Während der Systemphase darfst du 1&nbsp;%CHARGE% ausgeben, um unter Verwendung der [1&nbsp;%STRAIGHT%]-Schablone eine Annäherungsmine abzuwerfen.%LINEBREAK%Die %CHARGE% dieser Karte können nicht wiederhergestellt werden."
     },
     "Qi'ra": {
-      display_name: "Qi'ra",
+      display_name: "Qi’ra",
       text: "<i>Nur für Abschaum</i>%LINEBREAK%Solange du dich bewegst und Angriffe durchführst, ignorierst du Hindernisse, die du als Ziel erfasst hast."
     },
     "R2 Astromech": {
@@ -9376,6 +9544,10 @@ exportObj.cardLoaders.Deutsch = function() {
     "R2-D2": {
       display_name: "R2-D2",
       text: "<i>Nur für Rebellen</i>%LINEBREAK%Nachdem du dein Rad aufgedeckt hast, darfst du 1&nbsp;%CHARGE% ausgeben und 1 Entwaffnet-Marker erhalten, um 1&nbsp;Schild wiederherzustellen."
+    },
+    "R2-HA": {
+      display_name: "R2-HA",
+      text: "<i>Nur für Widerstand</i>%LINEBREAK%Solange du verteidigst, darfst du deine Zielerfassung auf dem Angreifer ausgeben, um beliebig viele deiner Verteidigungswürfel neu zu werfen."
     },
     "R3 Astromech": {
       display_name: "R3-Astromechdroide",
@@ -9401,9 +9573,25 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "R5-TK",
       text: "<i>Nur für Abschaum</i>%LINEBREAK%Du kannst Angriffe gegen befreundete Schiffe durchführen."
     },
+    "R5-X3": {
+      display_name: "R5-X3",
+      text: "<i>Nur für Widerstand</i>%LINEBREAK%Bevor du aktiviert wirst oder kämpfst, darfst du 1&nbsp;%CHARGE% ausgeben, um bis zum Ende der Phase Hindernisse zu ignorieren."
+    },
+    "Rey": {
+      display_name: "Rey",
+      text: "<i>Nur für Widerstand</i>%LINEBREAK%Solange du verteidigst oder einen Angriff durchführst, falls das feindliche Schiff in deinem %SINGLETURRETARC% ist, darfst du 1&nbsp;%FORCE% ausgeben, um 1 deiner Leerseiten-Ergebnisse in ein %EVADE%- oder %HIT%-Ergebnis zu ändern."
+    },
+    "Rey's Millennium Falcon": {
+      display_name: "Reys Millennium Falke",
+      text: "<i>Nur für Widerstand</i>%LINEBREAK%Falls du 2 oder weniger Stressmarker hast, kannst du rote Segnor-Looping-Manöver [%SLOOPLEFT% oder %SLOOPRIGHT%] ausführen und %BOOST%- und&nbsp;<rotate>-Aktionen durchführen, auch solange du gestresst bist."
+    },
     "Rigged Cargo Chute": {
       display_name: "Manipulierte Frachtrampe",
       text: "<i>Nur für großes Schiff oder mittleres Schiff</i>%LINEBREAK%<strong>Aktion:</strong> Gib 1&nbsp;%CHARGE% aus. Wirf unter Verwendung der [1&nbsp;%STRAIGHT%]-Schablone 1 freie Fracht ab."
+    },
+    "Rose Tico": {
+      display_name: "Rose Tico",
+      text: "<i>Nur für Widerstand</i>%LINEBREAK%Solange du verteidigst oder einen Angriff durchführst, darfst du 1 deiner Ergebnisse ausgeben, um das feindliche Schiff als Ziel zu erfassen."
     },
     "Ruthless": {
       display_name: "Skrupellos",
@@ -9453,6 +9641,10 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "Versierte Bombenschützin",
       text: "Falls du ein Gerät abwerfen oder starten würdest, darfst du eine Schablone mit gleicher Flugrichtung und einer um 1 höheren oder niedrigeren Geschwindigkeit verwenden."
     },
+    "Special Forces Gunner": {
+      display_name: "Bordschütze der Spezialeinheiten",
+      text: "<i>Nur für Erste Ordnung</i>%LINEBREAK%Solange du einen %FRONTARC%-Primärangriff durchführst, falls dein %SINGLETURRETARC% auf deinem %FRONTARC% ist, darfst du 1 zusätzlichen Angriffswürfel werfen.%LINEBREAK%Nachdem du einen %FRONTARC%-Primärangriff durchgeführt hast, falls dein %SINGLETURRETARC% auf deinem %REARARC% ist, darfst du einen Bonus-%SINGLETURRETARC%-Primärangriff durchführen."
+    },
     "Squad Leader": {
       display_name: "Staffelführer",
       text: "<i>Fügt <r>%COORDINATE%</r> hinzu</i>%LINEBREAK%Solange du koordinierst, kann das von dir gewählte Schiff eine Aktion nur dann durchführen, falls jene Aktion auch in deiner Aktionsleiste ist."
@@ -9469,6 +9661,10 @@ exportObj.cardLoaders.Deutsch = function() {
       display_name: "Übernatürliche Reflexe",
       text: "<i>Nur für kleines Schiff</i>%LINEBREAK%Bevor du aktiviert wirst, darfst du 1&nbsp;%FORCE% ausgeben, um eine %BARRELROLL%- oder %BOOST%-Aktion durchzuführen. Dann, falls du eine Aktion durchgeführt hast, die nicht in deiner Aktionsleiste ist, erleide 1&nbsp;%HIT%-Schaden."
     },
+    "Supreme Leader Snoke": {
+      display_name: "Oberster Anführer Snoke",
+      text: "<i>Nur für Erste Ordnung</i>%LINEBREAK%Während der Systemphase darfst du beliebig viele feindliche Schiffe jenseits von Reichweite 1 wählen. Falls du das tust, gib ebenso viele %FORCE% aus, um das Rad jedes gewählten Schiffes auf die offene Seite zu drehen."
+    },
     "Swarm Tactics": {
       display_name: "Schwarmtaktik",
       text: "Zu Beginn der Kampfphase darfst du 1 befreundetes Schiff in Reichweite 1 wählen. Falls du das tust, behandelt jenes Schiff seine Initiative bis zum Ende der Runde so, als würde sie deiner Initiative entsprechen."
@@ -9480,6 +9676,10 @@ exportObj.cardLoaders.Deutsch = function() {
     "Tactical Scrambler": {
       display_name: "Taktischer Scrambler",
       text: "<i>Nur für großes Schiff oder mittleres Schiff</i>%LINEBREAK%Solange du den Angriff eines feindlichen Schiffes versperrst, wirft der Verteidiger 1&nbsp;zusätzlichen Verteidigungswürfel."
+    },
+    "Targeting Synchronizer": {
+      display_name: "Zielsynchronisiersystem",
+      text: "<i>Benötigt %LOCK% oder <r>%LOCK%</r></i>%LINEBREAK%Solange ein befreundetes Schiff in Reichweite 1-2 einen Angriff gegen ein Ziel durchführt, das du als Ziel erfasst hast, ignoriert jenes Schiff die&nbsp;%LOCK%-Angriffsvoraussetzung."
     },
     "Tobias Beckett": {
       display_name: "Tobias Beckett",
@@ -9534,118 +9734,13 @@ exportObj.cardLoaders.Deutsch = function() {
       text: "<i>Nur für Rebellen</i>%LINEBREAK%Du kannst Primärangriffe in Reichweite 0 durchführen. Feindliche Schiffe in Reichweite 0 können Primärangriffe gegen dich durchführen."
     },
     "Hardpoint: Cannon": {
-      text: "Adds a %CANNON% slot"
+      text: "Fügt einen %CANNON% Slot hinzu"
     },
     "Hardpoint: Missile": {
-      text: "Adds a %MISSILE% slot"
+      text: "Fügt einen %MISSILE% Slot hinzu"
     },
     "Hardpoint: Torpedo": {
-      text: "Adds a %TORPEDO% slot"
-    },
-    "Black One": {
-      text: "<i>Adds: %SLAM%</i> %LINEBREAK% After you perform a %SLAM% action, lose 1 %CHARGE%. Then you may gain 1 ion token to remove 1 disarm token. %LINEBREAK% If your charge is inactive, you cannot perform the %SLAM% action."
-    },
-    "Heroic": {
-      text: " While you defend or perform an attack, if you have only blank results and have 2 or more results, you may reroll any number of your dice. "
-    },
-    "Rose Tico": {
-      text: " While you defend or perform an attack, you may spend 1 of your results to acquire a lock on the enemy ship. "
-    },
-    "Finn": {
-      text: " While you defend or perform a primary attack, if the enemy ship is in your %FRONTARC%, you may add 1 blank result to your roll (this die roll can be rerolled or otherwise modified)  "
-    },
-    "Integrated S-Foils": {
-      text: "<strong>Closed: </strong><i>Adds %BARRELROLL%, %FOCUS% &nbsp;<i class=\"xwing-miniatures-font xwing-miniatures-font-linked\"></i>&nbsp;<r>%BARRELROLL%</r></i>%LINEBREAK% While you perform a primary attack, if the defender is not in your %BULLSEYEARC%, roll 1 fewer attack die. %LINEBREAK% Before you activate, you may flip this card. %LINEBREAK% <b>Open:</b> Before you activate, you may flip this card."
-    },
-    "Targeting Synchronizer": {
-      text: "<i>Requires: %LOCK%</i> %LINEBREAK% While a friendly ship at range 1-2 performs an attack against a target you have locked, that ship ignores the %LOCK% attack requirement. "
-    },
-    "Primed Thrusters": {
-      text: "<i>Requires: Small Base</i> %LINEBREAK% While you have 2 or fewer stress tokens, you can perform %BARRELROLL% and %BOOST% actions even while stressed. "
-    },
-    "Kylo Ren": {
-      text: " Action: Choose 1 enemy ship at range 1-3. If you do, spend 1 %FORCE% to assign the I'll Show You the Dark Side condition to that ship. "
-    },
-    "General Hux": {
-      text: " While you perform a white %COORDINATE% action you may treat it as red. If you do, you may coordinate up to 2 additional ships of the same ship type, and each ship you coordinate must perform the same action, treating that action as red. "
-    },
-    "Fanatical": {
-      text: " While you perform a primary attack, if you are not shielded, you may change 1 %FOCUS% result to a %HIT% result. "
-    },
-    "Special Forces Gunner": {
-      text: " After you perform a primary %FRONTARC% attack, if your %SINGLETURRETARC% is in your %FRONTARC%, you may roll 1 additional attack die. After you perform a primary %FRONTARC% attack, if your %TURRET% is in your %REARARC%, you may perform a bonus primary %SINGLETURRETARC% attack. "
-    },
-    "Captain Phasma": {
-      text: " At the end of the Engagement Phase, each enemy ship at range 0-1 that is not stressed gains 1 stress token. "
-    },
-    "Supreme Leader Snoke": {
-      text: " During the System Phase, you may choose any number of enemy ships beyond range 1. If you do, spend that many %FORCE% to flip each chosen ship's dial faceup. "
-    },
-    "Hyperspace Tracking Data": {
-      text: " Setup: Before placing forces, you may choose a number between 0 and 6. Treat your initiative as the chosen value during setup. %LINEBREAK% After Setup, Assign 1 focus of evade token to each friendly ship at range 0-2. "
-    },
-    "Advanced Optics": {
-      text: " While you perform an attack, you may spend 1 focus to change 1 of your blank results to a %HIT% result. "
-    },
-    "Rey": {
-      text: " ... defend or ... If the ... in your %SINGLETURRETARC% ... 1 %FORCE% to ... 1 of your blank results to a %EVADE% or %HIT% result. "
-    },
-    "Chewbacca (Resistance)": {
-      text: " Setup: Lose 1 %CHARGE%. %LINEBREAK% After a friendly ship at range 0-3 is dealt 1 damage card, recover 1 %CHARGE%. %LINEBREAK% While you perform an attack, you may spend 2 %CHARGE% to change 1 %FOCUS% result to a %CRIT% result."
-    },
-    "Paige Tico": {
-      text: " After you perform a primary attack, you may drop 1 bomb or rotate your %SINGLETURRETARC%. After you are destroyed, you may drop 1 bomb. "
-    },
-    "R2-HA": {
-      text: " While you defend, you may spend your lock on the attacker to reroll any number of your defense dice. "
-    },
-    "C-3PO (Resistance)": {
-      text: " <i>Adds: %CALCULATE% <r>%COORDINATE%</r></i> %LINEBREAK% While you coordinate, you can choose friendly ships beyond range 2 if they have %CALCULATE% on their action bar. %LINEBREAK% After you perform the %CALCULATE% or %COORDINATE% action, gain 1 calculate token. "
-    },
-    "Han Solo (Resistance)": {
-      text: " <i>Adds: <r>%EVADE%</r></i> %LINEBREAK% After you perform an %EVADE% action, gain additional evade tokens equal to the number of enemy ships at range 0-1. "
-    },
-    "Rey's Millenium Falcon": {
-      text: " If you have 2 or fewer stress tokens, ou can execute red Segnor's Loop (%SLOOPLEFT% or %SLOOPRIGHT%) maneuvers and perform %BOOST% and %ROTATEARC% actions even while stressed. "
-    },
-    "Petty Officer Thanisson": {
-      text: " During the Activation or Engagement Phase, after an enemy ship in your %FRONTARC% at range 0-1 gains a red or orange token, if you are not stressed, you may gain 1 stress token. if you do, that ship gains an additional token of the type that it gained. "
-    },
-    "BB-8": {
-      text: " Before you execute a blue maneuver, you may spend 1 %CHARGE% to perform a %BARRELROLL% or %BOOST% action. "
-    },
-    "BB Astromech": {
-      text: " Before you execute a blue maneuver, you may spend 1 %CHARGE% to perform a %BARRELROLL% action. "
-    },
-    "M9-G8": {
-      text: " While a ship you are locking performs an attack, you may choose 1 attack die. If you do, the attacker rerolls that die. "
-    },
-    "Ferrosphere Paint": {
-      text: " After an enemy ship locks you, if you are not in that ship's %BULLSEYEARC%, that ship gains 1 stress token. "
-    },
-    "Brilliant Evasion": {
-      text: " While you defend, if you are not in the attacker's %BULLSEYEARC%, you may spend 1 %FORCE% to change 2 of your %FOCUS% results to %EVADE% results. "
-    },
-    "Calibrated Laser Targeting": {
-      text: " While you perform a primary attack, if the defender is in your %BULLSEYEARC%, add 1 %FOCUS% result. "
-    },
-    "Delta-7B": {
-      text: " <i>Adds: 1 attack, 2 shields %LINEBREAK% Removes: 1 agility</i> "
-    },
-    "Biohexacrypt Codes": {
-      text: " While you coordinate or jam, if you have a lock on a ship, you may spend that lock to choose that ship, ignoring range restrictions. "
-    },
-    "Predictive Shot": {
-      text: " After you declare an attack, if the defender is in your %BULLSEYEARC%, you may spend 1 %FORCE%. If you do, during the Roll Defense Dice step, the defender cannot roll more defense dice than the number of your %HIT%/%CRIT% results. "
-    },
-    "Hate": {
-      text: " After you suffer 1 or more damage, recover that many %FORCE% "
-    },
-    "R5-X3": {
-      text: " Before you activate or engage, you may spend 1 %CHARGE% to ignore obstacles until the end of this phase. "
-    },
-    "Pattern Analyzer": {
-      text: " While you fully execute a red maneuver, before the Check Difficulty step, you may perform 1 action. "
+      text: "Fügt einen %TORPEDO% Slot hinzu"
     }
   };
   condition_translations = {
@@ -11013,7 +11108,7 @@ exportObj.cardLoaders.English = function() {
     "Temmin Wexley": {
       text: " After you fully execute a speed 2-4 maneuver, you may perform a %BOOST% action. %LINEBREAK% WEAPON HARDPOINT: You can equip 1 %CANNON%, %TORPEDO% or %MISSILE% upgrade."
     },
-    "Nien Numb": {
+    "Nien Nunb": {
       text: " After you gain a stress token, if there is an enemy ship in your %FRONTARC% at range 0-1, you may remove that stress token. %LINEBREAK% WEAPON HARDPOINT: You can equip 1 %CANNON%, %TORPEDO% or %MISSILE% upgrade."
     },
     "Ello Asty": {
@@ -11761,8 +11856,8 @@ exportObj.cardLoaders.English = function() {
     "Han Solo (Resistance)": {
       text: " <i>Adds: <r>%EVADE%</r></i> %LINEBREAK% After you perform an %EVADE% action, gain additional evade tokens equal to the number of enemy ships at range 0-1. "
     },
-    "Rey's Millenium Falcon": {
-      text: " If you have 2 or fewer stress tokens, ou can execute red Segnor's Loop (%SLOOPLEFT% or %SLOOPRIGHT%) maneuvers and perform %BOOST% and %ROTATEARC% actions even while stressed. "
+    "Rey's Millennium Falcon": {
+      text: " If you have 2 or fewer stress tokens, you can execute red Segnor's Loop (%SLOOPLEFT% or %SLOOPRIGHT%) maneuvers and perform %BOOST% and %ROTATEARC% actions even while stressed. "
     },
     "Petty Officer Thanisson": {
       text: " During the Activation or Engagement Phase, after an enemy ship in your %FRONTARC% at range 0-1 gains a red or orange token, if you are not stressed, you may gain 1 stress token. if you do, that ship gains an additional token of the type that it gained. "
@@ -11813,6 +11908,9 @@ exportObj.cardLoaders.English = function() {
     },
     'Listening Device': {
       text: 'During the System Phase, if an enemy ship with the <strong>Informant</strong> upgrade is at range 0-2, flip your dial faceup.'
+    },
+    'Rattled': {
+      text: 'After a bomb or mine at range 0-1 detonates, suffer 1 %CRIT%. Then, remove this card. %LINEBREAK% Action: If there are no bombs or mines at range 0-1, remove this card.'
     },
     'Optimized Prototype': {
       text: 'While you perform a %FRONTARC% primary attack against a ship locked by a friendly ship with the <strong>Director Krennic</strong> upgrade, you may spend 1 %HIT%/%CRIT%/%FOCUS% result. If you do, choose one: the defender loses 1 shield or the defender flips 1 of its facedown damage cards.'
@@ -13066,6 +13164,9 @@ exportObj.cardLoaders['Español'] = function() {
     },
     "Major Stridan": {
       text: " While you coordinate or resolve the effect of one of your upgrades, you may treat friendly ships at range 2-3 as being at range 0 or range 1. %LINEBREAK% LINKED BATTERY: While you perform a %CANNON% attack, roll 1 addtional die. "
+    },
+    "Nien Nunb": {
+      text: " After you gain a stress token, if there is an enemy ship in your %FRONTARC% at range 0-1, you may remove that stress token. %LINEBREAK% WEAPON HARDPOINT: You can equip 1 %CANNON%, %TORPEDO% or %MISSILE% upgrade."
     }
   };
   upgrade_translations = {
@@ -13797,7 +13898,7 @@ exportObj.cardLoaders['Español'] = function() {
     "Han Solo (Resistance)": {
       text: " <i>Adds: <r>%EVADE%</r></i> %LINEBREAK% After you perform an %EVADE% action, gain additional evade tokens equal to the number of enemy ships at range 0-1. "
     },
-    "Rey's Millenium Falcon": {
+    "Rey's Millennium Falcon": {
       text: " If you have 2 or fewer stress tokens, ou can execute red Segnor's Loop (%SLOOPLEFT% or %SLOOPRIGHT%) maneuvers and perform %BOOST% and %ROTATEARC% actions even while stressed. "
     },
     "Petty Officer Thanisson": {
@@ -15766,6 +15867,7 @@ exportObj.translations.Magyar = {
     "Barrel Roll": '<i class="xwing-miniatures-font xwing-miniatures-font-barrelroll"></i>',
     "Boost": '<i class="xwing-miniatures-font xwing-miniatures-font-boost"></i>',
     "Evade": '<i class="xwing-miniatures-font xwing-miniatures-font-evade"></i>',
+    "F-Evade": '<i class="xwing-miniatures-font force xwing-miniatures-font-evade"></i>',
     "Focus": '<i class="xwing-miniatures-font xwing-miniatures-font-focus"></i>',
     "Lock": '<i class="xwing-miniatures-font xwing-miniatures-font-lock"></i>',
     "Reload": '<i class="xwing-miniatures-font xwing-miniatures-font-reload"></i>',
@@ -15814,7 +15916,7 @@ exportObj.translations.Magyar = {
     "Sensor": "Szenzor",
     "Torpedo": "Torpedó",
     "Turret": "Lövegtorony",
-    "Hardpoint": "Fegyverfelfüggesztő pont",
+    "Hardpoint": "Fegyverfelfüggesztés",
     "Illicit": "Tiltott",
     "Configuration": "Konfiguráció",
     "Talent": "Talentum",
@@ -15857,10 +15959,10 @@ exportObj.translations.Magyar = {
   byCSSSelector: {
     '.unreleased-content-used .translated': 'Ez a raj kiadatlan tartalmat használ!',
     '.collection-invalid .translated': 'Ez a lista nem vihető pályára a készletedből!',
-    '.game-type-selector option[value="standard"]': 'Sztandard',
+    '.game-type-selector option[value="standard"]': 'Kiterjesztett',
     '.game-type-selector option[value="custom"]': 'Egyéni',
     '.game-type-selector option[value="epic"]': 'Epikus',
-    '.game-type-selector option[value="team-epic"]': 'Team Epic',
+    '.game-type-selector option[value="team-epic"]': 'Csapat epikus',
     '.xwing-card-browser option[value="name"]': 'Név',
     '.xwing-card-browser option[value="source"]': 'Forrás',
     '.xwing-card-browser option[value="type-by-points"]': 'Típus (pont szerint)',
@@ -15873,12 +15975,12 @@ exportObj.translations.Magyar = {
     '.info-well .info-upgrades td.info-header': 'Fejlesztések',
     '.info-well .info-range td.info-header': 'Távolság',
     '.clear-squad': 'Új raj',
-    '.save-list': 'Mentés',
-    '.save-list-as': 'Mentés mint…',
-    '.delete-list': 'Törlés',
+    '.save-list': '<i class="fa fa-floppy-o"></i>&nbsp;Mentés',
+    '.save-list-as': '<i class="fa fa-files-o"></i>&nbsp;Mentés mint…',
+    '.delete-list': '<i class="fa fa-trash-o"></i>&nbsp;Törlés',
     '.backend-list-my-squads': 'Raj betöltés',
     '.view-as-text': '<span class="hidden-phone"><i class="fa fa-print"></i>&nbsp;Nyomtatás/Szövegnézet </span>',
-    '.randomize': 'Random!',
+    '.randomize': '<i class="fa fa-random"></i>&nbsp;Random!',
     '.randomize-options': 'Randomizer opciók…',
     '.notes-container > span': 'Jegyzetek',
     '.bbcode-list': 'Copy the BBCode below and paste it into your forum post.<textarea></textarea><button class="btn btn-copy">Másolás</button>',
@@ -15908,7 +16010,8 @@ exportObj.translations.Magyar = {
     '.core2asteroid2-select': 'Force Awakens Asteroid 2',
     '.core2asteroid3-select': 'Force Awakens Asteroid 3',
     '.core2asteroid4-select': 'Force Awakens Asteroid 4',
-    '.core2asteroid5-select': 'Force Awakens Asteroid 5'
+    '.core2asteroid5-select': 'Force Awakens Asteroid 5',
+    '.collection': '<i class="fa fa-folder-open hidden-phone hidden-tabler"></i>&nbsp;Gyűjteményed'
   },
   singular: {
     'pilots': 'Pilóta',
@@ -15932,1299 +16035,1823 @@ exportObj.cardLoaders.Magyar = function() {
   basic_cards = exportObj.basicCardData();
   exportObj.canonicalizeShipNames(basic_cards);
   exportObj.ships = basic_cards.ships;
-
-  /*exportObj.renameShip 'X-Wing', 'X-Wing'
-  exportObj.renameShip 'A-Wing', 'A-Wing'
-  exportObj.renameShip 'Y-Wing', 'Y-Wing'
-  exportObj.renameShip 'B-Wing', 'B-Wing'
-  exportObj.renameShip 'E-Wing', 'E-Wing'
-  exportObj.renameShip 'K-Wing', 'K-Wing'
-  exportObj.renameShip 'U-Wing', 'U-Wing'
-  exportObj.renameShip 'YT-1300', 'YT-1300'
-  exportObj.renameShip 'YT-2400', 'YT-2400'
-  exportObj.renameShip 'Z-95 Headhunter', 'Z-95 Headhunter'
-  exportObj.renameShip 'VCX-100', 'VCX-100'
-  exportObj.renameShip 'Attack Shuttle', 'Attack Shuttle'
-  exportObj.renameShip 'ARC-170', 'ARC-170'
-  exportObj.renameShip 'Auzituck Gunship', 'Auzituck Gunship'
-  exportObj.renameShip 'Sheathipede-Class Shuttle', 'Sheathipede-Class Shuttle'
-  exportObj.renameShip 'TIE Fighter', 'TIE Fighter'
-  exportObj.renameShip 'TIE Advanced', 'TIE Advanced'
-  exportObj.renameShip 'TIE Interceptor', 'TIE Interceptor'
-  exportObj.renameShip 'TIE Bomber', 'TIE Bomber'
-  exportObj.renameShip 'TIE Defender', 'TIE Defender'
-  exportObj.renameShip 'TIE Phantom', 'TIE Phantom'
-  exportObj.renameShip 'TIE Advanced Prototype', 'TIE Advanced Prototype'
-  exportObj.renameShip 'TIE Striker', 'TIE Striker'
-  exportObj.renameShip 'TIE Punisher', 'TIE Punisher'
-  exportObj.renameShip 'TIE Aggressor', 'TIE Aggressor'
-  exportObj.renameShip 'TIE Reaper', 'TIE Reaper'
-  exportObj.renameShip 'Alpha-Class Star Wing', 'Alpha-Class Star Wing'
-  exportObj.renameShip 'Lambda-Class Shuttle', 'Lambda-Class Shuttle'
-  exportObj.renameShip 'VT-49 Decimator', 'VT-49 Decimator'
-  exportObj.renameShip 'Firespray-31', 'Firespray-31'
-  exportObj.renameShip 'M3-A Interceptor', 'M3-A Interceptor' 
-  exportObj.renameShip 'HWK-290', 'HWK-290'
-  exportObj.renameShip 'StarViper', 'StarViper'
-  exportObj.renameShip 'Aggressor', 'Aggressor'
-  exportObj.renameShip 'YV-666', 'YV-666'
-  exportObj.renameShip 'Kihraxz Fighter', 'Kihraxz Fighter'
-  exportObj.renameShip 'G-1A Starfighter', 'G-1A Starfighter'
-  exportObj.renameShip 'Fang Fighter', 'Fang Fighter'
-  exportObj.renameShip 'Customized YT-1300', 'YT-1300 (Scum)'
-  exportObj.renameShip 'JumpMaster 5000', 'JumpMaster 5000'
-  exportObj.renameShip 'Lancer-Class Pursuit Craft', 'Lancer-Class Pursuit Craft'
-  exportObj.renameShip 'Quadjumper', 'Quadjumper'
-  exportObj.renameShip 'Scurrg H-6 Bomber', 'Scurrg H-6 Bomber'
-  exportObj.renameShip 'M12-L Kimogila Fighter', 'M12-L Kimogila Fighter'
-  exportObj.renameShip 'Escape Craft', 'Escape Craft'
-  exportObj.renameShip 'Mining Guild TIE Fighter', 'Mining Guild TIE Fighter'
-  
-  exportObj.renameShip 'T-70 X-Wing', 'T-70 X-Wing'
-  exportObj.renameShip 'RZ-2 A-Wing', 'RZ-2 A-Wing'
-  exportObj.renameShip 'B/SF-17 Bomber', 'B/SF-17 Bomber'
-  exportObj.renameShip 'Scavenged YT-1300', 'YT-1300 (Resistance)'
-  
-  exportObj.renameShip 'TIE/FO Fighter', 'TIE/FO Fighter'
-  exportObj.renameShip 'TIE/SF Fighter', 'TIE/SF Fighter'
-  exportObj.renameShip 'TIE Silencer', 'TIE Silencer'
-  exportObj.renameShip 'Upsilon-Class Shuttle', 'Upsilon-Class Shuttle'
-   */
+  exportObj.renameShip("YT-1300", "Modified YT-1300 Light Freighter");
+  exportObj.renameShip("StarViper", "StarViper-class Attack Platform");
+  exportObj.renameShip("Scurrg H-6 Bomber", "Scurrg H-6 Bomber");
+  exportObj.renameShip("YT-2400", "YT-2400 Light Freighter");
+  exportObj.renameShip("Auzituck Gunship", "Auzituck Gunship");
+  exportObj.renameShip("Kihraxz Fighter", "Kihraxz Fighter");
+  exportObj.renameShip("Sheathipede-Class Shuttle", "Sheathipede-class Shuttle");
+  exportObj.renameShip("Quadjumper", "Quadrijet Transfer Spacetug");
+  exportObj.renameShip("Firespray-31", "Firespray-class Patrol Craft");
+  exportObj.renameShip("TIE Fighter", "TIE/ln Fighter");
+  exportObj.renameShip("Y-Wing", "BTL-A4 Y-Wing");
+  exportObj.renameShip("TIE Advanced", "TIE Advanced x1");
+  exportObj.renameShip("Alpha-Class Star Wing", "Alpha-class Star Wing");
+  exportObj.renameShip("U-Wing", "UT-60D U-Wing");
+  exportObj.renameShip("TIE Striker", "TIE/sk Striker");
+  exportObj.renameShip("B-Wing", "A/SF-01 B-Wing");
+  exportObj.renameShip("TIE Defender", "TIE/D Defender");
+  exportObj.renameShip("TIE Bomber", "TIE/sa Bomber");
+  exportObj.renameShip("TIE Punisher", "TIE/ca Punisher");
+  exportObj.renameShip("Aggressor", "Aggressor Assault Fighter");
+  exportObj.renameShip("G-1A Starfighter", "G-1A Starfighter");
+  exportObj.renameShip("VCX-100", "VCX-100 Light Freighter");
+  exportObj.renameShip("YV-666", "YV-666 Light Freighter");
+  exportObj.renameShip("TIE Advanced Prototype", "TIE Advanced v1");
+  exportObj.renameShip("Lambda-Class Shuttle", "Lambda-class T-4a Shuttle");
+  exportObj.renameShip("TIE Phantom", "TIE/ph Phantom");
+  exportObj.renameShip("VT-49 Decimator", "VT-49 Decimator");
+  exportObj.renameShip("TIE Aggressor", "TIE/ag Aggressor");
+  exportObj.renameShip("K-Wing", "BTL-S8 K-Wing");
+  exportObj.renameShip("ARC-170", "ARC-170 Starfighter");
+  exportObj.renameShip("Attack Shuttle", "Attack Shuttle");
+  exportObj.renameShip("X-Wing", "T-65 X-Wing");
+  exportObj.renameShip("HWK-290", "HWK-290 Light Freighter");
+  exportObj.renameShip("A-Wing", "RZ-1 A-Wing");
+  exportObj.renameShip("Fang Fighter", "Fang Fighter");
+  exportObj.renameShip("Z-95 Headhunter", "Z-95-AF4 Headhunter");
+  exportObj.renameShip("M12-L Kimogila Fighter", "M12-L Kimogila Fighter");
+  exportObj.renameShip("E-Wing", "E-Wing");
+  exportObj.renameShip("TIE Interceptor", "TIE Interceptor");
+  exportObj.renameShip("Lancer-Class Pursuit Craft", "Lancer-class Pursuit Craft");
+  exportObj.renameShip("TIE Reaper", "TIE Reaper");
+  exportObj.renameShip("JumpMaster 5000", "JumpMaster 5000");
+  exportObj.renameShip("M3-A Interceptor", "M3-A Interceptor");
+  exportObj.renameShip("Scavenged YT-1300", "Scavenged YT-1300 Light Freighter");
+  exportObj.renameShip("Escape Craft", "Escape Craft");
   pilot_translations = {
-    "4-LOM": {
-      text: "miután teljesen végrehajtottál egy piros manővert, kapsz 1 kalkuláció jelzőt. A vége fázis elején választhatsz 1 hajót 0-1-es távolságban. Ha így teszel, add át 1 stressz jelződ annak a hajónak."
-    },
     "Academy Pilot": {
+      display_name: "Academy Pilot",
       text: " "
     },
-    "Airen Cracken": {
-      text: "Miután végrehajtasz egy támadást, választhatsz 1 baráti hajót 1-es távolságban. Az a hajó végrehajthat egy akciót, pirosként kezelve."
-    },
     "Alpha Squadron Pilot": {
-      text: "AUTOTHRUSTERS: Miután végrehajtasz egy akciót, végrehajthatsz egy piros %BARRELROLL% vagy egy piros %BOOST% akciót."
-    },
-    "AP-5": {
-      text: "Amikor koordinálsz, ha a kiválasztott hajónak pontosan 1 stressz jelzője van, az végrehajthat akciókat. %LINEBREAK% COMMS SHUTTLE: Amikor dokkolva vagy, anyahajód %COORDINATE% akció lehetőséget kap. Anyahajód az aktiválása előtt végrehajthat egy %COORDINATE% akciót."
-    },
-    "Arvel Crynyd": {
-      text: "Végrehajthatsz elsődleges támadást 0-ás távolságban. Ha egy %BOOST% akcióddal átfedésbe kerülsz egy másik hajóval, úgy hajtsd végre, mintha csak részleges manőver lett volna. %LINEBREAK% VECTORED THRUSTERS: Miután végrehajtottál egy akciót, végrehajthatsz egy piros %BOOST% gyorsítás akciót."
-    },
-    "Asajj Ventress": {
-      text: "A ütközet fázis elején választhatsz egy ellenséges hajót a %SINGLETURRETARC% tűzívedben 0-2-es távolságban és költs 1 %FORCE% jelzőt. Ha így teszel, az a hajó kap egy stressz jelzőt, hacsak nem távolít el egy zöld jelzőt."
-    },
-    "Autopilot Drone": {
-      text: "RIGGED ENERGY CELLS: A rendszer fázis alatt, ha nem vagy dokkolva, elvesztesz 1 %CHARGE% jelzőt. Az aktivációs fázis végén, ha már nincs %CHARGE% jelződ, megsemmisülsz. Mielőtt levennéd a hajód minden 0-1-es távolságban lévő hajó elszenved 1 %CRIT% sérülést"
+      display_name: "Alpha Squadron Pilot",
+      text: "<strong>Autothrusters:</strong> Miután végrehajtasz egy akciót, végrehajthatsz egy piros %BARRELROLL% vagy piros %BOOST% akciót."
     },
     "Bandit Squadron Pilot": {
+      display_name: "Bandit Squadron Pilot",
       text: " "
     },
     "Baron of the Empire": {
+      display_name: "Baron of the Empire",
       text: " "
     },
-    "Benthic Two-Tubes": {
-      text: "Miután végrehajtottál egy %FOCUS% akciót, átrakhatod 1 fókusz jelződ egy baráti hajóra 1-2-es távolságban"
-    },
-    "Biggs Darklighter": {
-      text: "Amikor baráti hajó védekezik tőled 0-1-es távolságban, az Eredménysemlegesítés lépés előtt, ha a támadó tűzívében vagy, elszenvedhetsz 1 %HIT% vagy %CRIT% találatot, hogy hatástalaníts egy azzal egyező találatot."
-    },
     "Binayre Pirate": {
+      display_name: "Binayre Pirate",
       text: " "
     },
     "Black Squadron Ace": {
+      display_name: "Black Squadron Ace",
       text: " "
     },
     "Black Squadron Scout": {
-      text: "ADAPTIVE AILERONS: Mielőtt felfednéd a tárcsád, ha nem vagy stresszes, végre KELL hajtanod egy fehér (1 %BANKLEFT%), (1 %STRAIGHT%) vagy (1 %BANKRIGHT%) menővert."
+      display_name: "Black Squadron Scout",
+      text: "<sasmall><strong>Adaptive Ailerons:</strong> Mielőtt felfednéd a tárcsád, ha nem vagy stresszes, végre <b>kell</b> hajtanod egy fehér [1&nbsp;%BANKLEFT%), [1&nbsp;%STRAIGHT%] vagy [1&nbsp;%BANKRIGHT%] manővert.</sasmall>"
     },
     "Black Sun Ace": {
+      display_name: "Black Sun Ace",
       text: " "
     },
     "Black Sun Assassin": {
-      text: "MICROTHRUSTERS: Mikor orsózást hajtasz végre, a (1 %BANKLEFT%) vagy (1 %BANKRIGHT%) sablont KELL használnod a (1 %STRAIGHT%) helyett."
+      display_name: "Black Sun Assassin",
+      text: "<sasmall><strong>Microthrusters:</strong> Amikor orsózást hajtasz végre, a %BANKLEFT% vagy %BANKRIGHT% sablont <b>kell</b> használnod a %STRAIGHT% helyett.</sasmall>"
     },
     "Black Sun Enforcer": {
-      text: "MICROTHRUSTERS: Mikor orsózást hajtasz végre, a (1 %BANKLEFT%) vagy (1 %BANKRIGHT%) sablont KELL használnod a (1 %STRAIGHT%) helyett."
+      display_name: "Black Sun Enforcer",
+      text: "<sasmall><strong>Microthrusters:</strong> Amikor orsózást hajtasz végre, a %BANKLEFT% vagy %BANKRIGHT% sablont <b>kell</b> használnod a %STRAIGHT% helyett.</sasmall>"
     },
     "Black Sun Soldier": {
+      display_name: "Black Sun Soldier",
       text: " "
     },
     "Blade Squadron Veteran": {
+      display_name: "Blade Squadron Veteran",
       text: " "
     },
     "Blue Squadron Escort": {
+      display_name: "Blue Squadron Escort",
       text: " "
     },
     "Blue Squadron Pilot": {
+      display_name: "Blue Squadron Pilot",
       text: " "
     },
     "Blue Squadron Scout": {
+      display_name: "Blue Squadron Scout",
       text: " "
-    },
-    "Boba Fett": {
-      text: "Amikor védekezel vagy végrehajtasz egy támadást, újradobhatsz 1 kockát, minden egyes 0-1-es távolságban lévő ellenséges hajó után."
-    },
-    "Bodhi Rook": {
-      text: "A baráti hajók bemérhetnek más baráti hajóktól 0-3-as távolságban lévő objektumokat."
-    },
-    "Bossk": {
-      text: "Amikor végrehajtasz egy elsődleges támadást, az 'Eredmények semlegesítése' lépés után, elkölthetsz egy %CRIT% eredményt, hogy hozzáadj 2 %HIT% eredményt a dobásodhoz."
     },
     "Bounty Hunter": {
+      display_name: "Bounty Hunter",
       text: " "
     },
-    "Braylen Stramm": {
-      text: "Amikor védekezel vagy végrehajtasz egy támadást, ha stresszes vagy, újradobhatod legfeljebb 2 kockádat."
-    },
-    "Captain Feroph": {
-      text: "Amikor védekezel, ha a támadónak nincs zöld jelzője, megváltoztathatod 1 üres vagy %FOCUS% dobásod %EVADE% eredményre.%LINEBREAK% ADAPTIVE AILERONS: Mielőtt felfednéd a tárcsád, ha nem vagy stresszes, végre KELL hajtanod egy fehér (1 %BANKLEFT%), (1 %STRAIGHT%) vagy (1 %BANKRIGHT%) menővert."
-    },
-    "Captain Jonus": {
-      text: "Amikor egy baráti hajó 0-1-es távolságban végrehajt egy %TORPEDO% vagy %MISSILE% támadást, az újradobhat akár 2 támadókockát.%LINEBREAK% NIMBLE BOMBER: Ha ledobsz egy eszközt a %STRAIGHT% sablon segítségével, használhatod az azonos sebességű %BANKLEFT% vagy %BANKRIGHT% sablonokat helyette."
-    },
-    "Captain Jostero": {
-      text: "Miután egy ellenséges hajó sérülést szenved és nem védekezett, végrehajthatsz egy bónusz támadást ellene."
-    },
-    "Captain Kagi": {
-      text: "A ütközet fázis elején választhatsz egy baráti hajót 0-3-es távolságban. Ha így teszel tedd át az összes ellenséges bemérés jelzőt a kiválasztott hajóról magadra."
-    },
-    "Captain Nym": {
-      text: "Mielőtt egy baráti bomba vagy akna felrobbanna, elkölthetsz 1 %CHARGE% jelzőt, hogy megakadályozd a felrobbanását. Mikor egy támadás ellen védekezel amely akadályozott egy bomba vagy akna által, 1-gyel több védekezőkockával dobj."
-    },
-    "Captain Oicunn": {
-      text: "Végrehajthatsz elsődleges támadást 0-ás távolságban."
-    },
-    "Captain Rex": {
-      text: "Miután végrehajtasz egy támadást, jelöld meg a védekezőt a 'Suppressive Fire' kondícióval."
-    },
     "Cartel Executioner": {
-      text: "DEAD TO RIGHTS: Amikor végrehajtasz egy támadást, ha a védekező benne van a %BULLSEYEARC% tűzívedben, a védekezőkockák nem módosíthatók zöld jelzőkkel."
+      display_name: "Cartel Executioner",
+      text: "<sasmall> <strong>Dead to Rights:</strong> Amikor végrehajtasz egy támadást, ha a védekező benne van a %BULLSEYEARC% tűzívedben, a védekezőkockák nem módosíthatók zöld jelzőkkel.</sasmall>"
     },
     "Cartel Marauder": {
+      display_name: "Cartel Marauder",
       text: " "
     },
     "Cartel Spacer": {
-      text: "WEAPON HARDPOINT: Felszerelhetsz 1 %CANNON%, %TORPEDO% vagy %MISSILE% feljesztést."
-    },
-    "Cassian Andor": {
-      text: "Az aktivációs fázis elején választhatsz 1 baráti hajót 1-3-as távolságban. Ha így teszel, az a hajó eltávolít 1 stressz jelzőt."
+      display_name: "Cartel Spacer",
+      text: "<strong>Weapon Hardpoint:</strong> Felszerelhetsz 1&nbsp;%CANNON%, %TORPEDO% vagy %MISSILE% fejlesztést."
     },
     "Cavern Angels Zealot": {
+      display_name: "Cavern Angels Zealot",
       text: " "
-    },
-    "Chewbacca": {
-      text: "Mielőtt képpel felfelé fordított sebzéskártyát kapnál, elkölthetsz 1 %CHARGE%-et, hogy a lapot képpel lefelé húzd fel."
-    },
-    '"Chopper"': {
-      text: "A ütközet fázis elején minden 0-ás távolságban lévő ellenséges hajó 2 zavarás jelzőt kap.%LINEBREAK%TAIL GUN: Ha van bedokkolt a hajód, használhatod az elsődleges %REARARC% fegyvered, ugyanolyan támadási értékkel, mint a dokkolt hajó elsődleges %FRONTARC% értéke."
-    },
-    "Colonel Jendon": {
-      text: "Az aktivációs fázis elején elkölthetsz egy %CHARGE% jelzőt. Ha így teszel, amikor baráti hajók bemérés jelzőt tesznek fel ebben a körben, 3-as távolságon túl tehetik csak meg a 0-3-as távolság helyett."
-    },
-    "Colonel Vessery": {
-      text: "Amikor támadást hajtasz végre egy bemért hajó ellen, miután dobsz a kockákkal, feltehetsz egy bemérés jelzőt a védekezőre.%LINEBREAK% FULL THROTTLE: Miután teljesen végrehajtottál egy 3-5 sebességű manővert, végrehajthatsz egy %EVADE% akciót."
-    },
-    "Constable Zuvio": {
-      text: "Amikor kidobnál egy eszközt, helyette ki is lőheted egy (1 %STRAIGHT%) sablon használatával.%LINEBREAK% SPACETUG TRACTOR ARRAY: AKCIÓ: Válassz egy hajót a %FRONTARC% tűzívedben 1-es távolságban. Az a hajó kap 1 vonósugár jelzőt vagy 2 vonósugár jelzőt, ha benne van a %BULLSEYEARC% tűzívedben 1-es távolságban."
     },
     "Contracted Scout": {
+      display_name: "Contracted Scout",
       text: " "
     },
-    "Corran Horn": {
-      text: "0-ás kezdeményezésnél végrehajthatsz egy bónusz elsődleges támadást egy ellenséges hajó ellen, aki a %BULLSEYEARC% tűzívedben van. Ha így teszel, a következő tervezés fázisban kapsz 1 inaktív fegyverzet jelzőt.%LINEBREAK% EXPERIMENTAL SCANNERS: 3-as távolságon túl is bemérhetsz. Nem mérhetsz be 1-es távolságra."
-    },
-    '"Countdown"': {
-      text: "Amikor védekezel, az 'Eredmények semlegesítése' lépés után, ha nem vagy stresszes, választhatod, hogy elszenvedsz 1 %HIT% sérülést és kapsz 1 stressz jelzőt. Ha így teszel, vess el minden kocka dobást.  %LINEBREAK% ADAPTIVE AILERONS: Mielőtt felfednéd a tárcsád, ha nem vagy stresszes, végre KELL hajtanod egy fehér (1 %BANKLEFT%), (1 %STRAIGHT%) vagy (1 %BANKRIGHT%) menővert."
-    },
-    "Countess Ryad": {
-      text: "Amikor végrehajtanál egy %STRAIGHT% manővert, megnövelheted annak nehézségét. Ha így teszel, végrehajthatsz egy %KTURN% manővert helyette. %LINEBREAK% FULL THROTTLE: Miután teljesen végrehajtottál egy 3-5 sebességű manővert, végrehajthatsz egy %EVADE% akciót."
-    },
     "Crymorah Goon": {
+      display_name: "Crymorah Goon",
       text: " "
     },
     "Cutlass Squadron Pilot": {
+      display_name: "Cutlass Squadron Pilot",
       text: " "
-    },
-    "Dace Bonearm": {
-      text: "Miután egy ellenséges hajó 0-3-as távolságban kap legalább 1 ion jelzőt, elkölthetsz 3 %CHARGE% jelzőt. Ha így teszel, az a hajó kap 2 további ion jelzőt."
-    },
-    "Dalan Oberos": {
-      text: "A ütközet fázis elején választhatsz 1 pajzzsal rendelekező hajót a %BULLSEYEARC% tűzívedben és elkölthetsz 1 %CHARGE% jelzőt. Ha így teszel, az a hajó elveszít egy pajzsot, te pedig visszatölthetsz 1 pajzsot.%LINEBREAK% DEAD TO RIGHTS: Amikor végrehajtasz egy támadást, ha a védekező benne van a %BULLSEYEARC% tűzívedben, a védekezőkockák nem módosíthatók zöld jelzőkkel."
-    },
-    "Dalan Oberos (StarViper)": {
-      text: "Miután teljesen végrehajtasz egy manővert, kaphatsz 1 stressz jelzőt, hogy elforgasd a hajód 90 fokkal. %LINEBREAK% MICROTHRUSTERS: Amikor orsózást hajtasz végre, a (1 %BANKLEFT%) vagy (1 %BANKRIGHT%) sablont KELL használnod a (1 %STRAIGHT%) helyett."
-    },
-    "Darth Vader": {
-      text: "Miután végrehajtasz egy akciót, elkölthetsz 1 %FORCE% jelzőt, hogy végrehajts egy akciót. %LINEBREAK% ADVANCED TARGETING COMPUTER: Amikor végrehajtasz egy elsődleges támadást egy olyan védekező ellen, akit bemértél, 1-gyel több támadókockával dobj és változtasd egy %HIT% eredményed %CRIT% eredményre."
-    },
-    "Dash Rendar": {
-      text: "Amikor mozogsz, hagyd figyelmen kívül az akadályokat. %LINEBREAK% SENSOR BLINDSPOT: Amikor elsődleges támadást hajtasz végre 0-1-es távolságban, nem érvényesül a 0-1-es távolságért járó bónusz és 1-gyel kevesebb támadókockával dobsz."
-    },
-    '"Deathfire"': {
-      text: "Miután megsemmisülsz, mielőtt levennéd a hajód, végrehajthatsz egy támadást és ledobhatsz vagy kilőhetsz egy eszközt. %LINEBREAK% NIMBLE BOMBER: Ha ledobsz egy eszközt a %STRAIGHT% sablon segítségével, használhatod az azonos sebességű %BANKLEFT% vagy %BANKRIGHT% sablonokat helyette."
-    },
-    '"Deathrain"': {
-      text: "Miután ledobsz vagy kilősz egy eszközt, végrehajthatsz egy akciót."
-    },
-    "Del Meeko": {
-      text: "Amikor egy baráti 0-2 távolságban védekezik egy sérült támadó ellen, a védekező újradobhat 1 védekezőkockát."
     },
     "Delta Squadron Pilot": {
-      text: "FULL THROTTLE: Miután teljesen végrehajtottál egy 3-5 sebességű manővert, végrehajthatsz egy %EVADE% akciót."
-    },
-    "Dengar": {
-      text: "Miután védekeztél, ha a támadó benne van a %FRONTARC% tűzívedben, elkölthetsz egy %CHARGE% jelzőt, hogy végrehajts egy bónusz támadást a támadó ellen."
-    },
-    '"Double Edge"': {
-      text: "Miután végrehajtasz egy %TURRET% vagy %MISSILE% támadást ami nem talál, végrehajthatsz egy bónusz támadást egy másik fegyverrel."
-    },
-    "Drea Renthal": {
-      text: "Amikor egy baráti nem-limitált hajó végrehajt egy támadást, ha a védekező benne van a tűzívedben, a támadó újradobhatja 1 támadókockáját."
-    },
-    '"Duchess"': {
-      text: "Választhatsz úgy, hogy nem használod az ADAPTIVE AILERONS képességed. Használhatod akkor is ADAPTIVE AILERONS-t, amikor stresszes vagy.%LINEBREAK% ADAPTIVE AILERONS: Mielőtt felfednéd a tárcsád, ha nem vagy stresszes, végre KELL hajtanod egy fehér (1 %BANKLEFT%), (1 %STRAIGHT%) vagy (1 %BANKRIGHT%) menővert."
-    },
-    '"Dutch" Vander': {
-      text: "Miután %LOCK% akciót hajtottál végre választhatsz 1 baráti hajót 1-3-as távolságban. Az a hajó is bemérheti az általad bemért objektumot, függetlenül a távolságtól."
-    },
-    '"Echo"': {
-      text: "Amikor kijössz az álcázásból, a (2 %BANKLEFT%) vagy (2 %BANKRIGHT%) sablont KELL használnod a (2 %STRAIGHT%) helyett. STYGUM ARRAY: Miután kijössz az álcázásból végrehajthatsz egy %EVADE% akciót. A vége fázis elején elkölthetsz 1 kitérés jelzőt, hogy kapj egy álcázás jelzőt."
-    },
-    "Edrio Two-Tubes": {
-      text: "Mielőtt aktiválódnál és van fókuszod, végrehajthatsz egy akciót."
-    },
-    "Emon Azzameen": {
-      text: "Ha ki szeretnél dobni egy eszközt az [1 %STRAIGHT%] sablonnal, használhatod helyette a [3 %TURNLEFT%], [3 %STRAIGHT%], vagy [3 %TURNRIGHT%] sablont."
-    },
-    "Esege Tuketu": {
-      text: "Amikor egy 0-2-es távolságban baráti hajó védekezik, vagy támadást hajt végre, elköltheti a te fókusz jelzőidet, mintha a saját hajójáé lenne."
-    },
-    "Evaan Verlaine": {
-      text: "A ütközet fázis elején elkölthetsz 1 fókusz jelzőt, hogy kiválassz egy baráti hajót 0-1-es távolságban. Ha így teszel, az a hajó a kör végéig minden védekezésénél 1-gyel több védekezőkockával dob."
-    },
-    "Ezra Bridger": {
-      text: "Amikor védekezel vagy támadást hajtasz végre, ha stresszes vagy, elkölthetsz 1 %FORCE%-t, hogy legfeljebb 2 %FOCUS% eredményt %EVADE% vagy %HIT% eredményre módosíts.%LINEBREAK%LOCKED AND LOADED: Amikor dokkolva vagy, miután anyahajód végrehajtott egy elsődleges %FRONTARC% vagy %TURRET% támadást, végrehajthat egy bónusz %REARARC% támadást."
-    },
-    "Ezra Bridger (Sheathipede)": {
-      text: "Amikor védekezel vagy támadást hajtasz végre, ha stresszes vagy, elkölthetsz 1 %FORCE%-t, hogy legfeljebb 2 %FOCUS% eredményt %EVADE% vagy %HIT% eredményre módosíts.%LINEBREAK% COMMS SHUTTLE: Amikor dokkolva vagy, anyahajód %COORDINATE% akció lehetőséget kap. Anyahajód az aktiválása előtt végrehajthat egy %COORDINATE% akciót."
-    },
-    "Ezra Bridger (TIE Fighter)": {
-      text: "Amikor védekezel vagy támadást hajtasz végre, ha stresszes vagy, elkölthetsz 1 %FORCE%-t, hogy legfeljebb 2 %FOCUS% eredményt %EVADE% vagy %HIT% eredményre módosíts."
-    },
-    "Fenn Rau": {
-      text: "Amikor védekezel vagy támadást hajtasz végre, ha a támadás 1-es távolságban történik, 1-gyel több kockával dobhatsz. %LINEBREAK% CONCORDIA FACEOFF: Amikor védekezel, ha a támadás 1-es távolságban történik és benne vagy a támadó %FRONTARC% tűzívében, megváltoztathatod 1 dobás eredményed %EVADE% eredményre."
-    },
-    "Fenn Rau (Sheathipede)": {
-      text: "Miután egy ellenséges hajó a tűzívedben sorra kerül az Ütközet fázisban, ha nem vagy stresszes, kaphatsz 1 stressz jelzőt. Ha így teszel, az a hajó nem költhet el jelzőt, hogy módosítsa támadókockáit e fázis alatt.%LINEBREAK% COMMS SHUTTLE: Amikor dokkolva vagy, anyahajód %COORDINATE% akció lehetőséget kap. Anyahajód az aktiválása előtt végrehajthat egy %COORDINATE% akciót."
+      display_name: "Delta Squadron Pilot",
+      text: "<strong>Full Throttle:</strong> Miután teljesen végrehajtottál egy 3-5 sebességű manővert, végrehajthatsz egy %EVADE% akciót."
     },
     "Freighter Captain": {
-      text: " "
+      display_name: "Freighter Captain",
+      text: ""
     },
     "Gamma Squadron Ace": {
-      text: "NIMBLE BOMBER: Ha ledobsz egy eszközt a %STRAIGHT% sablon segítségével, használhatod az azonos sebességű %BANKLEFT% vagy %BANKRIGHT% sablonokat helyette."
+      display_name: "Gamma Squadron Ace",
+      text: "<strong>Nimble Bomber:</strong> Ha ledobnál egy eszközt a %STRAIGHT% sablon segítségével, használhatod az azonos sebességű %BANKLEFT% vagy %BANKRIGHT% sablonokat helyette."
     },
     "Gand Findsman": {
+      display_name: "Gand Findsman",
       text: " "
-    },
-    "Garven Dreis": {
-      text: "Miután elköltesz egy fókusz jelzőt, választhatsz 1 baráti hajót 1-3-as távolságban. Az a hajó kap egy fókusz jelzőt."
-    },
-    "Garven Dreis (X-Wing)": {
-      text: "Miután elköltesz egy fókusz jelzőt, választhatsz 1 baráti hajót 1-3-as távolságban. Az a hajó kap egy fókusz jelzőt."
-    },
-    "Gavin Darklighter": {
-      text: "Amikor egy baráti hajó végrehajt egy támadást, ha a védekező a %FRONTARC%-odban van, a támadó 1 %HIT% találatát %CRIT% találatra módosíthatja. %LINEBREAK% EXPERIMENTAL SCANNERS: 3-as távolságon túl is bemérhetsz. Nem mérhetsz be 1-es távolságra."
-    },
-    "Genesis Red": {
-      text: "Miután feltettél egy bemérés jelzőt, le kell venned az összes fókusz és kitérés jelződet, aztán megkapsz annyi fókusz és kitérés jelzőt, ahány a bemért hajónak van.%LINEBREAK% WEAPON HARDPOINT: Felszerelhetsz 1 %CANNON%, %TORPEDO% vagy %MISSILE% feljesztést."
-    },
-    "Gideon Hask": {
-      text: "Amikor végrehajtasz egy támadást sérült védekező ellen, 1-gyel több támadókockával dobhatsz."
     },
     "Gold Squadron Veteran": {
+      display_name: "Gold Squadron Veteran",
       text: " "
-    },
-    "Grand Inquisitor": {
-      text: "Amikor 1-es távolságban védekezel, elkölthetsz 1 %FORCE% tokent, hogy megakadályozd az 1-es távolság bónuszt. Amikor támadást hajtasz végre 2-3-as távolságban lévő védekező ellen, elkölthetsz 1 %FORCE% jelzőt, hogy megkapd az 1-es távolság bónuszt."
     },
     "Gray Squadron Bomber": {
+      display_name: "Gray Squadron Bomber",
       text: " "
-    },
-    "Graz": {
-      text: "Amikor védekezel és a támadó mögött vagy, 1-gyel több védekezőkockával dobhatsz. Amikor végrehajtasz egy támadást és a védekező mögött vagy, 1-gyel több támadókockával dobhatsz."
     },
     "Green Squadron Pilot": {
-      text: "VECTORED THRUSTERS: Miután végrehajtottál egy akciót, végrehajthatsz egy piros %BOOST% akciót."
-    },
-    "Guri": {
-      text: "A ütközet fázis elején, ha legalább 1 ellenséges hajó van 0-1-es távolságban, kapsz egy fókusz jelzőt. %LINEBREAK% MICROTHRUSTERS: Amikor orsózást hajtasz végre, a (1 %BANKLEFT%) vagy (1 %BANKRIGHT%) sablont KELL használnod a (1 %STRAIGHT%) helyett."
-    },
-    "Han Solo (Scum)": {
-      text: "Amikor védekezel vagy támadást hajtasz vége, ha a támadás akadály által akadályozott, 1-gyel több támadókockával dobhatsz."
-    },
-    "Han Solo": {
-      text: "Miután dobtál, ha 0-1-es távolságban vagy akadálytól, újradobhatod az összes kockádat. Ez nem számít újradobásnak más hatások számára."
-    },
-    "Heff Tobber": {
-      text: "Miután egy ellenséges hajó végrehajt egy manővert, ha 0-ás távolságba kerül, végrehajthatsz egy akciót."
-    },
-    "Hera Syndulla": {
-      text: "Miután vörös vagy kék manővert fedtél fel, átállíthatod manőversablonod egy másik, azonos nehézségű manőverre. %LINEBREAK% LOCKED AND LOADED: Amikor dokkolva vagy, miután anyahajód végrehajtott egy elsődleges %FRONTARC% vagy %TURRET% támadást, végrehajthat egy bónusz %REARARC% támadást."
-    },
-    "Hera Syndulla (VCX-100)": {
-      text: "Miután vörös vagy kék manővert fedtél fel, átállíthatod manőversablonod egy másik, azonos nehézségű manőverre.%LINEBREAK%TAIL GUN: Ha van bedokkolt a hajód, használhatod az elsődleges %REARARC% fegyvered, ugyanolyan támadási értékkel, mint a dokkolt hajó elsődleges %FRONTARC% értéke."
+      display_name: "Green Squadron Pilot",
+      text: "<sasmall><strong>Vectored Thrusters:</strong> Miután végrehajtottál egy akciót, végrehajthatsz egy piros %BOOST% akciót.</sasmall>"
     },
     "Hired Gun": {
+      display_name: "Hired Gun",
       text: " "
-    },
-    "Horton Salm": {
-      text: "Amikor támadást hajtasz végre, a védekezőtől 0-1-es távolságban lévő minden más baráti hajó után újradobhatsz 1-1 támadókockát."
-    },
-    '"Howlrunner"': {
-      text: "Amikor egy 0-1-es távolságban lévő baráti hajó elsődleges támadást hajt végre, 1 támadókockát újradobhat."
-    },
-    "Ibtisam": {
-      text: "Amikor teljesen végrehajtod a manővered, ha stresszes vagy, dobhatsz 1 támadókockával. %HIT% vagy %CRIT% esetén eltávolíthatsz 1 stressz jelzőt."
-    },
-    "Iden Versio": {
-      text: "Mielőtt egy 0-1-es távolságban lévő baráti TIE/ln hajó elszenvedne 1 vagy több sérülést, elkölthetsz 1 %CHARGE% jelzőt. Ha így teszel, megakadályozod a sérülést."
-    },
-    "IG-88A": {
-      text: "A ütközet fázis elején kiválaszthatsz egy %CALCULATE% akcióval rendelkező baráti hajót 1-3-as távolságban. Ha így teszel, add át 1 kalkuláció jelződet neki. %LINEBREAK% ADVANCED DROID BRAIN: Miután végrehajtottál egy %CALCULATE% akciót, kapsz 1 kalkuláció jelzőt."
-    },
-    "IG-88B": {
-      text: "Miután végrehajtottál egy támadást ami nem talált, végrehajthatsz egy bónusz %CANNON% támadást. %LINEBREAK% ADVANCED DROID BRAIN: Miután végrehajtottál egy %CALCULATE% akciót, kapsz 1 kalkuláció jelzőt."
-    },
-    "IG-88C": {
-      text: "Miután végrehajtottál egy %BOOST% akciót, végrehajthatsz egy %EVADE% akciót. %LINEBREAK% ADVANCED DROID BRAIN: Miután végrehajtottál egy %CALCULATE% akciót, kapsz 1 kalkuláció jelzőt."
-    },
-    "IG-88D": {
-      text: "Amikor végrehajtasz egy Segnor's Loop (%SLOOPLEFT% vagy %SLOOPRIGHT%) manővert, Használhatsz ugyanazon sebességű másik sablont helyette: vagy megegyező irányú kanyar (%TURNLEFT% vagy %TURNRIGHT%), vagy előre egyenes (%STRAIGHT%) sablont. %LINEBREAK% ADVANCED DROID BRAIN: Miután végrehajtottál egy %CALCULATE% akciót, kapsz 1 kalkuláció jelzőt."
     },
     "Imdaar Test Pilot": {
-      text: "STYGUM ARRAY: Miután kijössz az álcázásból végrehajthatsz egy %EVADE% akciót. A vége fázis elején elkölthetsz 1 kitérés jelzőt, hogy kapj egy álcázás jelzőt."
-    },
-    "Inaldra": {
-      text: "Amikor védekezel vagy támadást hajtasz végre, elszenvedhetsz egy %HIT% sérülést, hogy újradobj bármennyi kockát. %LINEBREAK% WEAPON HARDPOINT: Felszerelhetsz 1 %CANNON%, %TORPEDO% vagy %MISSILE% feljesztést."
+      display_name: "Imdaar Test Pilot",
+      text: "<strong>Stygium Array:</strong> Miután kijössz az álcázásból végrehajthatsz egy %EVADE% akciót. A Vége fázis elején elkölthetsz 1 kitérés jelzőt, hogy kapj egy álcázás jelzőt."
     },
     "Inquisitor": {
+      display_name: "Inquisitor",
       text: " "
-    },
-    "Jake Farrell": {
-      text: "Miután %BARRELROLL%, vagy %BOOST% akciót hajtottál végre, választhatsz 1 baráti hajót 0-1-es távolságban. Az a hajó végrehajthat egy %FOCUS% akciót. %LINEBREAK% VECTORED THRUSTERS: Miután végrehajtottál egy akciót, végrehajthatsz egy piros %BOOST% akciót."
     },
     "Jakku Gunrunner": {
-      text: "SPACETUG TRACTOR ARRAY: AKCIÓ: Válassz egy hajót a %FRONTARC% tűzívedben 1-es távolságban. Az a hajó kap 1 vonósugár jelzőt vagy 2 vonósugár jelzőt, ha benne van a %BULLSEYEARC% tűzívedben 1-es távolságban."
-    },
-    "Jan Ors": {
-      text: "Amikor egy tűzíveden belüli baráti hajó elsődleges támadást hajt végre, ha nem vagy stresszes, kaphatsz 1 stressz jelzőt. Ha így teszel, az a hajó 1-gyel több támadókockával dobhat"
-    },
-    "Jek Porkins": {
-      text: "Miután kapsz egy stressz jelzőt, dobhatsz 1 támadó kockával, hogy levedd. %HIT% dobás esetén elszenvedsz 1 %HIT% sérülést."
-    },
-    "Joy Rekkoff": {
-      text: "Amikor támadást hajtasz végre, elkölthetsz 1 %CHARGE% jelzőt egy felszerelt %TORPEDO% fejlesztésről. Ha így teszel a védekező 1-gyel kevesebb védekezőkockával dob. %LINEBREAK% CONCORDIA FACEOFF: Amikor védekezel, ha a támadás 1-es távolságban történik és benne vagy a támadó %FRONTARC% tűzívében, megváltoztathatod 1 dobás eredményed %EVADE% eredményre."
-    },
-    "Kaa'to Leeachos": {
-      text: "A ütközet fázis elején kiválaszthatsz egy 0-2-es távolságban lévő baráti hajót. Ha így teszel, áttehetsz róla 1 fókusz vagy kitérés jelzőt a magadra."
-    },
-    "Kad Solus": {
-      text: "Miután végrehajtasz egy piros manővrt, kapsz 2 fókusz jelzőt."
-    },
-    "Kanan Jarrus": {
-      text: "Amikor egy tűzívedben lévő baráti hajó védekezik, elkölthetsz 1 %FORCE%-t. Ha így teszel, a támadó 1-gyel kevesebb támadókockával dob.%LINEBREAK%TAIL GUN: Ha van bedokkolt a hajód, használhatod az elsődleges %REARARC% fegyvered, ugyanolyan támadási értékkel, mint a dokkolt hajó elsődleges %FRONTARC% értéke."
+      display_name: "Jakku Gunrunner",
+      text: "<strong>Spacetug Tractor Array:</strong> <strong>Akció:</strong>: Válassz egy hajót a %FRONTARC% tűzívedben 1-es távolságban. Az a hajó kap 1 vonósugár jelzőt vagy 2 vonósugár jelzőt, ha benne van a %BULLSEYEARC% tűzívedben 1-es távolságban."
     },
     "Kashyyyk Defender": {
+      display_name: "Kashyyyk Defender",
       text: " "
     },
-    "Kath Scarlet": {
-      text: "Amikor támadást hajtasz végre és legalább 1 nem-limitált baráti hajó van 0-ás távolságra a védekezőtől, dobj 1-gyel több támadókockával."
-    },
-    "Kavil": {
-      text: "Amikor egy nem-%FRONTARC% támadást hajtasz végre, dobj 1-gyel több támadókockával."
-    },
-    "Ketsu Onyo": {
-      text: "A ütközet fázis elején választhatsz egy hajót ami a %FRONTARC% és %SINGLETURRETARC% tűzívedben is benne van 0-1-es távolságban. Ha így teszel, az a hajó kap egy vonósugár jelzőt."
-    },
     "Knave Squadron Escort": {
-      text: "EXPERIMENTAL SCANNERS: 3-as távolságon túl is bemérhetsz. Nem mérhetsz be 1-es távolságra."
-    },
-    "Koshka Frost": {
-      text: "Amikor védekezel vagy támadást hajtasz végre, ha az ellenséges hajó stresszes, újradobhatod 1 kockádat"
-    },
-    "Krassis Trelix": {
-      text: "Végrehajthatsz egy %FRONTARC% speciális támadást a %REARARC% tűzívedből. Amikor speciális támadást hajtasz végre, újradobhatsz egy támadókockát."
-    },
-    "Kullbee Sperado": {
-      text: "Miután végrehajtottál egy %BARRELROLL% vagy %BOOST% akciót, megfordíthatod a felszerelt %CONFIG% fejlesztés kártyád."
-    },
-    "Kyle Katarn": {
-      text: "A ütközet fázis elején átadhatod 1 fókusz jelződet egy tűzívedben lévő baráti hajónak."
-    },
-    "L3-37 (Escape Craft)": {
-      text: "Ha nincs pajzsod, csökkentsd a nehézségét a (%BANKLEFT% és %BANKRIGHT%) manővereknek. %LINEBREAK% CO-PILOT: Amíg dokkolva vagy, az anyahajód megkapja a pilóta képességed, mintha a sajátja lenne."
-    },
-    "L3-37": {
-      text: "Ha nincs pajzsod, csökkentsd a nehézségét a (%BANKLEFT% és %BANKRIGHT%) manővereknek."
-    },
-    "Laetin A'shera": {
-      text: "Miután védekezel vagy támadást hajtasz végre, ha a támadás nem talált, kapsz 1 kitérés jelzőt. %LINEBREAK% WEAPON HARDPOINT: Felszerelhetsz 1 %CANNON%, %TORPEDO% vagy %MISSILE% feljesztést."
-    },
-    "Lando Calrissian (Scum) (Escape Craft)": {
-      text: "Miután dobsz a kockákkal, ha nem vagy stresszes, kaphatsz 1 stressz jelzőt, hogy újradobhasd az összes üres eredményed. %LINEBREAK% CO-PILOT: Amíg dokkolva vagy, az anyahajód megkapja a pilóta képességed, mintha a sajátja lenne."
-    },
-    "Lando Calrissian": {
-      text: "Miután teljesen végrehajtottál egy kék manővert, választhatsz 1 baráti hajót 0-3-as távolságban. Az a hajó végrehajthat egy akciót."
-    },
-    "Lando Calrissian (Scum)": {
-      text: "Miután dobsz a kockákkal, ha nem vagy stresszes, kaphatsz 1 stressz jelzőt, hogy újradobhasd az összes üres eredményed."
-    },
-    "Latts Razzi": {
-      text: "A ütközet fázis elején kiválaszthatsz egy hajót 1-es távolságban és elköltheted a rajta lévő bemérés jelződet. Ha így teszel, az a hajó kap egy vonosugár jelzőt."
-    },
-    '"Leebo"': {
-      text: "Miután védekeztél, vagy támadást hajtottál végre, ha elköltöttél egy kalkuláció jelzőt, kapsz 1 kalkuláció jelzőt. %LINEBREAK% SENSOR BLINDSPOT: Amikor elsődleges támadást hajtasz végre 0-1-es távolságban, nem érvényesül a 0-1-es távolságért járó bónusz és 1-gyel kevesebb támadókockával dobsz."
-    },
-    "Leevan Tenza": {
-      text: "Miután végrehajtottál egy %BARRELROLL% vagy %BOOST% akciót, végrehajthatsz egy piros %EVADE% akciót."
-    },
-    "Lieutenant Blount": {
-      text: "Amikor elsődleges támadást hajtasz végre, ha a védekezőtől legalább 1 másik baráti hajó van 0-1-es távolságban, 1-gyel több támadókockával dobhatsz."
-    },
-    "Lieutenant Karsabi": {
-      text: "Miután kapsz egy 'inakvív fegyverzet' jelzőt, ha nem vagy stresszes, kaphatsz 1 stressz jelzőt, hogy levedd az 'inakvív fegyverzet' jelzőt."
-    },
-    "Lieutenant Kestal": {
-      text: "Amikor támadást hajtasz végre, miután a védekező dob a kockáival, elkölthetsz 1 fókusz jelzőt, hogy semlegesítsd a védekező összes üres és fókusz eredményét."
-    },
-    "Lieutenant Sai": {
-      text: "Miután végrehajtottál egy %COORDINATE% akciót, ha a koordinált hajó olyan akciót hajt végre, ami a te akciósávodon is rajta van, végrehajthatod azt az akciót."
+      display_name: "Knave Squadron Escort",
+      text: "<sasmall><strong>Experimental Scanners:</strong> 3-as távolságon túl is bemérhetsz. Nem mérhetsz be 1-es távolságra.</sasmall>"
     },
     "Lok Revenant": {
+      display_name: "Lok Revenant",
       text: " "
     },
     "Lothal Rebel": {
-      text: "TAIL GUN: Ha van bedokkolt a hajód, használhatod az elsődleges %REARARC% fegyvered, ugyanolyan támadási értékkel, mint a dokkolt hajó elsődleges %FRONTARC% értéke."
-    },
-    "Lowhhrick": {
-      text: "Miután egy 0-1-es távolságban lévő baráti hajó védekezővé vált, elkölthetsz 1 erősítés jelzőt. Ha így teszel, az a hajó kap 1 kitérés jelzőt."
-    },
-    "Luke Skywalker": {
-      text: "Miután védekező lettél (még a kockagurítás előtt), visszatölthetsz 1 %FORCE% jelzőt."
-    },
-    "Maarek Stele": {
-      text: "Amikor támadást hajtasz végre, ha a védekező felfordított sérülés kártyát kapna, helyette húzz te 3 lapot, válassz egyet, a többit dobd el. %LINEBREAK% ADVANCED TARGETING COPMUTER: Amikor végrehajtasz egy elsődleges támadást egy olyan védekező ellen, akit bemértél, 1-gyel több támadókockával dobj és változtasd egy %HIT% eredményed %CRIT% eredményre."
-    },
-    "Magva Yarro": {
-      text: "Amikor egy baráti hajó 0-2-es távolságban védekezik, a támadó maximum 1 kockáját dobhatja újra."
-    },
-    "Major Rhymer": {
-      text: "Amikor végrhajtasz egy %TORPEDO% vagy %MISSILE% támadást, növelheted vagy csökkentheted a fegyver távolság követelményét 1-gyel, a 0-3 korláton belül. %LINEBREAK% NIMBLE BOMBER: Ha ledobsz egy eszközt a %STRAIGHT% sablon segítségével, használhatod az azonos sebességű %BANKLEFT% vagy %BANKRIGHT% sablonokat helyette."
-    },
-    "Major Vermeil": {
-      text: "Amikor támadást hajtasz végre, ha a védekezőnek nincs egy zöld jelzője sem, megváltoztathatod 1 üres vagy %FOCUS% eredményedet %HIT% eredményre. %LINEBREAK% ADAPTIVE AILERONS: Mielőtt felfednéd a tárcsád, ha nem vagy stresszes, végre KELL hajtanod egy fehér (1 %BANKLEFT%), (1 %STRAIGHT%) vagy (1 %BANKRIGHT%) menővert."
-    },
-    "Major Vynder": {
-      text: "Amikor védekezel és van 'inaktív fegyverzet' jelződ, dobj 1-gyel több védekezőkockával."
-    },
-    "Manaroo": {
-      text: "A ütközet fázis elején kiválaszthatsz egy 0-1-es távolságban lévő baráti hajót. Ha így teszel, add át neki az összes zöld jelződ."
-    },
-    '"Mauler" Mithel': {
-      text: "Amikor támadást hajtasz végre 1-es távolságban, dobj 1-gyel több támadókockával."
-    },
-    "Miranda Doni": {
-      text: "Amikor elsődleges támadást hajtasz végre, elkölthetsz 1 pajzsot, hogy 1-gyel több támadókockával dobj, vagy ha nincs pajzsod, dobhatsz 1-gyel kevesebb támadókockával, hogy visszatölts 1 pajzsot."
-    },
-    "Moralo Eval": {
-      text: "Ha lerepülsz a pályáról, elkölthetsz egy %CHARGE% jelzőt. Ha így teszel, helyezd a hajód tartalékba. A következő tervezési fázis elején helyezd a hajót a pálya széléntől 1-es távolságban azon az oldalon, ahol lerepültél."
-    },
-    "Nashtah Pup": {
-      text: "Csak vészhelyzet esetén válhatsz le az anyahajóról. Ebben az esetben megkapod a megsemmisült baráti Hound's Tooth pilóta nevet, kezdeményezést, pilóta képességet és hajó %CHARGE% jelzőt. %LINEBREAK% ESCAPE CRAFT SETUP: HOUND'S TOOTH szükséges. A HOUND'S TOOTH-ra dokkolva kell kezdened a játékot."
-    },
-    "N'dru Suhlak": {
-      text: "Amikor elődleges támadást hajtasz végre, ha nincs baráti hajó 0-2 távolságban, dobj 1-gyel több támadókockával."
-    },
-    '"Night Beast"': {
-      text: "Miután teljesen végrehajtasz egy kék manővert, végrehajthatsz egy %FOCUS% akciót."
-    },
-    "Norra Wexley": {
-      text: "Amikor védekezel, ha az ellenség 0-1-es távolságban van, hozzáadhatsz 1 %EVADE% eredményt dobásodhoz."
-    },
-    "Norra Wexley (Y-Wing)": {
-      text: "Amikor védekezel, ha az ellenség 0-1-es távolságban van, hozzáadhatsz 1 %EVADE% eredményt dobásodhoz."
+      display_name: "Lothal Rebel",
+      text: "<strong>Tail Gun:</strong> ha van bedokkolt hajód, használhatod az elsődleges %REARARC% fegyvered, ugyanolyan támadási értékkel, mint a dokkolt hajó elsődleges %FRONTARC% támadási értéke."
     },
     "Nu Squadron Pilot": {
+      display_name: "Nu Squadron Pilot",
       text: " "
     },
     "Obsidian Squadron Pilot": {
+      display_name: "Obsidian Squadron Pilot",
       text: " "
     },
-    "Old Teroch": {
-      text: "A ütközet fázis elején, kiválaszthatsz 1 ellenséges hajót 1-es távolságban. Ha így teszel és benne vagy a %FRONTARC% tűzívében, leveheted az összes zöld jelzőjét. %LINEBREAK% CONCORDIA FACEOFF: Amikor védekezel, ha a támadás 1-es távolságban történik és benne vagy a támadó %FRONTARC% tűzívében, megváltoztathatod 1 dobás eredményed %EVADE% eredményre."
-    },
     "Omicron Group Pilot": {
+      display_name: "Omicron Group Pilot",
       text: " "
     },
     "Onyx Squadron Ace": {
-      text: "FULL THROTTLE: Miután teljesen végrehajtottál egy 3-5 sebességű manővert, végrehajthatsz egy %EVADE% akciót."
+      display_name: "Onyx Squadron Ace",
+      text: "<strong>Full Throttle:</strong> Miután teljesen végrehajtottál egy 3-5 sebességű manővert, végrehajthatsz egy %EVADE% akciót."
     },
     "Onyx Squadron Scout": {
+      display_name: "Onyx Squadron Scout",
       text: " "
-    },
-    "Outer Rim Pioneer": {
-      text: "Baráti hajók 0-1-es távolságban végrehajthatnak támadást az akadályon állva. %LINEBREAK% CO-PILOT: Amíg dokkolva vagy, az anyahajód megkapja a pilóta képességed, mintha a sajátja lenne."
     },
     "Outer Rim Smuggler": {
+      display_name: "Outer Rim Smuggler",
       text: " "
     },
-    "Palob Godalhi": {
-      text: "A ütközet fázis elején kiválaszthatsz 1 ellenséges hajót a tűzívedben 0-2 távolságban. Ha így teszel tedd át 1 fókusz vagy kitérés jelzőjét magadra."
-    },
     "Partisan Renegade": {
+      display_name: "Partisan Renegade",
       text: " "
     },
     "Patrol Leader": {
+      display_name: "Patrol Leader",
       text: " "
     },
     "Phoenix Squadron Pilot": {
-      text: "VECTORED THRUSTERS: Miután végrehajtottál egy akciót, végrehajthatsz egy piros %BOOST% akciót."
+      display_name: "Phoenix Squadron Pilot",
+      text: "<sasmall><strong>Vectored Thrusters:</strong> Miután végrehajtottál egy akciót, végrehajthatsz egy piros %BOOST% akciót.</sasmall>"
     },
     "Planetary Sentinel": {
-      text: "ADAPTIVE AILERONS: Mielőtt felfednéd a tárcsád, ha nem vagy stresszes, végre KELL hajtanod egy fehér (1 %BANKLEFT%), (1 %STRAIGHT%) vagy (1 %BANKRIGHT%) menővert."
-    },
-    "Prince Xizor": {
-      text: "Amikor védekezel, az 'eredmények semlegesítése' lépésben egy másik baráti hajó 0-1 távolságban a támadó tűzívében elszenvedhet 1 %HIT% vagy %CRIT% sérülést. Ha így tesz, hatástalaníts 1 ennek megfelelő eredményt. %LINEBREAK% MICROTHRUSTERS: Amikor orsózást hajtasz végre, a (1 %BANKLEFT%) vagy (1 %BANKRIGHT%) sablont KELL használnod a (1 %STRAIGHT%) helyett."
-    },
-    '"Pure Sabacc"': {
-      text: "Amikor támadást hajtasz végre, ha 1 vagy kevesebb sérüléskártyád van, 1-gyel több támadókockával dobhatsz. %LINEBREAK% ADAPTIVE AILERONS: Mielőtt felfednéd a tárcsád, ha nem vagy stresszes, végre KELL hajtanod egy fehér (1 %BANKLEFT%), (1 %STRAIGHT%) vagy (1 %BANKRIGHT%) menővert."
-    },
-    "Quinn Jast": {
-      text: "Az ütközet fázis elején kaphatsz 1 'inaktív fegyverzet' jelzőt, hogy visszatölts 1 %CHARGE% jelzőt egy felszerelt fejlesztésen. %LINEBREAK% WEAPON HARDPOINT: Felszerelhetsz 1 %CANNON%, %TORPEDO% vagy %MISSILE% feljesztést."
-    },
-    "Rear Admiral Chiraneau": {
-      text: "Amikor támadást hajtasz végre, ha van 'reinforce' jelződ és a védekező a reinforce-nak megfelelő %FULLFRONTARC% vagy %FULLREARARC% tűzívedben van, megváltoztathatod 1 %FOCUS% eredményed %CRIT% eredményre."
+      display_name: "Planetary Sentinel",
+      text: "<sasmall><strong>Adaptive Ailerons:</strong> Mielőtt felfednéd a tárcsád, ha nem vagy stresszes, végre <b>kell</b> hajtanod egy fehér [1&nbsp;%BANKLEFT%), [1&nbsp;%STRAIGHT%] vagy [1&nbsp;%BANKRIGHT%] manővert.</sasmall>"
     },
     "Rebel Scout": {
+      display_name: "Rebel Scout",
       text: " "
     },
     "Red Squadron Veteran": {
+      display_name: "Red Squadron Veteran",
       text: " "
-    },
-    '"Redline"': {
-      text: "Fenntarthatsz 2 bemérő jelzőt. Miután végrehajtottál egy akciót, feltehetsz egy bemérő jelzőt."
-    },
-    "Rexler Brath": {
-      text: "Amikor végrehajtasz egy támadást, ami talál, ha van kitérés jelződ, fordítsd fel a védekező egy sérülés kártyáját. %LINEBREAK% FULL THROTTLE: Miután teljesen végrehajtottál egy 3-5 sebességű manővert, végrehajthatsz egy %EVADE% akciót."
     },
     "Rho Squadron Pilot": {
+      display_name: "Rho Squadron Pilot",
       text: " "
-    },
-    "Roark Garnet": {
-      text: "A ütközet fázis elején választhatsz egy tűzívedben lévő hajót. Ha így teszel, a kezdeményezési értéke ebben a fázisban 7 lesz, függetlenül a nyomtatott értékétől."
     },
     "Rogue Squadron Escort": {
-      text: "EXPERIMENTAL SCANNERS: 3-as távolságon túl is bemérhetsz. Nem mérhetsz be 1-es távolságra."
+      display_name: "Rogue Squadron Escort",
+      text: "<sasmall><strong>Experimental Scanners:</strong> 3-as távolságon túl is bemérhetsz. Nem mérhetsz be 1-es távolságra.</sasmall>"
     },
     "Saber Squadron Ace": {
-      text: "AUTOTHRUSTERS: Miután végrehajtasz egy akciót, végrehajthatsz egy piros %BARRELROLL% vagy egy piros %BOOST% akciót."
-    },
-    "Sabine Wren": {
-      text: "Mielőtt aktiválnád, végrehajthatsz egy %BARRELROLL% vagy egy %BOOST% akciót.%LINEBREAK%LOCKED AND LOADED: Amikor dokkolva vagy, miután anyahajód végrehajtott elsődleges %FRONTARC% vagy %TURRET% típusú támadást, végrehajthat egy bónusz %REARARC% támadást."
-    },
-    "Sabine Wren (Scum)": {
-      text: "Amikor védekezel, ha a támadó benne van a %SINGLETURRETARC% tűzívedben 0-2-es távolságban, hozzáadhatsz 1 %FOCUS% eredményt a dobásodhoz."
-    },
-    "Sabine Wren (TIE Fighter)": {
-      text: "Mielőtt aktiválnád, végrehajthatsz egy %BARRELROLL% vagy egy %BOOST% akciót."
-    },
-    "Sarco Plank": {
-      text: "Amikor védekezel kezelheted a mozgékonyság értékedet úgy, hogy az megegyezzen az ebben a körben végrehajtott manővered sebességével. %LINEBREAK% SPACETUG TRACTOR ARRAY: AKCIÓ: Válassz egy hajót a %FRONTARC% tűzívedben 1-es távolságban. Az a hajó kap 1 vonósugár jelzőt vagy 2 vonósugár jelzőt, ha benne van a %BULLSEYEARC% tűzívedben 1-es távolságban."
-    },
-    "Saw Gerrera": {
-      text: "Amikor egy sérült baráti hajó 0-3-as távolságban végrehajt egy támadást, újradobhat 1 támadókockát."
+      display_name: "Saber Squadron Ace",
+      text: "<strong>Autothrusters:</strong> Miután végrehajtasz egy akciót, végrehajthatsz egy piros %BARRELROLL% vagy piros %BOOST% akciót."
     },
     "Scarif Base Pilot": {
-      text: "ADAPTIVE AILERONS: Mielőtt felfednéd a tárcsád, ha nem vagy stresszes, végre KELL hajtanod egy fehér (1 %BANKLEFT%), (1 %STRAIGHT%) vagy (1 %BANKRIGHT%) menővert."
+      display_name: "Scarif Base Pilot",
+      text: "<sasmall><strong>Adaptive Ailerons:</strong> Mielőtt felfednéd a tárcsád, ha nem vagy stresszes, végre <b>kell</b> hajtanod egy fehér [1&nbsp;%BANKLEFT%), [1&nbsp;%STRAIGHT%] vagy [1&nbsp;%BANKRIGHT%] manővert.</sasmall>"
     },
     "Scimitar Squadron Pilot": {
-      text: "NIMBLE BOMBER: Ha ledobsz egy eszközt a %STRAIGHT% sablon segítségével, használhatod az azonos sebességű %BANKLEFT% vagy %BANKRIGHT% sablonokat helyette."
-    },
-    '"Scourge" Skutu': {
-      text: "Amikor végrehajtasz egy támadást a %BULLSEYEARC% tűzívedben lévő védekező ellen, dobj 1-gyel több támadókockával."
-    },
-    "Serissu": {
-      text: "Amikor egy baráti hajó 0-1-es távolságban védekezik, újradobhatja 1 kockáját. %LINEBREAK% WEAPON HARDPOINT: Felszerelhetsz 1 %CANNON%, %TORPEDO% vagy %MISSILE% feljesztést."
-    },
-    "Seventh Sister": {
-      text: "Amikor végrehajtasz egy elsődleges támadást, az 'Eredmények semlegesítése' lépés előtt elkölthetsz 2 %FORCE% jelzőt, hogy hatástalaníts 1 %EVADE% eredményt."
-    },
-    "Seyn Marana": {
-      text: "Amikor végrehajtasz egy támadást elkölthetsz 1 %CRIT% eredményt. Ha így teszel, ossz 1 lefordított sérülés kártyát a védekezőnek, majd hatástalanítsd a többi dobás eredményed."
+      display_name: "Scimitar Squadron Pilot",
+      text: "<strong>Nimble Bomber:</strong> Ha ledobnál egy eszközt a %STRAIGHT% sablon segítségével, használhatod az azonos sebességű %BANKLEFT% vagy %BANKRIGHT% sablonokat helyette."
     },
     "Shadowport Hunter": {
+      display_name: "Shadowport Hunter",
       text: " "
     },
-    "Shara Bey": {
-      text: "Amikor védekezel vagy elsődleges támadást hajtasz végre, elköltheted az ellenfeledre tett bemérés jelződet, hogy hozzáadj 1 %FOCUS% eredményt dobásodhoz."
-    },
     "Sienar Specialist": {
+      display_name: "Sienar Specialist",
       text: " "
     },
     "Sigma Squadron Ace": {
-      text: "STYGUM ARRAY: Miután kijössz az álcázásból végrehajthatsz egy %EVADE% akciót. A vége fázis elején elkölthetsz 1 kitérés jelzőt, hogy kapj egy álcázás jelzőt."
+      display_name: "Sigma Squadron Ace",
+      text: "<strong>Stygium Array:</strong> Miután kijössz az álcázásból végrehajthatsz egy %EVADE% akciót. A Vége fázis elején elkölthetsz 1 kitérés jelzőt, hogy kapj egy álcázás jelzőt."
     },
     "Skull Squadron Pilot": {
-      text: "CONCORDIA FACEOFF: Amikor védekezel, ha a támadás 1-es távolságban történik és benne vagy a támadó %FRONTARC% tűzívében, megváltoztathatod 1 dobás eredményed %EVADE% eredményre."
-    },
-    "Sol Sixxa": {
-      text: "Ha ledobnál egy eszközt az [1 %STRAIGHT%] sablon használatával, helyette ledobhatod más 1-es sebességű sablonnal."
-    },
-    "Soontir Fel": {
-      text: "Az ütközet fázis elején ha van ellenséges hajó a %BULLSEYEARC% tűzívedben, kapsz 1 fókusz jelzőt. %LINEBREAK% AUTOTHRUSTERS: Miután végrehajtasz egy akciót, végrehajthatsz egy piros %BARRELROLL% vagy egy piros %BOOST% akciót."
+      display_name: "Skull Squadron Pilot",
+      text: "<sasmall><strong>Concordia Faceoff:</strong> Amikor védekezel, ha a támadás 1-es távolságban történik és benne vagy a támadó %FRONTARC% tűzívében, megváltoztathatod 1 dobás eredményed %EVADE% eredményre.</sasmall>"
     },
     "Spice Runner": {
+      display_name: "Spice Runner",
       text: " "
     },
     "Storm Squadron Ace": {
-      text: "ADVANCED TARGETING COPMUTER: Amikor végrehajtasz egy elsődleges támadást egy olyan védekező ellen, akit bemértél, 1-gyel több támadókockával dobj és változtasd egy %HIT% eredményed %CRIT% eredményre."
-    },
-    "Sunny Bounder": {
-      text: "Amikor védekezel vagy támadást hajtasz végre, miután dobtál vagy újradobtál kockákat, ha minden eredményed egyforma, hozzáadhatsz egy ugyanolyan eredményt a dobáshoz. %LINEBREAK% WEAPON HARDPOINT: Felszerelhetsz 1 %CANNON%, %TORPEDO% vagy %MISSILE% feljesztést."
+      display_name: "Storm Squadron Ace",
+      text: "<sasmall><strong>Advanced Targeting Computer:</strong> Amikor végrehajtasz egy elsődleges támadást egy olyan védekező ellen, akit bemértél, 1-gyel több támadókockával dobj és változtasd 1&nbsp;%HIT% eredményed %CRIT% eredményre.</sasmall>"
     },
     "Tala Squadron Pilot": {
+      display_name: "Tala Squadron Pilot",
       text: " "
-    },
-    "Talonbane Cobra": {
-      text: "Amikor 3-as távolságban védekezel vagy 1-es távolságban támadást hajtasz végre, dobj 1-gyel több kockával."
     },
     "Tansarii Point Veteran": {
-      text: "WEAPON HARDPOINT: Felszerelhetsz 1 %CANNON%, %TORPEDO% vagy %MISSILE% feljesztést."
-    },
-    "Tel Trevura": {
-      text: "Ha megsemmisülnél, elkölthetsz 1 %CHARGE% jelzőt. Ha így teszel, dobd el az összes sérülés kártyádat, szenvedj el 5 %HIT% sérülést, majd helyezd magad tartalékba. A következő tervezési fázis elején helyezd fel a hajód 1-es távolságban a saját oldaladon."
+      display_name: "Tansarii Point Veteran",
+      text: "<strong>Weapon Hardpoint:</strong> Felszerelhetsz 1&nbsp;%CANNON%, %TORPEDO% vagy %MISSILE% fejlesztést."
     },
     "Tempest Squadron Pilot": {
-      text: "ADVANCED TARGETING COPMUTER: Amikor végrehajtasz egy elsődleges támadást egy olyan védekező ellen, akit bemértél, 1-gyel több támadókockával dobj és változtasd egy %HIT% eredményed %CRIT% eredményre."
-    },
-    "Ten Numb": {
-      text: "Amikor védekezel vagy támadást hajtasz végre, elkölthetsz 1 stressz jelzőt, hogy minden %FOCUS% eredményű kockád értékét megváltoztasd %EVADE% vagy %HIT% találatra."
-    },
-    "Thane Kyrell": {
-      text: "Amikor támadást hajtasz végre, elkölthetsz 1 %FOCUS%, %HIT% vagy %CRIT% eredményt, hogy megnézd a védekező képpel lefelé fordított sérülés kártyáit, kiválassz egyet és megfordítsd."
-    },
-    "Tomax Bren": {
-      text: "Miután végrehajtasz egy %RELOAD% akciót, visszatölthetsz 1 %CHARGE% jelzőt 1 felszerelt %TALENT% fejlesztés kártyán. %LINEBREAK% NIMBLE BOMBER: Ha ledobsz egy eszközt a %STRAIGHT% sablon segítségével, használhatod az azonos sebességű %BANKLEFT% vagy %BANKRIGHT% sablonokat helyette."
-    },
-    "Torani Kulda": {
-      text: "Miután végrehajtasz egy támadást, minden ellenséges hajó a %BULLSEYEARC% tűzívedben elszenved 1 %HIT% sérülést, hacsak el nem dob 1 zöld jelzőt. %LINEBREAK% DEAD TO RIGHTS: Amikor végrehajtasz egy támadást, ha a védekező benne van a %BULLSEYEARC% tűzívedben, a védekezőkockák nem módosíthatók zöld jelzőkkel."
-    },
-    "Torkil Mux": {
-      text: "Az ütközet fázis elején kiválaszthatsz 1 hajót a tűzívedben. Ha így teszel, az a hajó ebben a körben 0-ás kezdeményezéssel kerül sorra a normál kezdeményezése helyett."
+      display_name: "Tempest Squadron Pilot",
+      text: "<sasmall><strong>Advanced Targeting Computer:</strong> Amikor végrehajtasz egy elsődleges támadást egy olyan védekező ellen, akit bemértél, 1-gyel több támadókockával dobj és változtasd 1&nbsp;%HIT% eredményed %CRIT% eredményre.</sasmall>"
     },
     "Trandoshan Slaver": {
+      display_name: "Trandoshan Slaver",
       text: " "
-    },
-    "Turr Phennir": {
-      text: "Miután végrehajtasz egy támadást, végrehajthatsz egy %BARRELROLL% vagy %BOOST% akciót akkor is ha stresszes vagy. %LINEBREAK% AUTOTHRUSTERS: Miután végrehajtasz egy akciót, végrehajthatsz egy piros %BARRELROLL% vagy egy piros %BOOST% akciót."
-    },
-    "Unkar Plutt": {
-      text: "Az ütközet fázis elején, ha van egy vagy több másik hajó 0-ás távolságban tőled, te és a 0-ás távolságra lévő hajók kapnak egy vonósugár jelzőt. %LINEBREAK% AKCIÓ: Válassz egy hajót a %FRONTARC% tűzívedben 1-es távolságban. Az a hajó kap 1 vonósugár jelzőt vagy 2 vonósugár jelzőt, ha benne van a %BULLSEYEARC% tűzívedben 1-es távolságban."
-    },
-    "Valen Rudor": {
-      text: "Miután egy baráti hajó 0-1-es távolságban védekezik - a sérülések elkönyvelése után -, végrehajthatsz egy akciót."
-    },
-    "Ved Foslo": {
-      text: "Amikor végrehajtasz egy manővert, helyette végrehajthatsz egy manővert ugyanabban az irányban és nehézségben, 1-gyel kisebb vagy nagyobb sebességgel. %LINEBREAK% ADVANCED TARGETING COPMUTER: Amikor végrehajtasz egy elsődleges támadást egy olyan védekező ellen, akit bemértél, 1-gyel több támadókockával dobj és változtasd egy %HIT% eredményed %CRIT% eredményre."
-    },
-    "Viktor Hel": {
-      text: "Miután védekeztél, ha nem pontosan 2 védekezőkockával dobtál, a támadó kap 1 stress jelzőt."
-    },
-    '"Vizier"': {
-      text: "Miután teljesen végrehajtottál egy 1-es sebességű manővert az Adaptive Ailerons képességed használatával, végrehajthatsz egy %COORDINATE% akciót. Ha így teszel, hagyd ki az 'Akció végrehajtása' lépést. %LINEBREAK% ADAPTIVE AILERONS: Mielőtt felfednéd a tárcsád, ha nem vagy stresszes, végre KELL hajtanod egy fehér (1 %BANKLEFT%), (1 %STRAIGHT%) vagy (1 %BANKRIGHT%) menővert."
-    },
-    '"Wampa"': {
-      text: "Amikor végrehajtasz egy támadást, elkölthetsz 1 %CHARGE% jelzőt, hogy 1-gyel több támadókockával dobj. Védekezés után elvesztesz 1 %CHARGE% jelzőt."
     },
     "Warden Squadron Pilot": {
+      display_name: "Warden Squadron Pilot",
       text: " "
-    },
-    "Wedge Antilles": {
-      text: "Amikor támadást hajtasz végre, a védekező 1-gyel kevesebb védekezőkockával dob."
-    },
-    '"Whisper"': {
-      text: "Miután végrehajtasz egy támadást, ami talál, kapsz 1 kitérés jelzőt. STYGUM ARRAY: Miután kijössz az álcázásból végrehajthatsz egy %EVADE% akciót. A vége fázis elején elkölthetsz 1 kitérés jelzőt, hogy kapj egy álcázás jelzőt."
     },
     "Wild Space Fringer": {
-      text: "SENSOR BLINDSPOT: Amikor elsődleges támadást hajtasz végre 0-1-es távolságban, nem érvényesül a 0-1-es távolságért járó bónusz és 1-gyel kevesebb támadókockával dobsz."
-    },
-    "Wullffwarro": {
-      text: "Amikor elsődleges támadást hajtasz végre, ha sérült vagy, 1-gyel több támadókockával dobhatsz."
+      display_name: "Wild Space Fringer",
+      text: "<strong>Sensor Blindspot:</strong> Amikor elsődleges támadást hajtasz végre 0-1-es távolságban, nem érvényesül a 0-1-es távolságért járó bónusz és 1-gyel kevesebb támadókockával dobsz."
     },
     "Zealous Recruit": {
-      text: "CONCORDIA FACEOFF: Amikor védekezel, ha a támadás 1-es távolságban történik és benne vagy a támadó %FRONTARC% tűzívében, megváltoztathatod 1 dobás eredményed %EVADE% eredményre."
+      display_name: "Zealous Recruit",
+      text: "<sasmall><strong>Concordia Faceoff:</strong> Amikor védekezel, ha a támadás 1-es távolságban történik és benne vagy a támadó %FRONTARC% tűzívében, megváltoztathatod 1 dobás eredményed %EVADE% eredményre.</sasmall>"
     },
-    '"Zeb" Orrelios': {
-      text: "Amikor védekezel a %CRIT% találatok előbb semlegesítődnek a %HIT% találatoknál.%LINEBREAK% LOCKED AND LOADED: Amikor dokkolva vagy, miután anyahajód végrehajtott egy elsődleges %FRONTARC% vagy %TURRET% támadást, végrehajthat egy bónusz %REARARC% támadást."
+    "4-LOM": {
+      display_name: "4-LOM",
+      text: "Miután teljesen végrehajtottál egy piros manővert, kapsz 1 kalkuláció jelzőt. A Vége fázis elején választhatsz 1 hajót 0-1-es távolságban. Ha így teszel, add át 1 stressz jelződ annak a hajónak."
     },
-    '"Zeb" Orrelios (Sheathipede)': {
-      text: "Amikor védekezel a %CRIT% találatok előbb semlegesítődnek a %HIT% találatoknál.%LINEBREAK% COMMS SHUTTLE: Amikor dokkolva vagy, anyahajód %COORDINATE% akció lehetőséget kap. Anyahajód az aktiválása előtt végrehajthat egy %COORDINATE% akciót."
+    "Nashtah Pup": {
+      display_name: "Nashtah Pup",
+      text: "Csak vészhelyzet esetén válhatsz le az anyahajóról. Ebben az esetben megkapod a megsemmisült baráti Hound's Tooth pilóta nevet, kezdeményezést, pilóta képességet és hajó %CHARGE% jelzőt. %LINEBREAK% <strong>Escape Craft:</strong> <strong>Setup:</strong> <strong>Hound’s Tooth</strong> szükséges. A <strong>Hound’s Tooth</strong>-ra dokkolva <b>kell</b> kezdened a játékot."
     },
-    '"Zeb" Orrelios (TIE Fighter)': {
-      text: "Amikor védekezel a %CRIT% találatok előbb semlegesítődnek a %HIT% találatoknál."
+    "AP-5": {
+      display_name: "AP-5",
+      text: "Amikor koordinálsz, ha a kiválasztott hajónak pontosan 1 stressz jelzője van, az végrehajthat akciókat.%LINEBREAK%<sasmall><strong>Comms Shuttle:</strong> Amikor dokkolva vagy az anyahajód %COORDINATE% akció lehetőséget kap. Az anyahajód aktiválása előtt végrehajthat egy %COORDINATE% akciót.</sasmall>"
+    },
+    "Airen Cracken": {
+      display_name: "Airen Cracken",
+      text: "Miután végrehajtasz egy támadást, választhatsz 1 baráti hajót 1-es távolságban. Az a hajó végrehajthat egy akciót, pirosként kezelve."
+    },
+    "Arvel Crynyd": {
+      display_name: "Arvel Crynyd",
+      text: "Végrehajthatsz elsődleges támadást 0-ás távolságban. Ha egy %BOOST% akcióddal átfedésbe kerülsz egy másik hajóval, úgy hajtsd végre, mintha csak részleges manőver lett volna. %LINEBREAK% VECTORED THRUSTERS: Miután végrehajtottál egy akciót, végrehajthatsz egy piros %BOOST% gyorsítás akciót."
+    },
+    "Asajj Ventress": {
+      display_name: "Asajj Ventress",
+      text: "Az Ütközet fázis elején választhatsz 1 ellenséges hajót a %SINGLETURRETARC% tűzívedben 0-2-es távolságban és költs 1&nbsp;%FORCE% jelzőt. Ha így teszel, az a hajó kap 1 stressz jelzőt, hacsak nem távolít el 1 zöld jelzőt."
+    },
+    "Autopilot Drone": {
+      display_name: "Autopilot Drone",
+      text: "<strong>Rigged Energy Cells:</strong> A Rendszer fázis alatt, ha nem vagy dokkolva, elvesztesz 1&nbsp;%CHARGE% jelzőt. Az aktivációs fázis végén, ha már nincs %CHARGE% jelződ, megsemmisülsz. Mielőtt levennéd a hajód minden 0-1-es távolságban lévő hajó elszenved 1&nbsp;%CRIT% sérülést."
+    },
+    "Benthic Two-Tubes": {
+      display_name: "Benthic Two Tubes",
+      text: "Miután végrehajtottál egy %FOCUS% akciót, átrakhatod 1 fókusz jelződ egy baráti hajóra 1-2-es távolságban."
+    },
+    "Biggs Darklighter": {
+      display_name: "Biggs Darklighter",
+      text: "Amikor baráti hajó védekezik tőled 0-1-es távolságban, az <strong>Eredmények semlegesítése</strong> lépés előtt, ha a támadó tűzívében vagy, elszenvedhetsz 1&nbsp;%HIT% vagy %CRIT% találatot, hogy hatástalaníts 1 azzal egyező találatot."
+    },
+    "Boba Fett": {
+      display_name: "Boba Fett",
+      text: "Amikor védekezel vagy végrehajtasz egy támadást, újradobhatsz 1 kockát, minden egyes 0-1-es távolságban lévő ellenséges hajó után."
+    },
+    "Bodhi Rook": {
+      display_name: "Bodhi Rook",
+      text: "Baráti hajók bemérhetnek más baráti hajóktól 0-3-as távolságban lévő objektumokat."
+    },
+    "Bossk": {
+      display_name: "Bossk",
+      text: "Amikor végrehajtasz egy elsődleges támadást, az <strong>Eredmények semlegesítése</strong> lépés után, elkölthetsz egy %CRIT% eredményt, hogy hozzáadj 2 %HIT% eredményt a dobásodhoz."
+    },
+    "Braylen Stramm": {
+      display_name: "Braylen Stramm",
+      text: "Amikor védekezel vagy végrehajtasz egy támadást, ha stresszes vagy, újradobhatod legfeljebb 2 kockádat."
+    },
+    "Captain Feroph": {
+      display_name: "Captain Feroph",
+      text: "Amikor védekezel, ha a támadónak nincs zöld jelzője, megváltoztathatod 1 üres vagy %FOCUS% dobásod %EVADE% eredményre.%LINEBREAK%<sasmall><strong>Adaptive Ailerons:</strong> Mielőtt felfednéd a tárcsád, ha nem vagy stresszes, végre <b>kell</b> hajtanod egy fehér [1&nbsp;%BANKLEFT%), [1&nbsp;%STRAIGHT%] vagy [1&nbsp;%BANKRIGHT%] manővert.</sasmall>"
+    },
+    "Captain Jonus": {
+      display_name: "Captain Jonus",
+      text: "Amikor egy baráti hajó 0-1-es távolságban végrehajt egy %TORPEDO% vagy %MISSILE% támadást, az újradobhat legfeljebb 2 támadókockát.%LINEBREAK%<strong>Nimble Bomber:</strong> Ha ledobnál egy eszközt a %STRAIGHT% sablon segítségével, használhatod az azonos sebességű %BANKLEFT% vagy %BANKRIGHT% sablonokat helyette."
+    },
+    "Captain Jostero": {
+      display_name: "Captain Jostero",
+      text: "Miután egy ellenséges hajó sérülést szenved és nem védekezett, végrehajthatsz egy bónusz támadást ellene."
+    },
+    "Captain Kagi": {
+      display_name: "Captain Kagi",
+      text: "Az Ütközet fázis elején választhatsz egy vagy több baráti hajót 0-3-es távolságban. Ha így teszel, tedd át az összes ellenséges bemérés jelzőt a kiválasztott hajókról magadra."
+    },
+    "Captain Nym": {
+      display_name: "Captain Nym",
+      text: "Mielőtt egy baráti bomba vagy akna felrobbanna, elkölthetsz 1&nbsp;%CHARGE% jelzőt, hogy megakadályozd a felrobbanását.%LINEBREAK%Mikor egy támadás ellen védekezel, amely akadályozott egy bomba vagy akna által, 1-gyel több védekezőkockával dobj."
+    },
+    "Captain Oicunn": {
+      display_name: "Captain Oicunn",
+      text: "Végrehajthatsz elsődleges támadást 0-ás távolságban."
+    },
+    "Captain Rex": {
+      display_name: "Captain Rex",
+      text: "Miután végrehajtasz egy támadást, jelöld meg a védekezőt a <strong>Suppressive Fire</strong> kondícióval."
+    },
+    "Cassian Andor": {
+      display_name: "Cassian Andor",
+      text: "Az Aktivációs fázis elején választhatsz 1 baráti hajót 1-3-as távolságban. Ha így teszel, az a hajó eltávolít 1 stressz jelzőt."
+    },
+    "Chewbacca": {
+      display_name: "Chewbacca",
+      text: "Mielőtt felfordított sebzéskártyát kapnál, elkölthetsz 1&nbsp;%CHARGE%-et, hogy a lapot képpel lefelé húzd fel."
+    },
+    "Colonel Jendon": {
+      display_name: "Colonel Jendon",
+      text: "Az Aktivációs fázis elején elkölthetsz 1&nbsp;%CHARGE% jelzőt. Ha így teszel, amikor baráti hajók bemérés jelzőt tesznek fel ebben a körben, 3-as távolságon túl tehetik csak meg a 0-3-as távolság helyett."
+    },
+    "Colonel Vessery": {
+      display_name: "Colonel Vessery",
+      text: "Amikor támadást hajtasz végre egy bemért hajó ellen, miután dobsz a kockákkal, feltehetsz egy bemérés jelzőt a védekezőre.%LINEBREAK%<strong>Full Throttle:</strong> Miután teljesen végrehajtottál egy 3-5 sebességű manővert, végrehajthatsz egy %EVADE% akciót."
+    },
+    "Constable Zuvio": {
+      display_name: "Constable Zuvio",
+      text: "Amikor kidobnál egy eszközt, helyette ki is lőheted egy [1&nbsp;%STRAIGHT%] sablon használatával.%LINEBREAK%<strong>Spacetug Tractor Array:</strong> <strong>Akció:</strong>: Válassz egy hajót a %FRONTARC% tűzívedben 1-es távolságban. Az a hajó kap 1 vonósugár jelzőt vagy 2 vonósugár jelzőt, ha benne van a %BULLSEYEARC% tűzívedben 1-es távolságban."
+    },
+    "Corran Horn": {
+      display_name: "Corran Horn",
+      text: "0-ás kezdeményezésnél végrehajthatsz egy bónusz elsődleges támadást egy ellenséges hajó ellen, aki a %BULLSEYEARC% tűzívedben van. Ha így teszel, a következő Tervezés fázisban kapsz 1 'inaktív fegyverzet' jelzőt.%LINEBREAK%<sasmall><strong>Experimental Scanners:</strong> 3-as távolságon túl is bemérhetsz. Nem mérhetsz be 1-es távolságra.</sasmall>"
+    },
+    "Countess Ryad": {
+      display_name: "Countess Ryad",
+      text: "Amikor végrehajtanál egy %STRAIGHT% manővert, megnövelheted annak nehézségét. Ha így teszel, helyette végrehajthatod mint %KTURN% manőver.%LINEBREAK%<strong>Full Throttle:</strong> Miután teljesen végrehajtottál egy 3-5 sebességű manővert, végrehajthatsz egy %EVADE% akciót."
+    },
+    "Dace Bonearm": {
+      display_name: "Dace Bonearm",
+      text: "Miután egy ellenséges hajó 0-3-as távolságban kap legalább 1 ion jelzőt, elkölthetsz 3&nbsp;%CHARGE% jelzőt. Ha így teszel, az a hajó kap 2 további ion jelzőt."
+    },
+    "Dalan Oberos (StarViper)": {
+      display_name: "Dalan Oberos",
+      text: "Miután teljesen végrehajtasz egy manővert, kaphatsz 1 stressz jelzőt, hogy elforgasd a hajód 90 fokkal.%LINEBREAK% <sasmall><strong>Microthrusters:</strong> Amikor orsózást hajtasz végre, a %BANKLEFT% vagy %BANKRIGHT% sablont <b>kell</b> használnod a %STRAIGHT% helyett.</sasmall>"
+    },
+    "Dalan Oberos": {
+      display_name: "Dalan Oberos",
+      text: "Az Ütközet fázis elején választhatsz 1 pajzzsal rendelkező hajót a %BULLSEYEARC% tűzívedben és elkölthetsz 1&nbsp;%CHARGE% jelzőt. Ha így teszel, az a hajó elveszít egy pajzsot, te pedig visszatöltesz 1 pajzsot.%LINEBREAK%<sasmall><strong>Dead to Rights:</strong> Amikor végrehajtasz egy támadást, ha a védekező benne van a %BULLSEYEARC% tűzívedben, a védekezőkockák nem módosíthatók zöld jelzőkkel.</sasmall>"
+    },
+    "Darth Vader": {
+      display_name: "Darth Vader",
+      text: "Miután végrehajtasz egy akciót, elkölthetsz 1&nbsp;%FORCE% jelzőt, hogy végrehajts egy akciót.%LINEBREAK%<sasmall><strong>Advanced Targeting Computer:</strong> Amikor végrehajtasz egy elsődleges támadást egy olyan védekező ellen, akit bemértél, 1-gyel több támadókockával dobj és változtasd 1&nbsp;%HIT% eredményed %CRIT% eredményre.</sasmall>"
+    },
+    "Dash Rendar": {
+      display_name: "Dash Rendar",
+      text: "Amikor mozogsz, hagyd figyelmen kívül az akadályokat.%LINEBREAK%<strong>Sensor Blindspot:</strong> Amikor elsődleges támadást hajtasz végre 0-1-es távolságban, nem érvényesül a 0-1-es távolságért járó bónusz és 1-gyel kevesebb támadókockával dobsz."
+    },
+    "Del Meeko": {
+      display_name: "Del Meeko",
+      text: "Amikor egy baráti 0-2 távolságban védekezik egy sérült támadó ellen, a védekező újradobhat 1 védekezőkockát."
+    },
+    "Dengar": {
+      display_name: "Dengar",
+      text: "Miután védekeztél, ha a támadó benne van a %FRONTARC% tűzívedben, elkölthetsz 1&nbsp;%CHARGE% jelzőt, hogy végrehajts egy bónusz támadást a támadó ellen."
+    },
+    "Drea Renthal": {
+      display_name: "Drea Renthal",
+      text: "Amikor egy baráti nem-limitált hajó végrehajt egy támadást, ha a védekező benne van a tűzívedben, a támadó újradobhatja 1 támadókockáját."
+    },
+    "Edrio Two-Tubes": {
+      display_name: "Edrio Two Tubes",
+      text: "Mielőtt aktiválódnál és van fókuszod, végrehajthatsz egy akciót."
+    },
+    "Emon Azzameen": {
+      display_name: "Emon Azzameen",
+      text: "Ha ki szeretnél dobni egy eszközt az [1&nbsp;%STRAIGHT%] sablonnal, használhatod helyette a [3&nbsp;%TURNLEFT%], [3&nbsp;%STRAIGHT%], vagy [3&nbsp;%TURNRIGHT%] sablont."
+    },
+    "Esege Tuketu": {
+      display_name: "Esege Tuketu",
+      text: "Amikor egy 0-2-es távolságban lévő baráti hajó védekezik vagy támadást hajt végre, elköltheti a te fókusz jelzőidet, mintha a saját hajójáé lenne."
+    },
+    "Evaan Verlaine": {
+      display_name: "Evaan Verlaine",
+      text: "Az Ütközet fázis elején elkölthetsz 1 fókusz jelzőt, hogy kiválassz egy baráti hajót 0-1-es távolságban. Ha így teszel, az a hajó a kör végéig minden védekezésénél 1-gyel több védekezőkockával dob."
+    },
+    "Ezra Bridger": {
+      display_name: "Ezra Bridger",
+      text: "Amikor védekezel vagy támadást hajtasz végre, ha stresszes vagy, elkölthetsz 1&nbsp;%FORCE% jelzőt, hogy legfeljebb 2 %FOCUS% eredményt %EVADE% vagy %HIT% eredményre módosíts.%LINEBREAK%<sasmall><strong>Locked and Loaded:</strong> Amikor dokkolva vagy, miután az anyahajód végrehajtott egy elsődleges %FRONTARC% vagy %TURRET% támadást, végrehajthat egy bónusz %REARARC% támadást.</sasmall>"
+    },
+    "Ezra Bridger (Sheathipede)": {
+      display_name: "Ezra Bridger",
+      text: "Amikor védekezel vagy támadást hajtasz végre, ha stresszes vagy, elkölthetsz 1&nbsp;%FORCE% jelzőt, hogy legfeljebb 2 %FOCUS% eredményt %EVADE% vagy %HIT% eredményre módosíts.%LINEBREAK%<sasmall><strong>Comms Shuttle:</strong> Amikor dokkolva vagy az anyahajód %COORDINATE% akció lehetőséget kap. Az anyahajód aktiválása előtt végrehajthat egy %COORDINATE% akciót.</sasmall>"
+    },
+    "Ezra Bridger (TIE Fighter)": {
+      display_name: "Ezra Bridger",
+      text: "Amikor védekezel vagy támadást hajtasz végre, ha stresszes vagy, elkölthetsz 1&nbsp;%FORCE% jelzőt, hogy legfeljebb 2 %FOCUS% eredményt %EVADE% vagy %HIT% eredményre módosíts."
+    },
+    "Fenn Rau (Sheathipede)": {
+      display_name: "Fenn Rau",
+      text: "Miután egy ellenséges hajó a tűzívedben sorra kerül az Ütközet fázisban, ha nem vagy stresszes, kaphatsz 1 stressz jelzőt. Ha így teszel, az a hajó nem költhet el jelzőt, hogy módosítsa támadókockáit e fázis alatt.%LINEBREAK%<sasmall><strong>Comms Shuttle:</strong> Amikor dokkolva vagy az anyahajód %COORDINATE% akció lehetőséget kap. Az anyahajód aktiválása előtt végrehajthat egy %COORDINATE% akciót.</sasmall>"
+    },
+    "Fenn Rau": {
+      display_name: "Fenn Rau",
+      text: "Amikor védekezel vagy támadást hajtasz végre, ha a támadás 1-es távolságban történik, 1-gyel több kockával dobhatsz.%LINEBREAK%<sasmall><strong>Concordia Faceoff:</strong> Amikor védekezel, ha a támadás 1-es távolságban történik és benne vagy a támadó %FRONTARC% tűzívében, megváltoztathatod 1 dobás eredményed %EVADE% eredményre.</sasmall>"
+    },
+    "Garven Dreis (X-Wing)": {
+      display_name: "Garven Dreis",
+      text: "Miután elköltesz egy fókusz jelzőt, választhatsz 1 baráti hajót 1-3-as távolságban. Az a hajó kap 1 fókusz jelzőt."
+    },
+    "Garven Dreis": {
+      display_name: "Garven Dreis",
+      text: "Miután elköltesz egy fókusz jelzőt, választhatsz 1 baráti hajót 1-3-as távolságban. Az a hajó kap 1 fókusz jelzőt."
+    },
+    "Gavin Darklighter": {
+      display_name: "Gavin Darklighter",
+      text: "Amikor egy baráti hajó végrehajt egy támadást, ha a védekező a %FRONTARC% tűzívedben van, a támadó 1&nbsp;%HIT% eredményét %CRIT% eredményre módosíthatja.%LINEBREAK%<sasmall><strong>Experimental Scanners:</strong> 3-as távolságon túl is bemérhetsz. Nem mérhetsz be 1-es távolságra.</sasmall>"
+    },
+    "Genesis Red": {
+      display_name: "Genesis Red",
+      text: "Miután feltettél egy bemérés jelzőt, le kell venned az összes fókusz és kitérés jelződet, aztán megkapsz annyi fókusz és kitérés jelzőt, ahány a bemért hajónak van.%LINEBREAK%<strong>Weapon Hardpoint:</strong> Felszerelhetsz 1&nbsp;%CANNON%, %TORPEDO% vagy %MISSILE% fejlesztést."
+    },
+    "Gideon Hask": {
+      display_name: "Gideon Hask",
+      text: "Amikor végrehajtasz egy támadást sérült védekező ellen, 1-gyel több támadókockával dobhatsz."
+    },
+    "Grand Inquisitor": {
+      display_name: "Grand Inquisitor",
+      text: "Amikor 1-es távolságban védekezel, elkölthetsz 1&nbsp;%FORCE% tokent, hogy megakadályozd az 1-es távolság bónuszt. Amikor támadást hajtasz végre 2-3-as távolságban lévő védekező ellen, elkölthetsz 1&nbsp;%FORCE% jelzőt, hogy megkapd az 1-es távolság bónuszt."
+    },
+    "Graz": {
+      display_name: "Graz",
+      text: "Amikor védekezel, ha a támadó mögött vagy, 1-gyel több védekezőkockával dobhatsz. Amikor végrehajtasz egy támadást, ha a védekező mögött vagy, 1-gyel több támadókockával dobhatsz."
+    },
+    "Guri": {
+      display_name: "Guri",
+      text: "Az Ütközet fázis elején, ha legalább 1 ellenséges hajó van 0-1-es távolságban, kaphatsz egy fókusz jelzőt.%LINEBREAK% <sasmall><strong>Microthrusters:</strong> Amikor orsózást hajtasz végre, a %BANKLEFT% vagy %BANKRIGHT% sablont <b>kell</b> használnod a %STRAIGHT% helyett.</sasmall>"
+    },
+    "Han Solo": {
+      display_name: "Han Solo",
+      text: "Miután dobtál, ha 0-1-es távolságban vagy akadálytól, újradobhatod az összes kockádat. Ez nem számít újradobásnak más hatások számára."
+    },
+    "Han Solo (Scum)": {
+      display_name: "Han Solo",
+      text: "Amikor védekezel vagy elsődleges támadást hajtasz vége, ha a támadás akadály által akadályozott, 1-gyel több kockával dobhatsz."
+    },
+    "Heff Tobber": {
+      display_name: "Heff Tobber",
+      text: "Miután egy ellenséges hajó végrehajt egy manővert, ha 0-ás távolságba kerül, végrehajthatsz egy akciót."
+    },
+    "Hera Syndulla": {
+      display_name: "Hera Syndulla",
+      text: "Miután piros vagy kék manővert fedtél fel, átállíthatod manőversablonod egy másik, azonos nehézségű manőverre.%LINEBREAK%<sasmall><strong>Locked and Loaded:</strong> Amikor dokkolva vagy, miután az anyahajód végrehajtott egy elsődleges %FRONTARC% vagy %TURRET% támadást, végrehajthat egy bónusz %REARARC% támadást.</sasmall>"
+    },
+    "Hera Syndulla (VCX-100)": {
+      display_name: "Hera Syndulla",
+      text: "Miután piros vagy kék manővert fedtél fel, átállíthatod manőversablonod egy másik, azonos nehézségű manőverre.%LINEBREAK%<strong>Tail Gun:</strong> ha van bedokkolt hajód, használhatod az elsődleges %REARARC% fegyvered, ugyanolyan támadási értékkel, mint a dokkolt hajó elsődleges %FRONTARC% támadási értéke."
+    },
+    "Horton Salm": {
+      display_name: "Horton Salm",
+      text: "Amikor támadást hajtasz végre, a védekezőtől 0-1-es távolságban lévő minden más baráti hajó után újradobhatsz 1 támadókockát."
+    },
+    "IG-88A": {
+      display_name: "IG-88A",
+      text: "Az Ütközet fázis elején kiválaszthatsz egy %CALCULATE% akcióval rendelkező baráti hajót 1-3-as távolságban. Ha így teszel, add át 1 kalkuláció jelződet neki.%LINEBREAK%<strong>Advanced Droid Brain:</strong> Miután végrehajtottál egy %CALCULATE% akciót, kapsz 1 kalkuláció jelzőt."
+    },
+    "IG-88B": {
+      display_name: "IG-88B",
+      text: "Miután végrehajtottál egy támadást ami nem talált, végrehajthatsz egy bónusz %CANNON% támadást.%LINEBREAK%<strong>Advanced Droid Brain:</strong> Miután végrehajtottál egy %CALCULATE% akciót, kapsz 1 kalkuláció jelzőt."
+    },
+    "IG-88C": {
+      display_name: "IG-88C",
+      text: "Miután végrehajtottál egy %BOOST% akciót, végrehajthatsz egy %EVADE% akciót.%LINEBREAK%<strong>Advanced Droid Brain:</strong> Miután végrehajtottál egy %CALCULATE% akciót, kapsz 1 kalkuláció jelzőt."
+    },
+    "IG-88D": {
+      display_name: "IG-88D",
+      text: "Amikor végrehajtasz egy Segnor's Loop [%SLOOPLEFT% vagy %SLOOPRIGHT%] manővert, használhatsz ugyanazon sebességű másik sablont helyette: vagy megegyező irányú kanyar [%TURNLEFT% vagy %TURNRIGHT%] vagy előre egyenes [%STRAIGHT%] sablont.%LINEBREAK%<strong>Advanced Droid Brain:</strong> Miután végrehajtottál egy %CALCULATE% akciót, kapsz 1 kalkuláció jelzőt."
+    },
+    "Ibtisam": {
+      display_name: "Ibtisam",
+      text: "Miután teljesen végrehajtasz egy manővert, ha stresszes vagy, dobhatsz 1 támadókockával. %HIT% vagy %CRIT% eredmény esetén távolíts el 1 stressz jelzőt."
+    },
+    "Iden Versio": {
+      display_name: "Iden Versio",
+      text: "Mielőtt egy 0-1-es távolságban lévő baráti TIE/ln hajó elszenvedne 1 vagy több sérülést, elkölthetsz 1&nbsp;%CHARGE% jelzőt. Ha így teszel, megakadályozod a sérülést."
+    },
+    "Inaldra": {
+      display_name: "Inaldra",
+      text: "Amikor védekezel vagy támadást hajtasz végre, elszenvedhetsz 1&nbsp;%HIT% sérülést, hogy újradobj bármennyi kockát.%LINEBREAK%<strong>Weapon Hardpoint:</strong> Felszerelhetsz 1&nbsp;%CANNON%, %TORPEDO% vagy %MISSILE% fejlesztést."
+    },
+    "Jake Farrell": {
+      display_name: "Jake Farrell",
+      text: "Miután végrehajtasz egy %BARRELROLL% vagy %BOOST% akciót, választhatsz egy baráti hajót 0-1-es távolságban. Az a hajó végrehajthat egy %FOCUS% akciót.%LINEBREAK%<sasmall><strong>Vectored Thrusters:</strong> Miután végrehajtottál egy akciót, végrehajthatsz egy piros %BOOST% akciót.</sasmall>"
+    },
+    "Jan Ors": {
+      display_name: "Jan Ors",
+      text: "Amikor egy tűzíveden belüli baráti hajó elsődleges támadást hajt végre, ha nem vagy stresszes, kaphatsz 1 stressz jelzőt. Ha így teszel, az a hajó 1-gyel több támadókockával dobhat."
+    },
+    "Jek Porkins": {
+      display_name: "Jek Porkins",
+      text: "Miután kapsz egy stressz jelzőt, dobhatsz 1 támadó kockával, hogy levedd. %HIT% eredmény esetén elszenvedsz 1&nbsp;%HIT% sérülést."
+    },
+    "Joy Rekkoff": {
+      display_name: "Joy Rekkoff",
+      text: "Amikor támadást hajtasz végre, elkölthetsz 1&nbsp;%CHARGE% jelzőt egy felszerelt %TORPEDO% fejlesztésről. Ha így teszel a védekező 1-gyel kevesebb védekezőkockával dob.%LINEBREAK%<sasmall><strong>Concordia Faceoff:</strong> Amikor védekezel, ha a támadás 1-es távolságban történik és benne vagy a támadó %FRONTARC% tűzívében, megváltoztathatod 1 dobás eredményed %EVADE% eredményre.</sasmall>"
+    },
+    "Kaa'to Leeachos": {
+      display_name: "Kaa’to Leeachos",
+      text: "Az Ütközet fázis elején kiválaszthatsz egy 0-2-es távolságban lévő baráti hajót. Ha így teszel, áttehetsz róla 1 fókusz vagy kitérés jelzőt a magadra."
+    },
+    "Kad Solus": {
+      display_name: "Kad Solus",
+      text: "Miután teljesen végrehajtasz egy piros manővert, kapsz 2 fókusz jelzőt.%LINEBREAK%<sasmall><strong>Concordia Faceoff:</strong> Amikor védekezel, ha a támadás 1-es távolságban történik és benne vagy a támadó %FRONTARC% tűzívében, megváltoztathatod 1 dobás eredményed %EVADE% eredményre.</sasmall>"
+    },
+    "Kanan Jarrus": {
+      display_name: "Kanan Jarrus",
+      text: "Amikor egy tűzívedben lévő baráti hajó védekezik, elkölthetsz 1&nbsp;%FORCE% jelzőt. Ha így teszel, a támadó 1-gyel kevesebb támadókockával dob.%LINEBREAK%<strong>Tail Gun:</strong> ha van bedokkolt hajód, használhatod az elsődleges %REARARC% fegyvered, ugyanolyan támadási értékkel, mint a dokkolt hajó elsődleges %FRONTARC% támadási értéke."
+    },
+    "Kath Scarlet": {
+      display_name: "Kath Scarlet",
+      text: "Amikor támadást hajtasz végre, ha legalább 1 nem-limitált baráti hajó van 0-ás távolságra a védekezőtől, dobj 1-gyel több támadókockával."
+    },
+    "Kavil": {
+      display_name: "Kavil",
+      text: "Amikor egy nem-%FRONTARC% támadást hajtasz végre, dobj 1-gyel több támadókockával."
+    },
+    "Ketsu Onyo": {
+      display_name: "Ketsu Onyo",
+      text: "Az Ütközet fázis elején választhatsz 1 hajót ami a %FRONTARC% és %SINGLETURRETARC% tűzívedben is benne van 0-1-es távolságban. Ha így teszel, az a hajó kap egy vonósugár jelzőt."
+    },
+    "Koshka Frost": {
+      display_name: "Koshka Frost",
+      text: "Amikor védekezel vagy támadást hajtasz végre, ha az ellenséges hajó stresszes, újradobhatod 1 kockádat."
+    },
+    "Krassis Trelix": {
+      display_name: "Krassis Trelix",
+      text: "Végrehajthatsz egy %FRONTARC% speciális támadást a %REARARC% tűzívedből. Amikor speciális támadást hajtasz végre, újradobhatsz egy támadókockát."
+    },
+    "Kullbee Sperado": {
+      display_name: "Kullbee Sperado",
+      text: "Miután végrehajtottál egy %BARRELROLL% vagy %BOOST% akciót, megfordíthatod a felszerelt %CONFIG% fejlesztés kártyád."
+    },
+    "Kyle Katarn": {
+      display_name: "Kyle Katarn",
+      text: "Az Ütközet fázis elején átadhatod 1 fókusz jelződet egy tűzívedben lévő baráti hajónak."
+    },
+    "L3-37": {
+      display_name: "L3-37",
+      text: "Ha nincs pajzsod, csökkentsd a nehézségét a (%BANKLEFT% és %BANKRIGHT%) manővereknek."
+    },
+    "L3-37 (Escape Craft)": {
+      display_name: "L3-37",
+      text: "Ha nincs pajzsod, csökkentsd a nehézségét a (%BANKLEFT% és %BANKRIGHT%) manővereknek.%LINEBREAK%<strong>Co-Pilot:</strong> Amíg dokkolva vagy, az anyahajód megkapja a pilóta képességed, mintha a sajátja lenne."
+    },
+    "Laetin A'shera": {
+      display_name: "Laetin A’shera",
+      text: "Miután védekezel vagy támadást hajtasz végre, ha a támadás nem talált, kapsz 1 kitérés jelzőt.%LINEBREAK%<strong>Weapon Hardpoint:</strong> Felszerelhetsz 1&nbsp;%CANNON%, %TORPEDO% vagy %MISSILE% fejlesztést."
+    },
+    "Lando Calrissian": {
+      display_name: "Lando Calrissian",
+      text: "Miután teljesen végrehajtottál egy kék manővert, választhatsz egy baráti hajót 0-3-as távolságban. Az a hajó végrehajthat egy akciót."
+    },
+    "Lando Calrissian (Scum)": {
+      display_name: "Lando Calrissian",
+      text: "Miután dobsz a kockákkal, ha nem vagy stresszes, kaphatsz 1 stressz jelzőt, hogy újradobhasd az összes üres eredményed."
+    },
+    "Lando Calrissian (Scum) (Escape Craft)": {
+      display_name: "Lando Calrissian",
+      text: "Miután dobsz a kockákkal, ha nem vagy stresszes, kaphatsz 1 stressz jelzőt, hogy újradobhasd az összes üres eredményed.%LINEBREAK%<strong>Co-Pilot:</strong> Amíg dokkolva vagy, az anyahajód megkapja a pilóta képességed, mintha a sajátja lenne."
+    },
+    "Latts Razzi": {
+      display_name: "Latts Razzi",
+      text: "Az Ütközet fázis elején kiválaszthatsz egy hajót 1-es távolságban és elköltheted a rajta lévő bemérés jelződet. Ha így teszel, az a hajó kap egy vonósugár jelzőt."
+    },
+    "Leevan Tenza": {
+      display_name: "Leevan Tenza",
+      text: "Miután végrehajtottál egy %BARRELROLL% vagy %BOOST% akciót, végrehajthatsz egy piros %EVADE% akciót."
+    },
+    "Lieutenant Blount": {
+      display_name: "Lieutenant Blount",
+      text: "Amikor elsődleges támadást hajtasz végre, ha legalább 1 másik baráti hajó van 0-1-es távolságban a védekezőtől, 1-gyel több támadókockával dobhatsz."
+    },
+    "Lieutenant Karsabi": {
+      display_name: "Lieutenant Karsabi",
+      text: "Miután kapsz egy inaktív fegyverzet jelzőt, ha nem vagy stresszes, kaphatsz 1 stressz jelzőt, hogy levegyél 1 inaktív fegyverzet jelzőt."
+    },
+    "Lieutenant Kestal": {
+      display_name: "Lieutenant Kestal",
+      text: "Amikor támadást hajtasz végre, miután a védekező dob a kockáival, elkölthetsz 1 fókusz jelzőt, hogy semlegesítsd a védekező összes üres és fókusz eredményét."
+    },
+    "Lieutenant Sai": {
+      display_name: "Lieutenant Sai",
+      text: "Miután végrehajtottál egy %COORDINATE% akciót, ha a koordinált hajó olyan akciót hajt végre, ami a te akciósávodon is rajta van, végrehajthatod azt az akciót."
+    },
+    "Lowhhrick": {
+      display_name: "Lowhhrick",
+      text: "Miután egy 0-1-es távolságban lévő baráti hajó védekezővé válik, elkölthetsz 1 erősítés jelzőt. Ha így teszel, az a hajó kap 1 kitérés jelzőt."
+    },
+    "Luke Skywalker": {
+      display_name: "Luke Skywalker",
+      text: "Miután védekező lettél (még a kockagurítás előtt), visszatölthetsz 1&nbsp;%FORCE% jelzőt."
+    },
+    "Maarek Stele": {
+      display_name: "Maarek Stele",
+      text: "Amikor támadást hajtasz végre, ha a védekező felfordított sérülés kártyát kapna, helyette húzz te 3 lapot, válassz egyet, a többit dobd el.%LINEBREAK%<sasmall><strong>Advanced Targeting Computer:</strong> Amikor végrehajtasz egy elsődleges támadást egy olyan védekező ellen, akit bemértél, 1-gyel több támadókockával dobj és változtasd 1&nbsp;%HIT% eredményed %CRIT% eredményre.</sasmall> "
+    },
+    "Magva Yarro": {
+      display_name: "Magva Yarro",
+      text: "Amikor egy baráti hajó 0-2-es távolságban védekezik, a támadó maximum 1 kockáját dobhatja újra."
+    },
+    "Major Rhymer": {
+      display_name: "Major Rhymer",
+      text: "Amikor végrhajtasz egy %TORPEDO% vagy %MISSILE% támadást, növelheted vagy csökkentheted a fegyver távolság követelményét 1-gyel, a 0-3 korláton belül.%LINEBREAK%<strong>Nimble Bomber:</strong> Ha ledobnál egy eszközt a %STRAIGHT% sablon segítségével, használhatod az azonos sebességű %BANKLEFT% vagy %BANKRIGHT% sablonokat helyette."
+    },
+    "Major Vermeil": {
+      display_name: "Major Vermeil",
+      text: "Amikor támadást hajtasz végre, ha a védekezőnek nincs egy zöld jelzője sem, megváltoztathatod 1 üres vagy %FOCUS% eredményedet %HIT% eredményre.%LINEBREAK% %LINEBREAK%<sasmall><strong>Adaptive Ailerons:</strong> Mielőtt felfednéd a tárcsád, ha nem vagy stresszes, végre <b>kell</b> hajtanod egy fehér [1&nbsp;%BANKLEFT%), [1&nbsp;%STRAIGHT%] vagy [1&nbsp;%BANKRIGHT%] manővert.</sasmall>"
+    },
+    "Major Vynder": {
+      display_name: "Major Vynder",
+      text: "Amikor védekezel és van 'inaktív fegyverzet' jelződ, dobj 1-gyel több védekezőkockával."
+    },
+    "Manaroo": {
+      display_name: "Manaroo",
+      text: "Az Ütközet fázis elején kiválaszthatsz egy 0-1-es távolságban lévő baráti hajót. Ha így teszel, add át neki az összes zöld jelződ."
+    },
+    "Miranda Doni": {
+      display_name: "Miranda Doni",
+      text: "Amikor elsődleges támadást hajtasz végre, elkölthetsz 1 pajzsot, hogy 1-gyel több támadókockával dobj, vagy ha nincs pajzsod, dobhatsz 1-gyel kevesebb támadókockával, hogy visszatölts 1 pajzsot."
+    },
+    "Moralo Eval": {
+      display_name: "Moralo Eval",
+      text: "Ha lerepülsz a pályáról, elkölthetsz 1&nbsp;%CHARGE% jelzőt. Ha így teszel, helyezd a hajód tartalékba. A következő Tervezési fázis elején helyezd el a hajót a pálya szélétől 1-es távolságban azon az oldalon, ahol lerepültél."
+    },
+    "Norra Wexley (Y-Wing)": {
+      display_name: "Norra Wexley",
+      text: "Amikor védekezel, ha az ellenség 0-1-es távolságban van, adj 1&nbsp;%EVADE% eredményt a dobásodhoz."
+    },
+    "Norra Wexley": {
+      display_name: "Norra Wexley",
+      text: "Amikor védekezel, ha az ellenség 0-1-es távolságban van, adj 1&nbsp;%EVADE% eredményt a dobásodhoz."
+    },
+    "N'dru Suhlak": {
+      display_name: "N’dru Suhlak",
+      text: "Amikor elődleges támadást hajtasz végre, ha nincs baráti hajó 0-2 távolságban, dobj 1-gyel több támadókockával."
+    },
+    "Old Teroch": {
+      display_name: "Old Teroch",
+      text: "Az Ütközet fázis elején, kiválaszthatsz 1 ellenséges hajót 1-es távolságban. Ha így teszel és benne vagy a %FRONTARC% tűzívében, leveheted az összes zöld jelzőjét.%LINEBREAK%<sasmall><strong>Concordia Faceoff:</strong> Amikor védekezel, ha a támadás 1-es távolságban történik és benne vagy a támadó %FRONTARC% tűzívében, megváltoztathatod 1 dobás eredményed %EVADE% eredményre.</sasmall>"
+    },
+    "Outer Rim Pioneer": {
+      display_name: "Outer Rim Pioneer",
+      text: "Baráti hajók 0-1-es távolságban végrehajthatnak támadást akadálytól 0 távolságra.%LINEBREAK%<strong>Co-Pilot:</strong> Amíg dokkolva vagy, az anyahajód megkapja a pilóta képességed, mintha a sajátja lenne."
+    },
+    "Palob Godalhi": {
+      display_name: "Palob Godalhi",
+      text: "Az Ütközet fázis elején kiválaszthatsz 1 ellenséges hajót a tűzívedben 0-2 távolságban. Ha így teszel tedd át 1 fókusz vagy kitérés jelzőjét magadra."
+    },
+    "Prince Xizor": {
+      display_name: "Prince Xizor",
+      text: "Amikor védekezel, az <strong>Eredmények semlegesítése</strong> lépés után, egy 0-1 távolságban lévő másik baráti hajó, aki benne van a támadó tűzívében, elszenvedhet 1&nbsp;%HIT% vagy %CRIT% sérülést. Ha így tesz, hatástalaníts 1 ennek megfelelő eredményt.%LINEBREAK%<sasmall><strong>Microthrusters:</strong> Amikor orsózást hajtasz végre, a %BANKLEFT% vagy %BANKRIGHT% sablont <b>kell</b> használnod a %STRAIGHT% helyett.</sasmall>"
+    },
+    "Quinn Jast": {
+      display_name: "Quinn Jast",
+      text: "Az Ütközet fázis elején kaphatsz 1 'inaktív fegyverzet' jelzőt, hogy visszatölts 1&nbsp;%CHARGE% jelzőt egy felszerelt fejlesztésen.%LINEBREAK%<strong>Weapon Hardpoint:</strong> Felszerelhetsz 1&nbsp;%CANNON%, %TORPEDO% vagy %MISSILE% fejlesztést."
+    },
+    "Rear Admiral Chiraneau": {
+      display_name: "Rear Admiral Chiraneau",
+      text: "Amikor támadást hajtasz végre, ha van 'reinforce' jelződ és a védekező a reinforce-nak megfelelő %FULLFRONTARC% vagy %FULLREARARC% tűzívedben van, megváltoztathatod 1&nbsp;%FOCUS% eredményed %CRIT% eredményre."
+    },
+    "Rexler Brath": {
+      display_name: "Rexler Brath",
+      text: "Miután végrehajtasz egy támadást, ami talál, ha van kitérés jelződ, fordítsd fel a védekező egy sérülés kártyáját.%LINEBREAK%<strong>Full Throttle:</strong> Miután teljesen végrehajtottál egy 3-5 sebességű manővert, végrehajthatsz egy %EVADE% akciót."
+    },
+    "Roark Garnet": {
+      display_name: "Roark Garnet",
+      text: "Az Ütközet fázis elején választhatsz 1 tűzívedben lévő hajót. Ha így teszel, a kezdeményezési értéke ebben a fázisban 7 lesz, függetlenül a nyomtatott értékétől."
+    },
+    "Sabine Wren": {
+      display_name: "Sabine Wren",
+      text: "Mielőtt aktiválódsz, végrehajthatsz egy %BARRELROLL% vagy %BOOST% akciót.%LINEBREAK%<sasmall><strong>Locked and Loaded:</strong> Amikor dokkolva vagy, miután az anyahajód végrehajtott egy elsődleges %FRONTARC% vagy %TURRET% támadást, végrehajthat egy bónusz %REARARC% támadást.</sasmall>"
+    },
+    "Sabine Wren (TIE Fighter)": {
+      display_name: "Sabine Wren",
+      text: "Mielőtt aktiválódsz, végrehajthatsz egy %BARRELROLL% vagy %BOOST% akciót."
+    },
+    "Sabine Wren (Scum)": {
+      display_name: "Sabine Wren",
+      text: "Amikor védekezel, ha a támadó benne van a %SINGLETURRETARC% tűzívedben 0-2-es távolságban, hozzáadhatsz 1&nbsp;%FOCUS% eredményt a dobásodhoz."
+    },
+    "Sarco Plank": {
+      display_name: "Sarco Plank",
+      text: "Amikor védekezel kezelheted a mozgékonyság értékedet úgy, hogy az megegyezzen az ebben a körben végrehajtott manővered sebességével.%LINEBREAK%<strong>Spacetug Tractor Array:</strong> <strong>Akció:</strong>: Válassz egy hajót a %FRONTARC% tűzívedben 1-es távolságban. Az a hajó kap 1 vonósugár jelzőt vagy 2 vonósugár jelzőt, ha benne van a %BULLSEYEARC% tűzívedben 1-es távolságban."
+    },
+    "Saw Gerrera": {
+      display_name: "Saw Gerrera",
+      text: "Amikor egy sérült baráti hajó 0-3-as távolságban végrehajt egy támadást, újradobhat 1 támadókockát."
+    },
+    "Serissu": {
+      display_name: "Serissu",
+      text: "Amikor egy baráti hajó 0-1-es távolságban védekezik, újradobhatja 1 kockáját.%LINEBREAK%<strong>Weapon Hardpoint:</strong> Felszerelhetsz 1&nbsp;%CANNON%, %TORPEDO% vagy %MISSILE% fejlesztést."
+    },
+    "Seventh Sister": {
+      display_name: "Seventh Sister",
+      text: "Amikor végrehajtasz egy elsődleges támadást, az <strong>Eredmények semlegesítése</strong> lépés előtt elkölthetsz 2 %FORCE% jelzőt, hogy hatástalaníts 1&nbsp;%EVADE% eredményt."
+    },
+    "Seyn Marana": {
+      display_name: "Seyn Marana",
+      text: "Amikor végrehajtasz egy támadást elkölthetsz 1&nbsp;%CRIT% eredményt. Ha így teszel, a védekező kap 1 lefordított sérülés kártyát, majd hatástalanítsd a többi dobás eredményed."
+    },
+    "Shara Bey": {
+      display_name: "Shara Bey",
+      text: "Amikor védekezel vagy elsődleges támadást hajtasz végre, elköltheted az ellenfeledre tett bemérés jelződet, hogy hozzáadj 1&nbsp;%FOCUS% eredményt dobásodhoz."
+    },
+    "Sol Sixxa": {
+      display_name: "Sol Sixxa",
+      text: "Ha ledobnál egy eszközt az [1&nbsp;%STRAIGHT%] sablon használatával, helyette ledobhatod más 1-es sebességű sablonnal."
+    },
+    "Soontir Fel": {
+      display_name: "Soontir Fel",
+      text: "Az Ütközet fázis elején, ha van ellenséges hajó a %BULLSEYEARC% tűzívedben, kapsz 1 fókusz jelzőt.%LINEBREAK%<strong>Autothrusters:</strong> Miután végrehajtasz egy akciót, végrehajthatsz egy piros %BARRELROLL% vagy piros %BOOST% akciót."
+    },
+    "Sunny Bounder": {
+      display_name: "Sunny Bounder",
+      text: "Amikor védekezel vagy támadást hajtasz végre, miután dobtál vagy újradobtál kockákat, ha minden eredményed egyforma, hozzáadhatsz 1 ugyanolyan eredményt a dobáshoz.%LINEBREAK%<strong>Weapon Hardpoint:</strong> Felszerelhetsz 1&nbsp;%CANNON%, %TORPEDO% vagy %MISSILE% fejlesztést."
+    },
+    "Talonbane Cobra": {
+      display_name: "Talonbane Cobra",
+      text: "Amikor 3-as távolságban védekezel vagy 1-es távolságban támadást hajtasz végre, dobj 1-gyel több kockával."
+    },
+    "Tel Trevura": {
+      display_name: "Tel Trevura",
+      text: "Ha megsemmisülnél, elkölthetsz 1&nbsp;%CHARGE% jelzőt. Ha így teszel, dobd el az összes sérülés kártyádat, szenvedj el 5&nbsp;%HIT% sérülést, majd helyezd magad tartalékba. A következő Tervezési fázis elején helyezd fel a hajód 1-es távolságban a saját oldaladon."
+    },
+    "Ten Numb": {
+      display_name: "Ten Numb",
+      text: "Amikor védekezel vagy támadást hajtasz végre, elkölthetsz 1 stressz jelzőt, hogy minden %FOCUS% eredményed megváltoztasd %EVADE% vagy %HIT% eredményre."
+    },
+    "Thane Kyrell": {
+      display_name: "Thane Kyrell",
+      text: "Amikor támadást hajtasz végre, elkölthetsz 1&nbsp;%FOCUS%, %HIT% vagy %CRIT% eredményt, hogy megnézd a védekező képpel lefelé fordított sérülés kártyáit, kiválassz egyet és megfordítsd."
+    },
+    "Tomax Bren": {
+      display_name: "Tomax Bren",
+      text: "Miután végrehajtasz egy %RELOAD% akciót, visszatölthetsz 1&nbsp;%CHARGE% jelzőt 1 felszerelt %TALENT% fejlesztés kártyán.%LINEBREAK%<strong>Nimble Bomber:</strong> Ha ledobnál egy eszközt a %STRAIGHT% sablon segítségével, használhatod az azonos sebességű %BANKLEFT% vagy %BANKRIGHT% sablonokat helyette."
+    },
+    "Torani Kulda": {
+      display_name: "Torani Kulda",
+      text: "Miután végrehajtasz egy támadást, minden ellenséges hajó a %BULLSEYEARC% tűzívedben elszenved 1&nbsp;%HIT% sérülést, hacsak el nem dob 1 zöld jelzőt.%LINEBREAK%<sasmall><strong>Dead to Rights:</strong> Amikor végrehajtasz egy támadást, ha a védekező benne van a %BULLSEYEARC% tűzívedben, a védekezőkockák nem módosíthatók zöld jelzőkkel.</sasmall>"
+    },
+    "Torkil Mux": {
+      display_name: "Torkil Mux",
+      text: "Az Ütközet fázis elején kiválaszthatsz 1 hajót a tűzívedben. Ha így teszel, az a hajó ebben a körben 0-ás kezdeményezéssel kerül sorra a normál kezdeményezése helyett."
+    },
+    "Turr Phennir": {
+      display_name: "Turr Phennir",
+      text: "Miután végrehajtasz egy támadást, végrehajthatsz egy %BARRELROLL% vagy %BOOST% akciót akkor is ha stresszes vagy.%LINEBREAK%<strong>Autothrusters:</strong> Miután végrehajtasz egy akciót, végrehajthatsz egy piros %BARRELROLL% vagy piros %BOOST% akciót."
+    },
+    "Unkar Plutt": {
+      display_name: "Unkar Plutt",
+      text: "Az Ütközet fázis elején, ha van egy vagy több másik hajó 0-ás távolságban tőled, te és a 0-ás távolságra lévő hajók kapnak egy vonósugár jelzőt.%LINEBREAK%<strong>Spacetug Tractor Array:</strong> <strong>Akció:</strong>: Válassz egy hajót a %FRONTARC% tűzívedben 1-es távolságban. Az a hajó kap 1 vonósugár jelzőt vagy 2 vonósugár jelzőt, ha benne van a %BULLSEYEARC% tűzívedben 1-es távolságban."
+    },
+    "Valen Rudor": {
+      display_name: "Valen Rudor",
+      text: "Miután egy baráti hajó 0-1-es távolságban védekezik - a sérülések elkönyvelése után, ha volt -, végrehajthatsz egy akciót."
+    },
+    "Ved Foslo": {
+      display_name: "Ved Foslo",
+      text: "Amikor végrehajtasz egy manővert, helyette végrehajthatsz egy manővert ugyanabban az irányban és nehézségben 1-gyel kisebb vagy nagyobb sebességgel.%LINEBREAK%<sasmall><strong>Advanced Targeting Computer:</strong> Amikor végrehajtasz egy elsődleges támadást egy olyan védekező ellen, akit bemértél, 1-gyel több támadókockával dobj és változtasd 1&nbsp;%HIT% eredményed %CRIT% eredményre.</sasmall>"
+    },
+    "Viktor Hel": {
+      display_name: "Viktor Hel",
+      text: "Miután védekeztél, ha nem pontosan 2 védekezőkockával dobtál, a támadó kap 1 stress jelzőt."
+    },
+    "Wedge Antilles": {
+      display_name: "Wedge Antilles",
+      text: "Amikor támadást hajtasz végre, a védekező 1-gyel kevesebb védekezőkockával dob."
+    },
+    "Wullffwarro": {
+      display_name: "Wullffwarro",
+      text: "Amikor elsődleges támadást hajtasz végre, ha sérült vagy, 1-gyel több támadókockával dobhatsz."
     },
     "Zertik Strom": {
-      text: "A vége fázis alatt elköltheted egy ellenséges hajón lévő bemérődet hogy felfordítsd egy sérülés kártyáját. %LINEBREAK% ADVANCED TARGETING COPMUTER: Amikor végrehajtasz egy elsődleges támadást egy olyan védekező ellen, akit bemértél, 1-gyel több támadókockával dobj és változtasd egy %HIT% eredményed %CRIT% eredményre."
+      display_name: "Zertik Strom",
+      text: "A Vége fázis alatt elköltheted egy ellenséges hajón lévő bemérődet hogy felfordítsd egy sérülés kártyáját.%LINEBREAK%<sasmall><strong>Advanced Targeting Computer:</strong> Amikor végrehajtasz egy elsődleges támadást egy olyan védekező ellen, akit bemértél, 1-gyel több támadókockával dobj és változtasd 1&nbsp;%HIT% eredményed %CRIT% eredményre.</sasmall>"
     },
     "Zuckuss": {
+      display_name: "Zuckuss",
       text: "Amikor végrehajtasz egy elsődleges támadást, 1-gyel több támadókockával dobhatsz. Ha így teszel, a védekező 1-gyel több védekezőkockával dob."
     },
+    '"Chopper"': {
+      display_name: "“Chopper”",
+      text: "Az Ütközet fázis elején minden 0-ás távolságban lévő ellenséges hajó 2 zavarás jelzőt kap.%LINEBREAK%<strong>Tail Gun:</strong> ha van bedokkolt hajód, használhatod az elsődleges %REARARC% fegyvered, ugyanolyan támadási értékkel, mint a dokkolt hajó elsődleges %FRONTARC% támadási értéke."
+    },
+    '"Countdown"': {
+      display_name: "“Countdown”",
+      text: "Amikor védekezel, az <strong>Eredmények semlegesítése</strong> lépés után, ha nem vagy stresszes, választhatod, hogy elszenvedsz 1&nbsp;%HIT% sérülést és kapsz 1 stressz jelzőt. Ha így teszel, vess el minden kocka dobást.%LINEBREAK%<sasmall><strong>Adaptive Ailerons:</strong> Mielőtt felfednéd a tárcsád, ha nem vagy stresszes, végre <b>kell</b> hajtanod egy fehér [1&nbsp;%BANKLEFT%), [1&nbsp;%STRAIGHT%] vagy [1&nbsp;%BANKRIGHT%] manővert.</sasmall>"
+    },
+    '"Deathfire"': {
+      display_name: "“Deathfire”",
+      text: "Miután megsemmisülsz, mielőtt levennéd a hajód, végrehajthatsz egy támadást és ledobhatsz vagy kilőhetsz 1 eszközt.%LINEBREAK%<strong>Nimble Bomber:</strong> Ha ledobnál egy eszközt a %STRAIGHT% sablon segítségével, használhatod az azonos sebességű %BANKLEFT% vagy %BANKRIGHT% sablonokat helyette."
+    },
+    '"Deathrain"': {
+      display_name: "“Deathrain”",
+      text: "Miután ledobsz vagy kilősz egy eszközt, végrehajthatsz egy akciót."
+    },
+    '"Double Edge"': {
+      display_name: "“Double Edge”",
+      text: "Miután végrehajtasz egy %TURRET% vagy %MISSILE% támadást ami nem talál, végrehajthatsz egy bónusz támadást egy másik fegyverrel."
+    },
+    '"Duchess"': {
+      display_name: "“Duchess”",
+      text: "Választhatsz úgy, hogy nem használod az <strong>Adaptive Ailerons</strong> képességed. Használhatod akkor is <strong>Adaptive Ailerons</strong> képességed, amikor stresszes vagy.%LINEBREAK%<sasmall><strong>Adaptive Ailerons:</strong> Mielőtt felfednéd a tárcsád, ha nem vagy stresszes, végre <b>kell</b> hajtanod egy fehér [1&nbsp;%BANKLEFT%), [1&nbsp;%STRAIGHT%] vagy [1&nbsp;%BANKRIGHT%] manővert.</sasmall>"
+    },
+    '"Dutch" Vander': {
+      display_name: "“Dutch” Vander",
+      text: "Miután %LOCK% akciót hajtottál végre választhatsz 1 baráti hajót 1-3-as távolságban. Az a hajó is bemérheti az általad bemért objektumot, függetlenül a távolságtól."
+    },
+    '"Echo"': {
+      display_name: "“Echo”",
+      text: "Amikor kijössz az álcázásból, a [2&nbsp;%BANKLEFT%] vagy [2&nbsp;%BANKRIGHT%] sablont <b>kell</b> használnod a [2&nbsp;%STRAIGHT%] helyett.%LINEBREAK%<strong>Stygium Array:</strong> Miután kijössz az álcázásból végrehajthatsz egy %EVADE% akciót. A Vége fázis elején elkölthetsz 1 kitérés jelzőt, hogy kapj egy álcázás jelzőt."
+    },
+    '"Howlrunner"': {
+      display_name: "“Howlrunner”",
+      text: "Amikor egy 0-1-es távolságban lévő baráti hajó elsődleges támadást hajt végre, 1 támadókockát újradobhat."
+    },
+    '"Leebo"': {
+      display_name: "“Leebo”",
+      text: "Miután védekeztél vagy támadást hajtottál végre, ha elköltöttél egy kalkuláció jelzőt, kapsz 1 kalkuláció jelzőt.%LINEBREAK%<strong>Sensor Blindspot:</strong> Amikor elsődleges támadást hajtasz végre 0-1-es távolságban, nem érvényesül a 0-1-es távolságért járó bónusz és 1-gyel kevesebb támadókockával dobsz."
+    },
+    '"Mauler" Mithel': {
+      display_name: "“Mauler” Mithel",
+      text: "Amikor támadást hajtasz végre 1-es távolságban, dobj 1-gyel több támadókockával."
+    },
+    '"Night Beast"': {
+      display_name: "“Night Beast”",
+      text: "Miután teljesen végrehajtasz egy kék manővert, végrehajthatsz egy %FOCUS% akciót."
+    },
+    '"Pure Sabacc"': {
+      display_name: "“Pure Sabacc”",
+      text: "Amikor támadást hajtasz végre, ha 1 vagy kevesebb sérüléskártyád van, 1-gyel több támadókockával dobhatsz.%LINEBREAK%<sasmall><strong>Adaptive Ailerons:</strong> Mielőtt felfednéd a tárcsád, ha nem vagy stresszes, végre <b>kell</b> hajtanod egy fehér [1&nbsp;%BANKLEFT%), [1&nbsp;%STRAIGHT%] vagy [1&nbsp;%BANKRIGHT%] manővert.</sasmall>"
+    },
+    '"Redline"': {
+      display_name: "“Redline”",
+      text: "Fenntarthatsz 2 bemérő jelzőt. Miután végrehajtottál egy akciót, feltehetsz egy bemérő jelzőt."
+    },
+    '"Scourge" Skutu': {
+      display_name: "“Scourge” Skutu",
+      text: "Amikor végrehajtasz egy támadást a %BULLSEYEARC% tűzívedben lévő védekező ellen, dobj 1-gyel több támadókockával."
+    },
+    '"Vizier"': {
+      display_name: "“Vizier”",
+      text: "Miután teljesen végrehajtottál egy 1-es sebességű manővert az <strong>Adaptive Ailerons</strong> képességed használatával, végrehajthatsz egy %COORDINATE% akciót. Ha így teszel, hagyd ki az <strong>Akció végrehajtása</strong> lépést.%LINEBREAK%<sasmall><strong>Adaptive Ailerons:</strong> Mielőtt felfednéd a tárcsád, ha nem vagy stresszes, végre <b>kell</b> hajtanod egy fehér [1&nbsp;%BANKLEFT%), [1&nbsp;%STRAIGHT%] vagy [1&nbsp;%BANKRIGHT%] manővert.</sasmall>"
+    },
+    '"Wampa"': {
+      display_name: "“Wampa”",
+      text: "Amikor végrehajtasz egy támadást, elkölthetsz 1&nbsp;%CHARGE% jelzőt, hogy 1-gyel több támadókockával dobj. Védekezés után elvesztesz 1&nbsp;%CHARGE% jelzőt."
+    },
+    '"Whisper"': {
+      display_name: "“Whisper”",
+      text: "Miután végrehajtasz egy támadást ami talál, kapsz 1 kitérés jelzőt.%LINEBREAK%<strong>Stygium Array:</strong> Miután kijössz az álcázásból végrehajthatsz egy %EVADE% akciót. A Vége fázis elején elkölthetsz 1 kitérés jelzőt, hogy kapj egy álcázás jelzőt."
+    },
+    '"Zeb" Orrelios': {
+      display_name: "“Zeb” Orrelios",
+      text: "Amikor védekezel a %CRIT% találatok előbb semlegesítődnek a %HIT% találatoknál.%LINEBREAK%<sasmall><strong>Locked and Loaded:</strong> Amikor dokkolva vagy, miután az anyahajód végrehajtott egy elsődleges %FRONTARC% vagy %TURRET% támadást, végrehajthat egy bónusz %REARARC% támadást.</sasmall>"
+    },
+    '"Zeb" Orrelios (Sheathipede)': {
+      display_name: "“Zeb” Orrelios",
+      text: "Amikor védekezel a %CRIT% találatok előbb semlegesítődnek a %HIT% találatoknál.%LINEBREAK%<sasmall><strong>Comms Shuttle:</strong> Amikor dokkolva vagy az anyahajód %COORDINATE% akció lehetőséget kap. Az anyahajód aktiválása előtt végrehajthat egy %COORDINATE% akciót.</sasmall>"
+    },
+    '"Zeb" Orrelios (TIE Fighter)': {
+      display_name: "“Zeb” Orrelios",
+      text: "Amikor védekezel a %CRIT% találatok előbb semlegesítődnek a %HIT% találatoknál."
+    },
     "Poe Dameron": {
-      text: "After you perform an action, you may spend 1 %CHARGE% to perform a white action, treating it as red. %LINEBREAK% WEAPON HARDPOINT: You can equip 1 %CANNON%, %TORPEDO% or %MISSILE% upgrade."
+      text: "Miután végrehajtottál egy akciót, elkölthetsz 1&nbsp;%CHARGE% jelzőt, hogy végrehajts egy fehér akciót pirosként kezelve.%LINEBREAK%<strong>Weapon Hardpoint:</strong> Felszerelhetsz 1&nbsp;%CANNON%, %TORPEDO% vagy %MISSILE% fejlesztést."
     },
     "Lieutenant Bastian": {
-      text: "After a ship at range 1-2 is dealt a damage card, you may acquire a lock on that ship. %LINEBREAK% WEAPON HARDPOINT: You can equip 1 %CANNON%, %TORPEDO% or %MISSILE% upgrade."
+      text: "Miután egy hajó 1-2-es távolságban felhúz egy sérülés kártyát, felrakhatsz rá egy bemérő jelzőt.%LINEBREAK%<strong>Weapon Hardpoint:</strong> Felszerelhetsz 1&nbsp;%CANNON%, %TORPEDO% vagy %MISSILE% fejlesztést."
     },
     '"Midnight"': {
-      text: "While you defend or perform an attack, if you have a lock on the enemy ship, that ship's dice cannot be modified."
+      text: "Amikor védekezel vagy támadás hajtasz végre, ha van bemérőd azon az ellenséges hajón, az nem módosíthatja a kockáit."
     },
     '"Longshot"': {
-      text: "While you perform a primary attack at attack range 3, roll 1 additional attack die."
+      text: "Amikor elsődleges támadást hajtasz végre 3-as távolságban, dobj 1-gyel több támadókockával."
     },
     '"Muse"': {
-      text: "At the start of the Engagement Phase, you may choose a friendly ship at range 0-1. If you do, that ship removes 1 stress token."
+      text: "Az Ütközet fázis elején válaszhatsz egy baráti hajót 0-1-es távolságban. Ha így teszel, az a hajó vegyen le 1 stressz jelzőt."
     },
     "Kylo Ren": {
-      text: " After you defend, you may spend 1 %FORCE% to assign the I'll Show You the Dark Side condition to the attacker. %LINEBREAK% AUTOTHRUSTERS: After you perform an action. you may perform a red %BARRELROLL% or a red %BOOST% action."
+      text: "Miután védekeztél, elkölthetsz 1&nbsp;%FORCE% jelzőt, hogy hozzárendeled az <strong>I'll Show You the Dark Side</strong> kondíciós kártyát a támadódhoz.%LINEBREAK%<strong>Autothrusters:</strong> Miután végrehajtasz egy akciót, végrehajthatsz egy piros %BARRELROLL% vagy piros %BOOST% akciót."
     },
     '"Blackout"': {
-      text: " ??? %LINEBREAK% AUTOTHRUSTERS: After you perform an action. you may perform a red %BARRELROLL% or a red %BOOST% action."
+      text: "Amikor végrehajtasz egy támadást, ha a támadás akadályozott egy akadály által, a védekező 2-vel kevesebb védekezőkockával dob.%LINEBREAK%<strong>Autothrusters:</strong> Miután végrehajtasz egy akciót, végrehajthatsz egy piros %BARRELROLL% vagy piros %BOOST% akciót."
     },
     "Lieutenant Dormitz": {
-      text: " ... are placed, other ... be placed anywhere in ... range 0-2 of you. %LINEBREAK% ... : while you perform a %CANNON% ... additional die. "
+      text: "Felhelyezés: Miután  felhelyezésre kerültél, a többi baráti hajó bárhova helyezhető a játékterületen tőled 0-2-es távolságban.%LINEBREAK%<strong>Linked battery:</strong> Amikor végrehajtasz egy %CANNON% támadást, dobj 1-gyel több támadókockával."
     },
     '"Backdraft"': {
-      text: " ... perform a %TURRET% primary ... defender is in your %BACKARC% ... additional dice. %LINEBREAK% ... TURRET: You can... indicator only to your ... must treat the %FRONTARC% ... your equipped %MISSILE% ... as %TURRET%. "
+      text: "Amikor végrehajtasz egy %SINGLETURRETARC% elsődleges támadást, ha a védekező benne van a %REARARC% tűzívedben dobj 1-gyel több kockával.%LINEBREAK%<strong>Heavy Weapon Turret:</strong> A %SINGLETURRETARC% mutatódat csak %FRONTARC% vagy %REARARC% irányba forgathatod. A felszerelt %MISSILE% fejlesztésed %FRONTARC% követelményét kezeld úgy mintha %SINGLETURRETARC% lenne."
     },
     '"Quickdraw"': {
-      text: " ??? %LINEBREAK% ... TURRET: You can... indicator only to your ... must treat the %FRONTARC% ... your equipped %MISSILE% ... as %TURRET%. "
+      text: "Miután elvesztesz egy pajzsot, elkölthetsz 1&nbsp;%CHARGE% jelzőt. Ha így teszel, végrehajthatsz egy bónusz elsődleges támadást.%LINEBREAK%<strong>Heavy Weapon Turret:</strong> A %SINGLETURRETARC% mutatódat csak %FRONTARC% vagy %REARARC% irányba forgathatod. A felszerelt %MISSILE% fejlesztésed %FRONTARC% követelményét kezeld úgy mintha %SINGLETURRETARC% lenne."
+    },
+    "Zeta Squadron Survivor": {
+      text: "<strong>Heavy Weapon Turret:</strong> A %SINGLETURRETARC% mutatódat csak %FRONTARC% vagy %REARARC% irányba forgathatod. A felszerelt %MISSILE% fejlesztésed %FRONTARC% követelményét kezeld úgy mintha %SINGLETURRETARC% lenne."
     },
     "Rey": {
-      text: " While you defend or perform an attack, if the enemy ship in your %FRONTARC%, you may spend 1 %FORCE% change 1 of your blank results to an %EVADE% or %HIT% result. "
+      text: "Amikor védekezel vagy támadást hajtasz végre, ha az ellenséges hajó benne van a %FRONTARC% tűzívedben, elkölthetsz 1&nbsp;%FORCE% jelzőt, hogy 1 üres eredményed %EVADE% vagy %HIT% eredményre változtasd."
     },
     "Han Solo (Resistance)": {
-      text: " ??? "
+      text: "Felhelyezés: Bárhova felhelyezheted a hajód a játékterületre 3-as távolságon túl az ellenséges hajóktól."
     },
     "Chewbacca (Resistance)": {
-      text: " ??? "
+      text: "Miután egy baráti hajó 0-3-as távolságban megsemmisül, végrehajthatsz egy akciót. Aztán végrehajthatsz egy bónusz támadást."
     },
     "Captain Seevor": {
-      text: " While you defend or perform an attack, before the attack dice are rolled, if you are not in the enemy ship's %BULLSEYEARC%, you may spend 1 %CHARGE%. If you do, the enemy ship gains one jam token. "
+      text: "Amikor védekezel vagy támadást hajtasz végre, mielőtt a támadókockát elgurulnának, ha nem vagy az ellenséges hajó %BULLSEYEARC% tűzívében, elkölthetsz 1&nbsp;%CHARGE% jelzőt. Ha így teszel, az ellenséges hajó kap egy zavarás jelzőt.%LINEBREAK%<strong>Notched Stabilizers:</strong> Amikor mozogsz, hagyd figyelmen kívül az aszteroidákat."
     },
     "Mining Guild Surveyor": {
-      text: " "
+      text: "<strong>Notched Stabilizers:</strong> Amikor mozogsz, hagyd figyelmen kívül az aszteroidákat."
+    },
+    "Mining Guild Sentry": {
+      text: "<strong>Notched Stabilizers:</strong> Amikor mozogsz, hagyd figyelmen kívül az aszteroidákat."
     },
     "Ahhav": {
-      text: " ??? "
+      text: "Amikor védekezel vagy támadást hajtasz végre, ha az elleséges hajó nagyobb talpméretű, dobj 1-gyel több kockával.%LINEBREAK%<strong>Notched Stabilizers:</strong> Amikor mozogsz, hagyd figyelmen kívül az aszteroidákat."
     },
     "Finch Dallow": {
-      text: " ... drop a bomb, you ... play area touching ... instead. "
+      text: "Mielőtt ledobnál egy bombát, ledobás helyett elhelyezheted a játékterületen úgy, hogy érintkezzen veled."
     },
     "Major Stridan": {
-      text: " While you coordinate or resolve the effect of one of your upgrades, you may treat friendly ships at range 2-3 as being at range 0 or range 1. %LINEBREAK% LINKED BATTERY: While you perform a %CANNON% attack, roll 1 addtional die. "
+      text: "Amikor koordinálsz vagy egy fejlesztés kártyád hatását alkalmaznád, kezelheted úgy a 2-3-as távolságban lévő baráti hajókat, mintha 0 vagy 1-es távolságban lennének.%LINEBREAK%<strong>Linked battery:</strong> Amikor végrehajtasz egy %CANNON% támadást, dobj 1-gyel több támadókockával."
+    },
+    "Kare Kun": {
+      text: "Amikor gyorsítasz (%BOOST%), használhatod a [1&nbsp;%TURNLEFT%] vagy [1&nbsp;%TURNRIGHT%] sablonokat is.%LINEBREAK%<strong>Weapon Hardpoint:</strong> Felszerelhetsz 1&nbsp;%CANNON%, %TORPEDO% vagy %MISSILE% fejlesztést."
+    },
+    "Joph Seastriker": {
+      text: "Miután elvesztesz 1 pajzsod, kapsz 1&nbsp;%EVADE% jelzőt.%LINEBREAK%<strong>Weapon Hardpoint:</strong> Felszerelhetsz 1&nbsp;%CANNON%, %TORPEDO% vagy %MISSILE% fejlesztést."
+    },
+    "Lieutenant Bastian": {
+      text: "Miután egy hajó 1-2-es távolságban felhúz egy sérülés kártyát, felrakhatsz rá egy bemérő jelzőt.%LINEBREAK%<strong>Weapon Hardpoint:</strong> Felszerelhetsz 1&nbsp;%CANNON%, %TORPEDO% vagy %MISSILE% fejlesztést."
+    },
+    "Jaycris Tubbs": {
+      text: "Miután teljesen végrehajtottál egy kék manővert, választhatsz egy baráti hajót 0-1-es távolságban. Ha így teszel, az a hajó levesz egy stressz jelzőt.%LINEBREAK%<strong>Weapon Hardpoint:</strong> Felszerelhetsz 1&nbsp;%CANNON%, %TORPEDO% vagy %MISSILE% fejlesztést."
+    },
+    "Black Squadron Ace (T-70)": {
+      text: "<strong>Weapon Hardpoint:</strong> Felszerelhetsz 1&nbsp;%CANNON%, %TORPEDO% vagy %MISSILE% fejlesztést."
+    },
+    "Red Squadron Expert": {
+      text: "<strong>Weapon Hardpoint:</strong> Felszerelhetsz 1&nbsp;%CANNON%, %TORPEDO% vagy %MISSILE% fejlesztést."
+    },
+    "Blue Squadron Rookie": {
+      text: "<strong>Weapon Hardpoint:</strong> Felszerelhetsz 1&nbsp;%CANNON%, %TORPEDO% vagy %MISSILE% fejlesztést."
+    },
+    "Cobalt Squadron Bomber": {
+      text: " "
+    },
+    "TN-3465": {
+      text: "Amikor egy másik baráti hajó támadást hajt végre, ha 0-1 távolságban vagy a védekezőtől, elszenvedhetsz 1&nbsp;%CRIT% sérülést, hogy a támadó 1 eredményét %CRIT% eredményre változtassa."
+    },
+    '"Scorch"': {
+      text: "Amikor elsődleges támadást hajtasz végre, ha nem vagy stresszes, kaphatsz 1 stressz jelzőt, hogy 1-gyel több támadókockával dobj."
+    },
+    '"Longshot"': {
+      text: "Amikor elsődleges támadást hajtasz végre 3-as távolságban, dobj 1-gyel több támadókockával."
+    },
+    '"Static"': {
+      text: "Amikor elsődleges támadást hajtasz végre, elköltheted a védekezőn lévő bemérődet és egy %FOCUS% jelződ, hogy minden eredményed %CRIT% eredményre változtass."
+    },
+    "Lieutenant Rivas": {
+      text: "Miután egy hajó 1-2-es távolságban kap egy piros vagy narancs jelzőt, ha nem volt bemérőd a hajón, feltehetsz egyet rá."
+    },
+    "Commander Malarus": {
+      text: "Az Ütközet fázis elején elkölthetsz 1&nbsp;%CHARGE% jelzőt, hogy kapj 1 stressz jelzőt. Ha így teszel, a kör végéig ha védekezel vagy támadást hajtasz végre, megváltoztathatsz minden %FOCUS% eredményed %EVADE% vagy %HIT% eredményre."
+    },
+    "Omega Squadron Ace": {
+      text: ""
+    },
+    "Zeta Squadron Pilot": {
+      text: ""
+    },
+    "Epsilon Squadron Cadet": {
+      text: ""
+    },
+    "Greer Sonnel": {
+      text: "Miután teljesen végrehajtottál egy manővert, forgathatod a %SINGLETURRETARC% tűzívedet.%SINGLETURRETARC% %LINEBREAK%<strong>Refined Gyrostabilizers:</strong> A %SINGLETURRETARC% mutatódat csak %FRONTARC% vagy %REARARC% irányba forgathatod. Miután végrehajtottál egy akciót, végrehajthatsz egy piros %BOOST% vagy %ROTATEARC% akciót."
+    },
+    "L'ulo L'ampar": {
+      text: "Amikor védekezel vagy elsődleges támadást hajtasz végre, ha stresszes vagy, 1-gyel kevesebb védekezőkockával vagy 1-gyel több támadókockával <strong>kell</strong> dobnod.%LINEBREAK%<strong>Refined Gyrostabilizers:</strong> A %SINGLETURRETARC% mutatódat csak %FRONTARC% vagy %REARARC% irányba forgathatod. Miután végrehajtottál egy akciót, végrehajthatsz egy piros %BOOST% vagy %ROTATEARC% akciót."
+    },
+    "Zari Bangel": {
+      text: "Ne hagyd ki az <strong>Akció végrehajtása</strong> lépést, miután részlegesen hajtottál végre egy manővert.%LINEBREAK%<strong>Refined Gyrostabilizers:</strong> A %SINGLETURRETARC% mutatódat csak %FRONTARC% vagy %REARARC% irányba forgathatod. Miután végrehajtottál egy akciót, végrehajthatsz egy piros %BOOST% vagy %ROTATEARC% akciót."
+    },
+    "Tallissan Lintra": {
+      text: "Amikor egy ellenséges hajó a %BULLSEYEARC% tűzívedben végrehajt egy támadást, elkölthetsz 1&nbsp;%CHARGE% jelzőt. Ha így teszel, a védekező 1-gyel több kockával dob.%LINEBREAK%<strong>Refined Gyrostabilizers:</strong> A %SINGLETURRETARC% mutatódat csak %FRONTARC% vagy %REARARC% irányba forgathatod. Miután végrehajtottál egy akciót, végrehajthatsz egy piros %BOOST% vagy %ROTATEARC% akciót."
+    },
+    "Darth Maul": {
+      text: "Miután végrehajtasz egy támadást, elkölthetsz 2 %FORCE% jelzőt, hogy végrehajts egy bónusz elsődleges támadást egy másik célpont ellen. Ha az első támadás nem talált, a bónusz támadást végrehajthatod ugyanazon célpont ellen."
+    },
+    '"Sinker"': {
+      text: "Amikor 1-2-es távolságban és a %LEFTARC% vagy %RIGHTARC% tűzívedben lévő baráti hajó végrehajt egy elsődleges támadást, újradobhat 1 támadókockát."
+    },
+    "Petty Officer Thanisson": {
+      text: "Az Aktivációs vagy Ütközet fázis közben, miután egy hajó a %FRONTARC% tűzívedben 1-2-es távolságban kap 1 stressz jelzőt, elkölthetsz 1&nbsp;%CHARGE% jelzőt. Ha így teszel, az a hajó kap egy vonósugár jelzőt.%LINEBREAK%<strong>Linked battery:</strong> Amikor végrehajtasz egy %CANNON% támadást, dobj 1-gyel több támadókockával."
+    },
+    "Captain Cardinal": {
+      text: "Amikor egy baráti hajó 1-2-es távolságban, a tiédnél alacsonyabb kezdeményezéssel védekezik vagy támadást hajt végre, ha van legalább 1&nbsp;%CHARGE% jelződ, az a hajó újradobhat 1&nbsp;%FOCUS% eredményét. Miután egy ellenséges hajó 0-3-as távolságban megsemmisül, elvesztesz 1&nbsp;%CHARGE% jelzőt.%LINEBREAK%<strong>Linked battery:</strong> Amikor végrehajtasz egy %CANNON% támadást, dobj 1-gyel több támadókockával."
+    },
+    '"Avenger"': {
+      text: "Miután egy ellenséges hajó 0-3-as távolságban megsemmisül After another friendly ship is destroyed, you may perform an action, even while stressed. %LINEBREAK%<strong>Autothrusters:</strong> Miután végrehajtasz egy akciót, végrehajthatsz egy piros %BARRELROLL% vagy piros %BOOST% akciót."
+    },
+    '"Recoil"': {
+      text: "Amikor stresszes vagy kezelheted úgy a %FRONTARC% tűzívedben 0-1-es távolságban lévő ellenséges hajókat, mintha a %BULLSEYEARC% tűzívedben lennének.%LINEBREAK%<strong>Autothrusters:</strong> Miután végrehajtasz egy akciót, végrehajthatsz egy piros %BARRELROLL% vagy piros %BOOST% akciót."
+    },
+    "Omega Squadron Expert": {
+      text: "<strong>Heavy Weapon Turret:</strong> A %SINGLETURRETARC% mutatódat csak %FRONTARC% vagy %REARARC% irányba forgathatod. A felszerelt %MISSILE% fejlesztésed %FRONTARC% követelményét kezeld úgy mintha %SINGLETURRETARC% lenne."
+    },
+    "Sienar-Jaemus Engineer": {
+      text: "<strong>Autothrusters:</strong> Miután végrehajtasz egy akciót, végrehajthatsz egy piros %BARRELROLL% vagy piros %BOOST% akciót."
+    },
+    "First Order Test Pilot": {
+      text: "<strong>Autothrusters:</strong> Miután végrehajtasz egy akciót, végrehajthatsz egy piros %BARRELROLL% vagy piros %BOOST% akciót."
+    },
+    "Starkiller Base Pilot": {
+      text: "<strong>Linked battery:</strong> Amikor végrehajtasz egy %CANNON% támadást, dobj 1-gyel több támadókockával."
+    },
+    "Lieutenant Tavson": {
+      text: "Miután sérülést szenvedsz el, elkölthetsz 1&nbsp;%CHARGE% jelzőt, hogy végrehajts egy akciót.%LINEBREAK%<strong>Linked battery:</strong> Amikor végrehajtasz egy %CANNON% támadást, dobj 1-gyel több támadókockával."
+    },
+    '"Null"': {
+      text: "Amíg nem vagy sérült, kezeld a kezdeményezési értéked 7-esként."
+    },
+    "Cat": {
+      text: "Amikor elsődleges támadást hajtasz végre, ha a védekező 0-1-es távolságban van legalább 1 baráti eszköztől, dobj 1-gyel több kockával."
+    },
+    "Ben Teene": {
+      text: "Miután végrehajtottál egy támadást, ha a védekező benne van a %SINGLETURRETARC% tűzívedben, rendeld hozzá a <strong>Rattled</strong> kondíciós kártyát a védekezőhöz."
+    },
+    "Vennie": {
+      text: "Amikor védkezel, ha a támadó benne van egy baráti hajó %SINGLETURRETARC% tűzívében, hozzáadhatsz 1&nbsp;%FOCUS% eredményt a dobásodhoz."
+    },
+    "Edon Kappehl": {
+      text: "Miután teljesen végrehajtottál egy kék vagy fehér manővert, ha még nem dobtál vagy lőttél ki eszközt ebben a körben, kidobhatsz egy eszközt."
+    },
+    "Resistance Sympathizer": {
+      text: ""
+    },
+    "Jessika Pava": {
+      text: "Amikor védekezel vagy támadást hajtasz végre, elkölthetsz 1&nbsp;%CHARGE% jelzőt vagy a felszerelt %ASTROMECH% fejlesztéseden lévő 1 nem visszatölthető %CHARGE% jelzőt, hogy újradobj 1 kockát minden 0-1-es távolságban lévő baráti hajó után.%LINEBREAK%<strong>Weapon Hardpoint:</strong> Felszerelhetsz 1&nbsp;%CANNON%, %TORPEDO% vagy %MISSILE% fejlesztést."
+    },
+    "Temmin Wexley": {
+      text: "Miután teljesen végrehajtasz egy 2-4 sebességű manővert, végrehajthatsz egy %BOOST% akciót%LINEBREAK%<strong>Weapon Hardpoint:</strong> Felszerelhetsz 1&nbsp;%CANNON%, %TORPEDO% vagy %MISSILE% fejlesztést."
+    },
+    "Nien Nunb": {
+      text: "Miután kapsz egy stressz jelzőt, ha van ellenséges hajó a %FRONTARC% tűzívedben 0-1 távolságban, leveheted a kapott stressz jelzőt.%LINEBREAK%<strong>Weapon Hardpoint:</strong> Felszerelhetsz 1&nbsp;%CANNON%, %TORPEDO% vagy %MISSILE% fejlesztést."
+    },
+    "Ello Asty": {
+      text: "Miután felfedtél egy piros Tallon Roll (%TROLLLEFT% vagy %TROLLRIGHT%) manővert, ha 2 vagy kevesebb stressz jelződ van, kezeld a manővert fehérként.%LINEBREAK%<strong>Weapon Hardpoint:</strong> Felszerelhetsz 1&nbsp;%CANNON%, %TORPEDO% vagy %MISSILE% fejlesztést."
+    },
+    "Blue Squadron Recruit": {
+      text: "<strong>Refined Gyrostabilizers:</strong> A %SINGLETURRETARC% mutatódat csak %FRONTARC% vagy %REARARC% irányba forgathatod. Miután végrehajtottál egy akciót, végrehajthatsz egy piros %BOOST% vagy %ROTATEARC% akciót."
+    },
+    "Green Squadron Expert": {
+      text: "<strong>Refined Gyrostabilizers:</strong> A %SINGLETURRETARC% mutatódat csak %FRONTARC% vagy %REARARC% irányba forgathatod. Miután végrehajtottál egy akciót, végrehajthatsz egy piros %BOOST% vagy %ROTATEARC% akciót."
+    },
+    "Foreman Proach": {
+      text: "Mielőtt sorra kerülsz az Ütközet fázisban, választhasz 1 ellenséges hajót a %BULLSEYEARC% tűzívedben 1-2-es távolságban és kapsz 1 'inaktív fegyverzet' jelzőt. Ha így teszel, az a hajó kap 1 vonósugár jelzőt.%LINEBREAK%<strong>Notched Stabilizers:</strong> Amikor mozogsz, hagyd figyelmen kívül az aszteroidákat."
+    },
+    "Overseer Yushyn": {
+      text: "Mielőtt egy baráti hajó 1-es távolságban kapna 1 'inaktív fegyverzet' jelzőt, ha az a hajó nem stresszes, elkölthetsz 1&nbsp;%CHARGE% jelzőt. Ha így teszel, az a hajó 1 stressz jelzőt kap helyette.%LINEBREAK%<strong>Notched Stabilizers:</strong> Amikor mozogsz, hagyd figyelmen kívül az aszteroidákat."
     }
   };
   upgrade_translations = {
     "0-0-0": {
-      text: "<i>Követelmény: Scum vagy Darth Vader</i> %LINEBREAK% Az ütközet fázis elején, kiválaszthatsz 1 ellenséges hajót 0-1-es távolságban. Ha így teszel kapsz egy kalkuláció jelzőt, hacsak a hajó nem választja, hogy kap 1 stressz jelzőt."
+      display_name: "0-0-0",
+      text: "<i>Söpredék vagy Darth Vader a csapatban</i>%LINEBREAK%Az Ütközet fázis elején, kiválaszthatsz 1 ellenséges hajót 0-1-es távolságban. Ha így teszel, kapsz egy kalkuláció jelzőt, hacsak a hajó nem választja, hogy kap 1 stressz jelzőt."
     },
     "4-LOM": {
-      text: "Amikor végrehajtasz egy támadást, a támadókockák eldobása után, megnevezhetsz egy zöld jelző típust. Ha így teszel, kapsz 2 ion jelzőt és ezen támadás alatt a védekező nem költheti el a megnevezett típusú jelzőt."
-    },
-    "Ablative Plating": {
-      text: "<i>Követelmény: közepes vagy nagy talp</i> %LINEBREAK% Mielőtt sérülést szenvednél egy akadálytól vagy baráti bomba robbanástól, elkölthetsz 1 %CHARGE% jelzőt. Ha így teszel, megakadályozol 1 sérülést."
-    },
-    "Admiral Sloane": {
-      text: "Miután másik baráti hajó 0-3 távolságban védekezik, ha megsemmisül a támadó kap 2 stressz jelzőt. Amikor egy baráti hajó 0-3 távolságban végrehajt egy támadást egy stresszelt hajó ellen, 1 támadókockát újradobhat."
-    },
-    "Adv. Proton Torpedoes": {
-      text: "Támadás (%LOCK%): Költs el 1 %CHARGE% jelzőt. Változtass 1 %HIT% eredményt %CRIT% eredményre."
-    },
-    "Advanced Sensors": {
-      text: "Miután felfeded a tárcsádat, végrehajthatsz 1 akciót. Ha így teszel, nem hajthatsz végre másik akciót a saját aktivációdban."
-    },
-    "Advanced SLAM": {
-      text: "<i>Követelmény: %SLAM%</i> %LINEBREAK% Miután végrehajtasz egy %SLAM% akciót, ha teljesen végrehajtod azt a manővert, végrehajthatsz egy fehér akciót az akciósávodról pirosként kezelve."
-    },
-    "Afterburners": {
-      text: "<i>Követelmény: kis talp</i> %LINEBREAK% Miután teljesen végrehajtasz egy 3-5 sebességű manővert, elkölthetsz 1 %CHARGE% jelzőt, hogy végrehajts egy %BOOST% akciót, még ha stresszes is vagy."
-    },
-    "Agent Kallus": {
-      text: "Felhelyezés: rendelt hozzá a 'Hunted' kondíciót 1 ellenséges hajóhoz. Amikor végrehajtasz egy támadást a 'Hunted' kondícióval rendelkező hajó ellen, 1 %FOCUS% eredményed %HIT% eredményre változtathatod."
-    },
-    "Agile Gunner": {
-      text: "A vége fázisban forgathatod a %SINGLETURRETARC% mutatódat."
+      display_name: "4-LOM",
+      text: "<i>csak Söpredék</i>%LINEBREAK%Amikor végrehajtasz egy támadást, a támadókockák eldobása után, megnevezhetsz egy zöld jelző típust. Ha így teszel, kapsz 2 ion jelzőt és ezen támadás alatt a védekező nem költheti el a megnevezett típusú jelzőt."
     },
     "Andrasta": {
-      text: "<i>Kapott akció: %RELOAD%</i> %LINEBREAK% Kapsz egy %DEVICE% fejlesztés helyet."
-    },
-    "Barrage Rockets": {
-      text: "Támadás (%FOCUS%): Költs el 1 %CHARGE% jelzőt. Ha a védekező benne van a %BULLSEYEARC% tűzívedben, elkölthetsz 1 vagy több %CHARGE% jelzőt, hogy újradobj azzal egyenlő számú támadókockát."
-    },
-    "Baze Malbus": {
-      text: "Amikor végrehajtasz egy %FOCUS% akciót, kezelheted pirosként. Ha így teszel minden egyes 0-1 távolságban lévő ellenséges hajó után kapsz 1 további fókusz jelzőt, de maximum 2 darabot."
-    },
-    "Bistan": {
-      text: "Amikor végrehajtasz egy elsődleges támadást, ha van fókusz jelződ, végrehajthatsz egy bónusz %SINGLETURRETARC% támadást egy olyan hajó ellen, akit még nem támadtál ebben a körben."
-    },
-    "Boba Fett": {
-      text: "Felhelyezés: tartalékban kezdesz. A felrakási fázis végén tedd a hajód 0 távolságra egy akadálytól, de 3-as távolságon túl az ellenséges hajóktól."
-    },
-    "Bomblet Generator": {
-      text: "[Bomba] A rendszer fázisban elkölthetsz 1 %CHARGE% jelzőt, hogy ledobd a Bomblet bombát a [1 %STRAIGHT%] sablonnal. Az aktivációs fázis elején elkölthetsz 1 pajzsot, hogy visszatölts 2 %CHARGE% jelzőt."
-    },
-    "Bossk": {
-      text: "Amikor végrehajtasz egy elsődleges támadást ami nem talál, ha nem vagy stresszes kapsz 1 stressz jelzőt és végrehajtasz egy bónusz támadást ugyanazon célpont ellen."
-    },
-    "BT-1": {
-      text: "<i>Követelmény: Scum vagy Darth Vader</i> %LINEBREAK% Amikor végrehajtasz egy támadást, megváltoztathatsz 1 %HIT% eredményt %CRIT% eredményre minden stressz  jelző után ami a védekezőnek van."
-    },
-    "C-3PO": {
-      text: "<i>Kapott akció: %CALCULATE%</i> %LINEBREAK% Védekezőkocka gurítás előtt, elkölthetsz 1 kalkuláció jelzőt hogy hangosan tippelhess egy 1 vagy nagyobb számra. Ha így teszel és pontosan annyi %EVADE% eredményt dobsz, adjál hozzá még 1 %EVADE% eredményt. Miután végrehajtasz egy %CALCULATE% akciót, kapsz 1 kalkuláció jelzőt."
-    },
-    "Cad Bane": {
-      text: "Miután ledobsz vagy kilősz egy eszközt, végrehajthatsz egy piros %BOOST% akciót."
-    },
-    "Cassian Andor": {
-      text: "A rendszer fázis alatt választhatsz 1 ellenséges hajót 1-2-es távolságban. Tippeld meg hangosan menővere irányát és sebességét, aztán nézd meg a tárcsáját. Ha az iránya és sebessége egyezik a tippeddel, megváltoztathatod a saját tárcsádat egy másik manőverre."
-    },
-    "Chewbacca": {
-      text: "Az ütközet fázis elején elkölthetsz 2 %CHARGE% jelzőt, hogy megjavíts 1 felfordított sérülés kártyát."
-    },
-    "Chewbacca (Scum)": {
-      text: "A vége fázis elején elkölthetsz 1 focus jelzőt, hogy megjavíts 1 felfordított sérülés kártyát."
-    },
-    '"Chopper" (Astromech)': {
-      text: "Akció: Költs el 1 nem-újratölthető %CHARGE% jelzőt egy másik felszerelt fejlesztésről, hogy visszatölts 1 pajzsot%LINEBREAK% Akció: költs el 2 pajzsot, hogy visszatölts 1 nem-újratölthető %CHARGE% jelzőt egy felszerelt fejlesztésen."
-    },
-    '"Chopper" (Crew)': {
-      text: "Az 'Akció végrehajtása' lépés közben végrehajthatsz 1 akciót, még stresszes is. Miután stresszesen végrehajtasz egy akciót szenvedj el 1 %HIT% sérülést vagy fordítsd fel 1 sérülés kártyád."
-    },
-    "Ciena Ree": {
-      text: "<i>Követelmény: %COORDINATE%</i> %LINEBREAK% Miután végrehajtasz egy %COORDINATE% akciót, ha a koordinált hajó végrehajt egy %BARRELROLL% vagy %BOOST% akciót, kaphat 1 stressz jelzőt, hogy elforduljon 90 fokot."
-    },
-    "Cikatro Vizago": {
-      text: "A vége fázis alatt, választhatsz 2 %ILLICIT% fejlesztést ami baráti hajókra van felszerelve 0-1-es távolságban. Ha így teszel, megcserélheted ezeket a fejlesztéseket. A játék végén: tegyél vissza minden %ILLICIT% fejlesztést az eredeti hajójára."
-    },
-    "Cloaking Device": {
-      text: "<i>Követelmény: kis vagy közepes talp</i> %LINEBREAK% Akció: költs el 1 %CHARGE% jelzőt, hogy végrehajts egy %CLOAK% akciót. A tervezési fázis elején dobj 1 támadó kockával. %FOCUS% eredmény esetén hozd ki a hajód álcázásból vagy vedd le az álcázás jelzőt."
-    },
-    "Cluster Missiles": {
-      text: "Támadás (%LOCK%): Költs el 1 %CHARGE% jelzőt. Ezen támadás után végrehajthatod ezt a támadást mint bónusz támaáds egy másik célpont ellen 0-1 távolságra a védekezőtől, figyelmen kívül hagyva a %LOCK% követelményt."
-    },
-    "Collision Detector": {
-      text: "Amikor orsózol vagy gyorsítasz átmozoghatsz vagy rámozoghatsz akadályra. Miután átmozogtál vagy rámozogtál egy akadályra, elkölthetsz 1 %CHARGE% jelzőt, hogy figyelmen kívül hagyhatsd az akadály hatását a kör végéig."
-    },
-    "Composure": {
-      text: "<i>Követelmény: %FOCUS%</i> %LINEBREAK% Ha nem sikerül végrehajtani egy akciót és nincs zöld jelződ, végrehajthatsz egy %FOCUS% akciót."
-    },
-    "Concussion Missiles": {
-      text: "Támadás (%LOCK%): Költs el 1 %CHARGE% jelzőt. Ha a támadás talált, a védekezőtől 0-1 távolságban lévő minden hajó felfordítja egy sérülés kártyáját."
-    },
-    "Conner Nets": {
-      text: "[Akna] A rendszer fázisban elkölthetsz 1 %CHARGE% jelzőt, hogy ledobj egy Conner Net aknát a [1 %STRAIGHT%] sablonnal. Ennak a kártyának a %CHARGE% jelzője NEM újratölthető."
-    },
-    "Contraband Cybernetics": {
-      text: "Mielőtt aktiválódnál, elkölthetsz 1 %CHARGE% jelzőt. Ha így teszel, a kör végéig végrehajthatsz akciókat és piros manővereket, még stresszesen is."
-    },
-    "Crack Shot": {
-      text: "Amikor végrehajtasz egy elsődleges támadást, ha a védekező benne van a %BULLSEYEARC% tűzívedben, még az 'Eredmények semlegesítése' lépés előtt elkölthetsz 1 %CHARGE% jelzőt hogy hatástalaníts 1 %EVADE% eredményt."
-    },
-    "Daredevil": {
-      text: "<i>Követelmény: fehér %BOOST% és kis talp</i> %LINEBREAK% Amikor végrehajtasz egy fehér %BOOST% akciót, kezelheted pirosként, hogy a [1%TURNLEFT%] vagy [1 %TURNRIGHT%] sablokokat használhasd."
-    },
-    "Darth Vader": {
-      text: "Az ütközet fázis elején, válaszhatsz 1 hajót a tűzívedben 0-2-es távolságban és költs el 1 %FORCE% jelzőt. Ha így teszel, az a hajó elszenved 1 %HIT% sérülést, hacsak úgy nem dönt, hogy eldob 1 zöld jelzőt."
+      display_name: "Andrasta",
+      text: "<i>csak Söpredék</i>%LINEBREAK%<i>Kapott akció %RELOAD%</i>%LINEBREAK%Kapsz egy %DEVICE% fejlesztés helyet."
     },
     "Dauntless": {
-      text: "Miután részlegesen hajtottál végre egy manővert, végrehajthatsz 1 fehér akciót pirosként kezelve."
+      display_name: "Dauntless",
+      text: "<i>csak Birodalom</i>%LINEBREAK%Miután részlegesen hajtottál végre egy manővert, végrehajthatsz 1 fehér akciót pirosként kezelve."
+    },
+    "Ghost": {
+      display_name: "Ghost",
+      text: "<i>csak Lázadók</i>%LINEBREAK%Bedokkoltathatsz 1 Attack shuttle-t vagy Sheathipede-class shuttle-t. A dokkolt hajót csak a hátsó pöcköktől dokkolhatod ki."
+    },
+    "Havoc": {
+      display_name: "Havoc",
+      text: "<i>csak Söpredék</i>%LINEBREAK%Elveszted a %CREW% fejlesztés helyet. Kapsz egy %SENSOR% és egy %ASTROMECH% fejlesztés helyet."
+    },
+    "Hound's Tooth": {
+      display_name: "Hound’s Tooth",
+      text: "<i>csak Söpredék</i>%LINEBREAK%1 Z-95-AF4 headhunter bedokkolhat."
+    },
+    "IG-2000": {
+      display_name: "IG-2000",
+      text: "<i>csak Söpredék</i>%LINEBREAK%Megkapod minden másik <strong>IG-2000</strong> fejlesztéssel felszerelt baráti hajó pilóraképességét."
+    },
+    "Marauder": {
+      display_name: "Marauder",
+      text: "<i>csak Söpredék</i>%LINEBREAK%Amikor végrehajtasz egy elsődleges %REARARC% támadást, újradobhatsz 1 támadókockádat. Kapsz egy %GUNNER% fejlesztés helyet."
+    },
+    "Millennium Falcon": {
+      display_name: "Millennium Falcon",
+      text: "<i>csak Lázadók</i>%LINEBREAK%<i>Kapott akció %EVADE%</i>%LINEBREAK%Amikor védekezel, ha van kitérés jelződ, újradobhatsz 1 védekezőkockát."
+    },
+    "Mist Hunter": {
+      display_name: "Mist Hunter",
+      text: "<i>csak Söpredék</i>%LINEBREAK%<i>Kapott akció %BARRELROLL%</i>%LINEBREAK%Kapsz egy %CANNON% fejlesztés helyet."
+    },
+    "Moldy Crow": {
+      display_name: "Moldy Crow",
+      text: "<i>csak Lázadók vagy Söpredék</i>%LINEBREAK%Kapsz egy %FRONTARC% elsődleges fegyvert 3-as támadóértékkel. A Vége fázis alatt megtarthatsz maximum 2 fókusz jelzőt."
+    },
+    "Outrider": {
+      display_name: "Outrider",
+      text: "<i>csak Lázadók</i>%LINEBREAK%Amikor végrehajtasz egy támadást ami egy akadály által akadályozott, a védekező 1-gyel kevesebb védekezőkockával dob. Miután teljesen végrehajtottál egy manővert, ha áthaladtál vagy átfedésbe kerültél egy akadállyal, levehetsz 1 piros vagy narancs jelződet."
+    },
+    "Phantom": {
+      display_name: "Phantom",
+      text: "<i>csak Lázadók</i>%LINEBREAK%Be tudsz dokkolni 0-1 távolságból."
+    },
+    "Punishing One": {
+      display_name: "Punishing One",
+      text: "<i>csak Söpredék</i>%LINEBREAK%Amikor végrehajtasz egy elsődleges támadást, ha a védekező benne van a %FRONTARC% tűzívedben, dobj 1-gyel több támadókockával. Elveszted a %CREW% fejlesztés helyet. Kapsz egy %ASTROMECH% fejlesztés helyet."
+    },
+    "ST-321": {
+      display_name: "ST-321",
+      text: "<i>csak Birodalom</i>%LINEBREAK%Amikor végrehajtasz egy %COORDINATE% akciót, kiválaszthatsz egy ellenséges hajót 0-3-as távolságban a koordinált hajótól. Ha így teszel, tegyél fel egy bemérőt arra az ellenséges hajóra figyelmen kívül hagyva a távolság megkötéseket."
+    },
+    "Shadow Caster": {
+      display_name: "Shadow Caster",
+      text: "<i>csak Söpredék</i>%LINEBREAK%Miután végrehajtasz egy támadást ami talál, ha a védekező benne van a %SINGLETURRETARC% és %FRONTARC% tűzívedben is, a védekező kap 1 vonósugár jelzőt."
+    },
+    "Slave I": {
+      display_name: "Slave I",
+      text: "<i>csak Söpredék</i>%LINEBREAK%Miután felfedtél egy kanyar (%TURNLEFT% vagy %TURNRIGHT%) vagy ív (%BANKLEFT% vagy %BANKRIGHT%) manővert, átforgathatod a tárcsádat az ellenkező irányba megtartva a sebességet és a mozgásformát. Kapsz egy %TORPEDO% fejlesztés helyet."
+    },
+    "Virago": {
+      display_name: "Virago",
+      text: "<i>Kapsz egy %MODIFICATION% fejlesztés helyet. Adj 1 pajzs értéket a hajódhoz.</i>%LINEBREAK%A Vége fázis alatt, elkölthetsz 1&nbsp;%CHARGE% jelzőt, hogy végrehajts egy piros %BOOST% akciót."
+    },
+    "Ablative Plating": {
+      display_name: "Ablative Plating",
+      text: "<i>közepes vagy nagy talp</i>%LINEBREAK%Mielőtt sérülést szenvednél egy akadálytól vagy baráti bomba robbanástól, elkölthetsz 1&nbsp;%CHARGE% jelzőt. Ha így teszel, megakadályozol 1 sérülést."
+    },
+    "Admiral Sloane": {
+      display_name: "Admiral Sloane",
+      text: "<i>csak Birodalom</i>%LINEBREAK%Miután másik baráti hajó 0-3 távolságban védekezik, ha megsemmisül a támadó kap 2 stressz jelzőt. Amikor egy baráti hajó 0-3 távolságban végrehajt egy támadást egy stresszelt hajó ellen, 1 támadókockát újradobhat."
+    },
+    "Adv. Proton Torpedoes": {
+      display_name: "Adv. Proton Torpedoes",
+      text: "<strong>Támadás (%LOCK%):</strong>Támadás (%LOCK%): Költs el 1&nbsp;%CHARGE% jelzőt. Változtass 1&nbsp;%HIT% eredményt %CRIT% eredményre."
+    },
+    "Advanced SLAM": {
+      display_name: "Advanced SLAM",
+      text: "<i>Követelmény: %SLAM%</i>%LINEBREAK%Miután végrehajtasz egy %SLAM% akciót, ha teljesen végrehajtod azt a manővert, végrehajthatsz egy fehér akciót az akciósávodról pirosként kezelve."
+    },
+    "Advanced Sensors": {
+      display_name: "Advanced Sensors",
+      text: "Miután felfeded a tárcsádat, végrehajthatsz 1 akciót. Ha így teszel, nem hajthatsz végre másik akciót a saját aktivációdban."
+    },
+    "Afterburners": {
+      display_name: "Afterburners",
+      text: "<i>csak kis hajó</i>%LINEBREAK%Miután teljesen végrehajtasz egy 3-5 sebességű manővert, elkölthetsz 1&nbsp;%CHARGE% jelzőt, hogy végrehajts egy %BOOST% akciót, még ha stresszes is vagy."
+    },
+    "Agent Kallus": {
+      display_name: "Agent Kallus",
+      text: "<i>csak Birodalom</i>%LINEBREAK%<strong>Felhelyezés:</strong> rendelt hozzá a <strong>Hunted</strong> kondíciót 1 ellenséges hajóhoz. Amikor végrehajtasz egy támadást a <strong>Hunted</strong> kondícióval rendelkező hajó ellen, 1&nbsp;%FOCUS% eredményed %HIT% eredményre változtathatod."
+    },
+    "Agile Gunner": {
+      display_name: "Agile Gunner",
+      text: "A Vége fázisban elforgathatod a %SINGLETURRETARC% mutatódat."
+    },
+    "BT-1": {
+      display_name: "BT-1",
+      text: "<i>Söpredék vagy Darth Vader a csapatban</i>%LINEBREAK%Amikor végrehajtasz egy támadást, megváltoztathatsz 1&nbsp;%HIT% eredményt %CRIT% eredményre minden stressz jelző után ami a védekezőnek van."
+    },
+    "Barrage Rockets": {
+      display_name: "Barrage Rockets",
+      text: "<strong>Támadás (%FOCUS%):</strong> Költs el 1&nbsp;%CHARGE% jelzőt. Ha a védekező benne van a %BULLSEYEARC% tűzívedben, elkölthetsz 1 vagy több %CHARGE% jelzőt, hogy újradobj azzal egyenlő számú támadókockát."
+    },
+    "Baze Malbus": {
+      display_name: "Baze Malbus",
+      text: "<i>csak Lázadók</i>%LINEBREAK%Amikor végrehajtasz egy %FOCUS% akciót, kezelheted pirosként. Ha így teszel minden egyes 0-1 távolságban lévő ellenséges hajó után kapsz 1 további fókusz jelzőt, de maximum 2 darabot."
+    },
+    "Bistan": {
+      display_name: "Bistan",
+      text: "<i>csak Lázadók</i>%LINEBREAK%Amikor végrehajtasz egy elsődleges támadást, ha van fókusz jelződ, végrehajthatsz egy bónusz %SINGLETURRETARC% támadást egy olyan hajó ellen, akit még nem támadtál ebben a körben."
+    },
+    "Boba Fett": {
+      display_name: "Boba Fett",
+      text: "<i>csak Söpredék</i>%LINEBREAK%<strong>Felhelyezés:</strong> tartalékban kezdesz. A Felrakási fázis végén tedd a hajód 0 távolságra egy akadálytól, de 3-as távolságon túl az ellenséges hajóktól."
+    },
+    "Bomblet Generator": {
+      display_name: "Bomblet Generator",
+      text: "<strong>Bomba</strong>%LINEBREAK%A Rendszer fázisban elkölthetsz 1&nbsp;%CHARGE% jelzőt, hogy ledobd a Bomblet bombát a [1&nbsp;%STRAIGHT%] sablonnal. Az Aktivációs fázis elején elkölthetsz 1 pajzsot, hogy visszatölts 2 %CHARGE% jelzőt."
+    },
+    "Bossk": {
+      display_name: "Bossk",
+      text: "<i>csak Söpredék</i>%LINEBREAK%Amikor végrehajtasz egy elsődleges támadást ami nem talál, ha nem vagy stresszes kapsz 1 stressz jelzőt, hogy végrehajts egy bónusz támadást ugyanazon célpont ellen."
+    },
+    "C-3PO": {
+      display_name: "C-3PO",
+      text: "<i>Kapott akció: %CALCULATE%</i>%LINEBREAK%<i>csak Lázadók</i>%LINEBREAK%Védekezőkocka gurítás előtt, elkölthetsz 1&nbsp;%CALCULATE% jelzőt hogy hangosan tippelhess egy 1 vagy nagyobb számra. Ha így teszel és pontosan annyi %EVADE% eredményt dobsz, adjál hozzá még 1&nbsp;%EVADE% eredményt. Miután végrehajtasz a %CALCULATE% akciót, kapsz 1&nbsp;%CALCULATE% jelzőt."
+    },
+    "Cad Bane": {
+      display_name: "Cad Bane",
+      text: "<i>csak Söpredék</i>%LINEBREAK%Miután ledobsz vagy kilősz egy eszközt, végrehajthatsz egy piros %BOOST% akciót."
+    },
+    "Cassian Andor": {
+      display_name: "Cassian Andor",
+      text: "<i>csak Lázadók</i>%LINEBREAK%A Rendszer fázis alatt választhatsz 1 ellenséges hajót 1-2-es távolságban. Tippeld meg hangosan manővere irányát és sebességét, aztán nézd meg a tárcsáját. Ha az iránya és sebessége egyezik a tippeddel, megváltoztathatod a saját tárcsádat egy másik manőverre."
+    },
+    "Chewbacca": {
+      display_name: "Chewbacca",
+      text: "<i>csak Lázadók</i>%LINEBREAK%Az Ütközet fázis elején elkölthetsz 2&nbsp;%CHARGE% jelzőt, hogy megjavíts 1 felfordított sérülés kártyát."
+    },
+    "Chewbacca (Scum)": {
+      display_name: "Chewbacca",
+      text: "<i>csak Söpredék</i>%LINEBREAK%A Vége fázis elején elkölthetsz 1&nbsp;%FOCUS% jelzőt, hogy megjavíts 1 felfordított sérülés kártyát."
+    },
+    "Ciena Ree": {
+      display_name: "Ciena Ree",
+      text: "<i>Követelmény %COORDINATE% vagy <r>%COORDINATE%</r></i>%LINEBREAK%<i>csak Birodalom</i>%LINEBREAK%Miután végrehajtasz egy %COORDINATE% akciót, ha a koordinált hajó végrehajt egy %BARRELROLL% vagy %BOOST% akciót, kaphat 1 stressz jelzőt, hogy elforduljon 90 fokot."
+    },
+    "Cikatro Vizago": {
+      display_name: "Cikatro Vizago",
+      text: "<i>csak Söpredék</i>%LINEBREAK%A Vége fázis alatt, választhatsz 2&nbsp;%ILLICIT% fejlesztést ami baráti hajókra van felszerelve 0-1-es távolságban. Ha így teszel, megcserélheted ezeket a fejlesztéseket. A játék végén: tegyél vissza minden %ILLICIT% fejlesztést az eredeti hajójára."
+    },
+    "Cloaking Device": {
+      display_name: "Cloaking Device",
+      text: "<i>kis vagy közepes talp</i>%LINEBREAK%<strong>Akció:</strong> költs el 1&nbsp;%CHARGE% jelzőt, hogy végrehajts egy %CLOAK% akciót. A tervezési fázis elején dobj 1 támadó kockával. %FOCUS% eredmény esetén hozd ki a hajód álcázásból vagy vedd le az álcázás jelzőt."
+    },
+    "Cluster Missiles": {
+      display_name: "Cluster Missiles",
+      text: "<strong>Támadás (%LOCK%):</strong> Költs el 1&nbsp;%CHARGE% jelzőt. Ezen támadás után végrehajthatod ezt a támadást, mint bónusz támadás egy másik célpont ellen 0-1 távolságra a védekezőtől, figyelmen kívül hagyva a %LOCK% követelményt."
+    },
+    "Collision Detector": {
+      display_name: "Collision Detector",
+      text: "Amikor orsózol vagy gyorsítasz átmozoghatsz vagy rámozoghatsz akadályra. Miután átmozogtál vagy rámozogtál egy akadályra, elkölthetsz 1&nbsp;%CHARGE% jelzőt, hogy figyelmen kívül hagyhatsd az akadály hatását a kör végéig."
+    },
+    "Composure": {
+      display_name: "Composure",
+      text: "<i>Követelmény <r>%FOCUS%</r> vagy %FOCUS%</i>%LINEBREAK%Ha nem sikerül végrehajtani egy akciót és nincs zöld jelződ, végrehajthatsz egy %FOCUS% akciót."
+    },
+    "Concussion Missiles": {
+      display_name: "Concussion Missiles",
+      text: "<strong>Támadás (%LOCK%):</strong> Költs el 1&nbsp;%CHARGE% jelzőt. Ha a támadás talált, a védekezőtől 0-1 távolságban lévő minden hajó felfordítja egy sérülés kártyáját."
+    },
+    "Conner Nets": {
+      display_name: "Conner Nets",
+      text: "<strong>Akna</strong>%LINEBREAK%A Rendszer fázisban elkölthetsz 1&nbsp;%CHARGE% jelzőt, hogy ledobj egy Conner Net aknát a [1&nbsp;%STRAIGHT%] sablonnal. Ennak a kártyának a %CHARGE% jelzője <strong>nem</strong> újratölthető."
+    },
+    "Contraband Cybernetics": {
+      display_name: "Contraband Cybernetics",
+      text: "Mielőtt aktiválódnál, elkölthetsz 1&nbsp;%CHARGE% jelzőt. Ha így teszel, a kör végéig végrehajthatsz akciókat és piros manővereket, még stresszesen is."
+    },
+    "Crack Shot": {
+      display_name: "Crack Shot",
+      text: "Amikor végrehajtasz egy elsődleges támadást, ha a védekező benne van a %BULLSEYEARC% tűzívedben, még az <strong>Eredmények semlegesítése</strong> lépés előtt elkölthetsz 1&nbsp;%CHARGE% jelzőt hogy hatástalaníts 1&nbsp;%EVADE% eredményt."
+    },
+    "Daredevil": {
+      display_name: "Daredevil",
+      text: "<i>Követelmény %BOOST%</i>%LINEBREAK%<i>csak kis hajó</i>%LINEBREAK%Amikor végrehajtasz egy fehér %BOOST% akciót, kezelheted pirosként, hogy a [1&nbsp;%TURNLEFT%] vagy [1&nbsp;%TURNRIGHT%] sablokokat használhasd."
+    },
+    "Darth Vader": {
+      display_name: "Darth Vader",
+      text: "<i>csak Birodalom</i>%LINEBREAK%Az Ütközet fázis elején, válaszhatsz 1 hajót a tűzívedben 0-2-es távolságban és költs el 1&nbsp;%FORCE% jelzőt. Ha így teszel, az a hajó elszenved 1&nbsp;%HIT% sérülést, hacsak úgy nem dönt, hogy eldob 1 zöld jelzőt."
     },
     "Deadman's Switch": {
-      text: "Miután megsemmisültél, minden hajó 0-1 távolságban elszenved 1 %HIT% sérülést."
+      display_name: "Deadman’s Switch",
+      text: "Miután megsemmisültél, minden hajó 0-1 távolságban elszenved 1&nbsp;%HIT% sérülést."
     },
     "Death Troopers": {
-      text: "Az aktivációs fázis alatt az ellenséges hajók 0-1-es távolságban nem vehetik le a stressz jelzőjüket."
+      display_name: "Death Troopers",
+      text: "<i>csak Birodalom</i>%LINEBREAK%Az Aktivációs fázis alatt az ellenséges hajók 0-1-es távolságban nem vehetik le a stressz jelzőjüket."
     },
     "Debris Gambit": {
-      text: "<i>Követelmény: kis vagy közepes talp. Kapott akció: <r>%EVADE%</r></i> %LINEBREAK% Amikor végrehajtasz egy piros %EVADE% akciót, ha van 0-1-es távolságban egy akadály, kezeld az akciót fehérként."
+      display_name: "Debris Gambit",
+      text: "<i>Kapott akció: <r>%EVADE%</r></i>%LINEBREAK%<i>csak kis vagy közepes hajó</i>%LINEBREAK%Amikor végrehajtasz egy piros %EVADE% akciót, ha van 0-1-es távolságban egy akadály, kezeld az akciót fehérként."
     },
     "Dengar": {
-      text: "Miután védekezel, ha a támadó a tűzívedben van, elkölthetsz 1 %CHARGE% jelzőt. Ha így teszel, dobj 1 támadókockával, hacsak a támadó úgy nem dönt, hogy eldobja 1 zöld jelzőjét. %HIT% vagy %CRIT% eredmény esetén a támadó elszenved 1 %HIT% sérülést."
+      display_name: "Dengar",
+      text: "<i>csak Söpredék</i>%LINEBREAK%Miután védekezel, ha a támadó a tűzívedben van, elkölthetsz 1&nbsp;%CHARGE% jelzőt. Ha így teszel, dobj 1 támadókockával, hacsak a támadó úgy nem dönt, hogy eldobja 1 zöld jelzőjét. %HIT% vagy %CRIT% eredmény esetén a támadó elszenved 1&nbsp;%HIT% sérülést."
     },
     "Director Krennic": {
-      text: "<i>Kapott akció: %LOCK%</i> %LINEBREAK% Felhelyezés: a hajók felhelyezése előtt, rendeld hozzá az 'Optimized Prototype' kondíciót egy másik baráti hajóhoz."
+      display_name: "Director Krennic",
+      text: "<i>Kapott akció %LOCK%</i>%LINEBREAK%<i>csak Birodalom</i>%LINEBREAK%<strong>Felhelyezés:</strong> a hajók felhelyezése előtt, rendeld hozzá az <strong>Optimized Prototype</strong> kondíciót egy másik baráti hajóhoz."
     },
     "Dorsal Turret": {
-      text: "<i>Kapott akció: %ROTATEARC%</i>"
+      display_name: "Dorsal Turret",
+      text: "<i>Kapott akció %ROTATEARC%</i>%LINEBREAK%<strong>Támadás</strong>"
     },
     "Electronic Baffle": {
-      text: "A vége fázis alatt, elszenvedhetsz 1 %HIT% sérülést, hogy levegyél 1 piros jelzőt."
+      display_name: "Electronic Baffle",
+      text: "A Vége fázis alatt, elszenvedhetsz 1&nbsp;%HIT% sérülést, hogy levegyél 1 piros jelzőt."
     },
     "Elusive": {
-      text: "<i>Követelmény: kis vagy közepes talp</i> %LINEBREAK% Amikor védekezel, elkölthetsz 1 %CHARGE% jelzőt, hogy újradobj 1 védekezőkockát. Miután teljesen végrehajtottál egy piros manővert, visszatölthetsz 1 %CHARGE% jelzőt."
+      display_name: "Elusive",
+      text: "<i>csak kis vagy közepes hajó</i>%LINEBREAK%Amikor védekezel, elkölthetsz 1&nbsp;%CHARGE% jelzőt, hogy újradobj 1 védekezőkockát. Miután teljesen végrehajtottál egy piros manővert, visszatölthetsz 1&nbsp;%CHARGE% jelzőt."
     },
     "Emperor Palpatine": {
-      text: "Amikor egy másik baráti hajó védekezik vagy végrehajt egy támadást, elkölthetsz 1 %FORCE% jelzőt, hogy módosít annak 1 kockáját úgy, mintha az a hajó költött volna el 1 %FORCE% jelzőt."
+      display_name: "Emperor Palpatine",
+      text: "<i>csak Birodalom</i>%LINEBREAK%Amikor egy másik baráti hajó védekezik vagy végrehajt egy támadást, elkölthetsz 1&nbsp;%FORCE% jelzőt, hogy módosít annak 1 kockáját úgy, mintha az a hajó költött volna el 1&nbsp;%FORCE% jelzőt."
     },
     "Engine Upgrade": {
-      text: "<i>Követelmény: <r>%BOOST%</r>. Kapott akció: %BOOST% %LINEBREAK% Ennek a fejlesztésnek változó a költsége. 3, 6 vagy 9 pont attól függően, hogy kis, közepes vagy nagy talpú hajóra tesszük fel.</i>"
+      display_name: "Engine Upgrade",
+      text: "<i>Kapott akció %BOOST%</i>%LINEBREAK%<i>Követelmény <r>%BOOST%</r></i>%LINEBREAK%<i class = flavor_text>Ennek a fejlesztésnek változó a költsége. 3, 6 vagy 9 pont attól függően, hogy kis, közepes vagy nagy talpú hajóra tesszük fel.</i>"
     },
     "Expert Handling": {
-      text: "<i>Követelmény: <r>%BARRELROLL%</r>. Kapott akció: %BARRELROLL% %LINEBREAK%  Ennek a fejlesztésnek változó a költsége. 2, 4 vagy 6 pont attól függően, hogy kis, közepes vagy nagy talpú hajóra tesszük fel.</i>"
+      display_name: "Expert Handling",
+      text: "<i>Kapott akció %BARRELROLL%</i>%LINEBREAK%<i>Követelmény <r>%BARRELROLL%</r></i>%LINEBREAK%<i class = flavor_text>Ennek a fejlesztésnek változó a költsége. 2, 4 vagy 6 pont attól függően, hogy kis, közepes vagy nagy talpú hajóra tesszük fel.</i>"
     },
     "Ezra Bridger": {
-      text: "Amikor végrehajtasz egy elsődleges támadást, elkölthetsz 1 %FORCE% jelzőt, hogy végrehajts egy bónusz %SINGLETURRETARC% támadást egy olyan %SINGLETURRETARC% fegyverrel, amivel még nem támadtál ebben a körben. Ha így teszel és stresszes vagy, újradobhatsz 1 támadókockát."
+      display_name: "Ezra Bridger",
+      text: "<i>csak Lázadók</i>%LINEBREAK%Amikor végrehajtasz egy elsődleges támadást, elkölthetsz 1&nbsp;%FORCE% jelzőt, hogy végrehajts egy bónusz %SINGLETURRETARC% támadást egy olyan %SINGLETURRETARC% fegyverrel, amivel még nem támadtál ebben a körben. Ha így teszel és stresszes vagy, újradobhatsz 1 támadókockát."
     },
     "Fearless": {
-      text: "Amikor végrehajtasz egy %FRONTARC% elsődleges támadást, ha a támádási távolság 1 és benne vagy a védekező %FRONTARC% tűzívében, megváltoztathatsz 1 eredményedet %HIT% eredményre."
+      display_name: "Fearless",
+      text: "<i>csak Söpredék</i>%LINEBREAK%Amikor végrehajtasz egy %FRONTARC% elsődleges támadást, ha a támadási távolság 1 és benne vagy a védekező %FRONTARC% tűzívében, megváltoztathatsz 1 eredményedet %HIT% eredményre."
     },
     "Feedback Array": {
-      text: "Mielőtt sor kerül rád az üzközet fázisban, kaphatsz 1 ion jelzőt és 1 'inaktív fegyverzet' jelzőt. Ha így teszel, minden hajó 0-ás távolságban elszenved 1 %HIT% sérülést."
+      display_name: "Feedback Array",
+      text: "Mielőtt sor kerül rád az Üzközet fázisban, kaphatsz 1 ion jelzőt és 1 'inaktív fegyverzet' jelzőt. Ha így teszel, minden hajó 0-ás távolságban elszenved 1&nbsp;%HIT% sérülést."
     },
     "Fifth Brother": {
-      text: "Amikor végrehajtasz egy támadást, elkölthetsz 1 %FORCE% jelzőt, hogy megváltoztass 1 %FOCUS% eredményed %CRIT% eredményre."
+      display_name: "Fifth Brother",
+      text: "<i>csak Birodalom</i>%LINEBREAK%Amikor végrehajtasz egy támadást, elkölthetsz 1&nbsp;%FORCE% jelzőt, hogy megváltoztass 1&nbsp;%FOCUS% eredményed %CRIT% eredményre."
     },
     "Fire-Control System": {
+      display_name: "Fire-Control System",
       text: "Amikor végrehajtasz egy támadást, ha van bemérőd a védekezőn, újradobhatod 1 támadókockádat. Ha így teszel, nem költheted el a bemérődet ebben a támadásban."
     },
     "Freelance Slicer": {
-      text: "Amikor védekezel, mielőtt a támadó kockákat eldobnák, elköltheted a támadón lévő bemérődet, hogy dobj 1 támadókockával. Ha így teszel, a támadó kap 1 zavarás jelzőt. Majd %HIT% vagy %CRIT% eredménynél kapsz 1 zavarás jelzőt."
+      display_name: "Freelance Slicer",
+      text: "Amikor védekezel, mielőtt a támadó kockákat eldobnák, elköltheted a támadón lévő bemérődet, hogy dobj 1 támadókockával. Ha így teszel, a támadó kap 1 zavarás jelzőt. Majd %HIT% vagy %CRIT% eredménynél te is kapsz 1 zavarás jelzőt."
     },
-    '"Genius"': {
-      text: "Miután teljesen végrehajtottál egy manővert, ha még nem dobtál vagy lőttél ki eszközt ebben a körben, kidobhatsz 1 bombát."
-    },
-    "Ghost": {
-      text: "Bedokkoltathatsz 1 Attack shuttle-t vagy Sheathipede-class shuttle-t. A dokkolt hajót csak a hátsó pöcköktől dokkolhatod ki."
+    'GNK "Gonk" Droid': {
+      display_name: "GNK “Gonk” Droid",
+      text: "<strong>Felhelyezés:</strong> Elvesztesz 1&nbsp;%CHARGE% jelzőt.%LINEBREAK%<strong>Akció:</strong> tölts vissza 1&nbsp;%CHARGE% jelzőt. <strong>Akció:</strong>: költs el 1&nbsp;%CHARGE% jelzőt, hogy visszatölts egy pajzsot."
     },
     "Grand Inquisitor": {
-      text: "Miután egy ellenséges hajó 0-2-es távolságban felfedi a tárcsáját, elkölthetsz 1 %FORCE% jelzőt, hogy végrehajts 1 fehér akciót az akciósávodról, pirosként kezelve azt."
+      display_name: "Grand Inquisitor",
+      text: "<i>csak Birodalom</i>%LINEBREAK%Miután egy ellenséges hajó 0-2-es távolságban felfedi a tárcsáját, elkölthetsz 1&nbsp;%FORCE% jelzőt, hogy végrehajts 1 fehér akciót az akciósávodról, pirosként kezelve azt."
     },
     "Grand Moff Tarkin": {
-      text: "<i>Követelmény: %LOCK%</i> %LINEBREAK% A rendszer fázis alatt elkölthetsz 2 %CHARGE% jelzőt. Ha így teszel, minden baráti hajó kap egy bemérőt arra a hajóra, amit te is bemértél."
+      display_name: "Grand Moff Tarkin",
+      text: "<i>Követelmény %LOCK% vagy <r>%LOCK%</r></i>%LINEBREAK%<i>csak Birodalom</i>%LINEBREAK%A Rendszer fázis alatt elkölthetsz 2&nbsp;%CHARGE% jelzőt. Ha így teszel, minden baráti hajó kap egy bemérőt arra a hajóra, amit te is bemértél."
     },
     "Greedo": {
-      text: "Amikor végrehajtasz egy támadást, elkölthetsz 1 %CHARGE% jelzőt, hogy megváltoztass 1 %HIT% eredméynyt %CRIT% eredményre. Amikor védekezel, ha a %CHARGE% jelződ aktív, a támadó megváltoztathat 1 %HIT% eredméynyt %CRIT% eredményre."
+      display_name: "Greedo",
+      text: "<i>csak Söpredék</i>%LINEBREAK%Amikor végrehajtasz egy támadást, elkölthetsz 1&nbsp;%CHARGE% jelzőt, hogy megváltoztass 1&nbsp;%HIT% eredméynyt %CRIT% eredményre. Amikor védekezel, ha a %CHARGE% jelződ aktív, a támadó megváltoztathat 1&nbsp;%HIT% eredméynyt %CRIT% eredményre."
     },
     "Han Solo": {
-      text: "Az ütközet fázis alatt, 7-es kezdeményezésnél, végrehajthatsz egy %SINGLETURRETARC% támadást. Nem támadhatsz újra ezzel a %SINGLETURRETARC% fegyverrel ebben a körben."
+      display_name: "Han Solo",
+      text: "<i>csak Lázadók</i>%LINEBREAK%Az Ütközet fázis alatt, 7-es kezdeményezésnél, végrehajthatsz egy %SINGLETURRETARC% támadást. Nem támadhatsz újra ezzel a %SINGLETURRETARC% fegyverrel ebben a körben."
     },
     "Han Solo (Scum)": {
-      text: "Mielőtt sor kerül rád az üzközet fázisban, végrehajthatsz egy piros %FOCUS% akciót."
-    },
-    "Havoc": {
-      text: "Elveszted a %CREW% fejlesztés helyet. Kapsz egy %SENSOR% és egy %ASTROMECH% fejlesztés helyet."
+      display_name: "Han Solo",
+      text: "<i>csak Söpredék</i>%LINEBREAK%Mielőtt sor kerül rád az Üzközet fázisban, végrehajthatsz egy piros %FOCUS% akciót."
     },
     "Heavy Laser Cannon": {
-      text: "Támadás: a 'Támadókockák módosítása' lépés után változtasd az összes %CRIT% eredményt %HIT% eredményre."
+      display_name: "Heavy Laser Cannon",
+      text: "<strong>Támadás:</strong> a <strong>Támadókockák módosítása</strong> lépés után változtasd az összes %CRIT% eredményt %HIT% eredményre."
     },
     "Heightened Perception": {
-      text: "Az ütközet fázis elején, elkölthetsz 1 %FORCE% jelzőt. Ha így teszel, 7-es kezdeményezéssel kerülsz sorra ebben a fázisban a rendes kezdeményezésed helyett."
+      display_name: "Heightened Perception",
+      text: "Az Ütközet fázis elején, elkölthetsz 1&nbsp;%FORCE% jelzőt. Ha így teszel, 7-es kezdeményezéssel kerülsz sorra ebben a fázisban a rendes kezdeményezésed helyett."
     },
     "Hera Syndulla": {
-      text: "Stresszesen is végrehajthatsz piros manővert. Miután teljesen végrehajtottál egy piros manővert, ha 3 vagy több stressz jelződ van, vegyél le egy stressz jelzőt és szenvedj el 1 %HIT% sérülést."
+      display_name: "Hera Syndulla",
+      text: "<i>csak Lázadók</i>%LINEBREAK%Stresszesen is végrehajthatsz piros manővert. Miután teljesen végrehajtottál egy piros manővert, ha 3 vagy több stressz jelződ van, vegyél le egy stressz jelzőt és szenvedj el 1&nbsp;%HIT% sérülést."
     },
     "Homing Missiles": {
-      text: "Támadás (%LOCK%): Költs el 1 %CHARGE% jelzőt. Miután kijelölted a védekezőt, a védekező dönthet úgy, hogy elszenved 1 %HIT% sérülést. Ha így tesz, ugorjátok át a 'Támadó és védekező kockák' lépést és a támadást találtnak kezeljétek."
+      display_name: "Homing Missiles",
+      text: "<strong>Támadás (%LOCK%):</strong> Költs el 1&nbsp;%CHARGE% jelzőt. Miután kijelölted a védekezőt, a védekező dönthet úgy, hogy elszenved 1&nbsp;%HIT% sérülést. Ha így tesz, ugorjátok át a <strong>Támadó és védekező kockák</strong> lépést és a támadást találtnak kezeljétek."
     },
     "Hotshot Gunner": {
-      text: "Amikor végrehajtasz egy %SINGLETURRETARC% támadást, a 'Védekezőkockák módosítása' lépés után a védekező dobja el 1 fókusz vagy kalkuláció jelzőjét."
-    },
-    "Hound's Tooth": {
-      text: "1 Z-95 AF4 headhunter bedokkolhat."
+      display_name: "Hotshot Gunner",
+      text: "Amikor végrehajtasz egy %SINGLETURRETARC% támadást, a <strong>Védekezőkockák módosítása</strong> lépés után a védekező dobja el 1 fókusz vagy kalkuláció jelzőjét."
     },
     "Hull Upgrade": {
+      display_name: "Hull Upgrade",
       text: "Adj 1 szerkezeti értéket a hajódhoz.%LINEBREAK%<i>Ennek a fejlesztésnek változó a költsége. 2, 3, 5 vagy 7 pont attól függően, hogy a hajó 0, 1, 2 vagy 3 védekezésű.</i>"
     },
-    "IG-2000": {
-      text: "Megkapod minden másik IG-2000 fejlesztéssel felszerelt baráti hajó pilóraképességét."
-    },
     "IG-88D": {
-      text: "<i>Kapott akció: %CALCULATE%</i> %LINEBREAK% Megkapod minden IG-2000 fejlesztéssel felszerelt baráti hajó pilóraképességét. Miután végrehajtasz egy %CALCULATE% akciót, kapsz 1 kalkuláció jelzőt."
-    },
-    "Inertial Dampeners": {
-      text: "Mielőtt végrehajtanál egy manővert, elkölthetsz 1 pajzsot. Ha így teszel, hajts végre egy fehér [0 %STOP%] manővert a tárcsázott helyett, aztán kapsz 1 stressz jelzőt."
-    },
-    "Informant": {
-      text: "Felhelyezés: a hajók felhelyezése után válassz 1 ellenséges hajót és rendeld hozzá a 'Listening Device' kondíciót."
-    },
-    "Instinctive Aim": {
-      text: "Amikor végrehajtasz egy speciális támadást, elkölthetsz 1 %FORCE% jelzőt, hogy vigyelmen kívül hagyhatsd a %FOCUS% vagy %LOCK% követelményt."
-    },
-    "Intimidation": {
-      text: "Amikor egy ellenséges hajó 0-ás távolságban védekezik, 1-gyel kevesebb védekezőkockával dob."
-    },
-    "Ion Cannon Turret": {
-      text: "<i>Kapott akció: %ROTATEARC%</i> %LINEBREAK% Támadás: ha a támadás talált, költs egy 1 %HIT% vagy %CRIT% eredményt, hogy a védekező elszenvedjen 1 %HIT% sérülést. Minden fennmaradó %HIT%/%CRIT% eredmény után sérülés helyett ion jelzőt kap a védekező."
-    },
-    "Ion Cannon": {
-      text: "Támadás: ha a támadás talált, költs egy 1 %HIT% vagy %CRIT% eredményt, hogy a védekező elszenvedjen 1 %HIT% sérülést. Minden fennmaradó %HIT%/%CRIT% eredmény után sérülés helyett ion jelzőt kap a védekező"
-    },
-    "Ion Missiles": {
-      text: "Támadás (%LOCK%): Költs el 1 %CHARGE% jelzőt. ha a támadás talált, költs egy 1 %HIT% vagy %CRIT% eredményt, hogy a védekező elszenvedjen 1 %HIT% sérülést. Minden fennmaradó %HIT%/%CRIT% eredmény után sérülés helyett ion jelzőt kap a védekező."
-    },
-    "Ion Torpedoes": {
-      text: "Támadás (%LOCK%): Költs el 1 %CHARGE% jelzőt. ha a támadás talált, költs egy 1 %HIT% vagy %CRIT% eredményt, hogy a védekező elszenvedjen 1 %HIT% sérülést. Minden fennmaradó %HIT%/%CRIT% eredmény után sérülés helyett ion jelzőt kap a védekező."
+      display_name: "IG-88D",
+      text: "<i>Kapott akció %CALCULATE%</i>%LINEBREAK%<i>csak Söpredék</i>%LINEBREAK%Megkapod minden <strong>IG-2000</strong> fejlesztéssel felszerelt baráti hajó pilóraképességét. Miután végrehajtasz egy %CALCULATE% akciót, kapsz 1 kalkuláció jelzőt."
     },
     "ISB Slicer": {
-      text: "A vége fázis alatt az ellenséges hajók 1-2-es távban nem vehetik le a zavarás jelzőket."
+      display_name: "ISB Slicer",
+      text: "<i>csak Birodalom</i>%LINEBREAK%A Vége fázis alatt az ellenséges hajók 1-2-es távban nem vehetik le a zavarás jelzőket."
+    },
+    "Inertial Dampeners": {
+      display_name: "Inertial Dampeners",
+      text: "Mielőtt végrehajtanál egy manővert, elkölthetsz 1 pajzsot. Ha így teszel, hajts végre egy fehér [0&nbsp;%STOP%] manővert a tárcsázott helyett, aztán kapsz 1 stressz jelzőt."
+    },
+    "Informant": {
+      display_name: "Informant",
+      text: "<strong>Felhelyezés:</strong> a hajók felhelyezése után válassz 1 ellenséges hajót és rendeld hozzá a <strong>Listening Device</strong> kondíciót."
+    },
+    "Instinctive Aim": {
+      display_name: "Instinctive Aim",
+      text: "Amikor végrehajtasz egy speciális támadást, elkölthetsz 1&nbsp;%FORCE% jelzőt, hogy figyelmen kívül hagyhatsd a %FOCUS% vagy %LOCK% követelményt."
+    },
+    "Intimidation": {
+      display_name: "Intimidation",
+      text: "Amikor egy ellenséges hajó 0-ás távolságban védekezik, 1-gyel kevesebb védekezőkockával dob."
+    },
+    "Ion Cannon": {
+      display_name: "Ion Cannon",
+      text: "<strong>Támadás:</strong> ha a támadás talált, költs 1&nbsp;%HIT% vagy %CRIT% eredményt, hogy a védekező elszenvedjen 1&nbsp;%HIT% sérülést. Minden fennmaradó %HIT%/%CRIT% eredmény után sérülés helyett ion jelzőt kap a védekező."
+    },
+    "Ion Cannon Turret": {
+      display_name: "Ion Cannon Turret",
+      text: "<i>Kapott akció %ROTATEARC%</i>%LINEBREAK%<strong>Támadás:</strong> ha a támadás talált, költs 1&nbsp;%HIT% vagy %CRIT% eredményt, hogy a védekező elszenvedjen 1&nbsp;%HIT% sérülést. Minden fennmaradó %HIT%/%CRIT% eredmény után sérülés helyett ion jelzőt kap a védekező."
+    },
+    "Ion Missiles": {
+      display_name: "Ion Missiles",
+      text: "<strong>Támadás (%LOCK%):</strong> költs el 1&nbsp;%CHARGE% jelzőt. ha a támadás talált, költs 1&nbsp;%HIT% vagy %CRIT% eredményt, hogy a védekező elszenvedjen 1&nbsp;%HIT% sérülést. Minden fennmaradó %HIT%/%CRIT% eredmény után sérülés helyett ion jelzőt kap a védekező."
+    },
+    "Ion Torpedoes": {
+      display_name: "Ion Torpedoes",
+      text: "<strong>Támadás (%LOCK%):</strong> költs el 1&nbsp;%CHARGE% jelzőt. ha a támadás talált, költs 1&nbsp;%HIT% vagy %CRIT% eredményt, hogy a védekező elszenvedjen 1&nbsp;%HIT% sérülést. Minden fennmaradó %HIT%/%CRIT% eredmény után sérülés helyett ion jelzőt kap a védekező."
     },
     "Jabba the Hutt": {
-      text: "A vége fázis alatt, kiválaszthatsz 1 baráti hajót 0-2-es távolságban, majd költs el 1 %CHARGE% jelzőt. Ha így teszel, a kiválasztott hajó visszatölthet 1 %CHARGE% jelzőt 1 felszerelt %ILLICIT% fejlesztésén."
+      display_name: "Jabba the Hutt",
+      text: "<i>csak Söpredék</i>%LINEBREAK%A Vége fázis alatt, kiválaszthatsz 1 baráti hajót 0-2-es távolságban, majd költs el 1&nbsp;%CHARGE% jelzőt. Ha így teszel, a kiválasztott hajó visszatölthet 1&nbsp;%CHARGE% jelzőt 1 felszerelt %ILLICIT% fejlesztésén."
     },
     "Jamming Beam": {
-      text: "Támadás: ha a támadás talált, minden %HIT%/%CRIT% eredmény után sérülés helyett zavarás jelzőt kap a védekező."
+      display_name: "Jamming Beam",
+      text: "<strong>Támadás:</strong> ha a támadás talált, minden %HIT%/%CRIT% eredmény után sérülés helyett zavarás jelzőt kap a védekező."
     },
     "Juke": {
-      text: "<i>Követelmény: kis vagy közepes talp</i> %LINEBREAK% Amikor végrehajtasz egy támadást, ha van kitérés jelződ, megváltoztathatod a védekező 1 %EVADE% eredményét %FOCUS% eredményre."
+      display_name: "Juke",
+      text: "<i>csak kis vagy közepes hajó</i>%LINEBREAK%Amikor végrehajtasz egy támadást, ha van kitérés jelződ, megváltoztathatod a védekező 1&nbsp;%EVADE% eredményét %FOCUS% eredményre."
     },
     "Jyn Erso": {
-      text: "Ha egy baráti hajó 0-3 távolságban fókusz jelzőt kapna, helyette kaphat 1 kitérés jelzőt."
+      display_name: "Jyn Erso",
+      text: "<i>csak Lázadók</i>%LINEBREAK%Ha egy baráti hajó 0-3 távolságban fókusz jelzőt kapna, helyette kaphat 1 kitérés jelzőt."
     },
     "Kanan Jarrus": {
-      text: "Miután egy baráti hajó 0-2-es távolságban teljesen végrehajt egy manővert, elkölthetsz 1 %FORCE% jelzőt, hogy levegyél róla 1 stressz jelzőt."
+      display_name: "Kanan Jarrus",
+      text: "<i>csak Lázadók</i>%LINEBREAK%Miután egy baráti hajó 0-2-es távolságban teljesen végrehajt egy manővert, elkölthetsz 1&nbsp;%FORCE% jelzőt, hogy levegyél róla 1 stressz jelzőt."
     },
     "Ketsu Onyo": {
-      text: "A vége fázis elején, kiválaszthatsz 1 ellenséges hajót 0-2-es távolságban a tűzívedben. Ha így teszel, aza a hajó nem veheti le a vonósugár jelzőit."
+      display_name: "Ketsu Onyo",
+      text: "<i>csak Söpredék</i>%LINEBREAK%A Vége fázis elején, kiválaszthatsz 1 ellenséges hajót 0-2-es távolságban a tűzívedben. Ha így teszel, aza a hajó nem veheti le a vonósugár jelzőit."
     },
     "L3-37": {
-      text: "Felhelyezés: felfordítva szereld fel ezt a kártyát. Amikor védekezel, lefordíthatod ezt a kártyát. Ha így teszel, a támadónak újra kell dobnia az összes támadókockát.%LINEBREAK%<i>L3-37 programja:</i> Ha nincs pajzsod, csökkentsd a nehézségét a (%BANKLEFT% és %BANKRIGHT%) manővereknek."
+      display_name: "L3-37",
+      text: "<i>csak Söpredék</i>%LINEBREAK%<strong>Felhelyezés:</strong> felfordítva szereld fel ezt a kártyát. Amikor védekezel, lefordíthatod ezt a kártyát. Ha így teszel, a támadónak újra kell dobnia az összes támadókockát.%LINEBREAK%<i>L3-37 programja:</i> Ha nincs pajzsod, csökkentsd a nehézségét a (%BANKLEFT% és %BANKRIGHT%) manővereknek."
     },
     "Lando Calrissian": {
-      text: "Akció: dobj 2 védekezőkockával. Minden egyes %FOCUS% eredmény után kapsz 1 fókusz jelzőt. Minden egyes %EVADE% eredmény után kapsz 1 kitérés jelzőt. Ha mindkettő eredmény üres, az ellenfeled választ, hogy fókusz vagy kitérés. Kapsz 1, a választásnak megfelelő jelzőt."
+      display_name: "Lando Calrissian",
+      text: "<i>csak Lázadók</i>%LINEBREAK%<strong>Akció:</strong> dobj 2 védekezőkockával. Minden egyes %FOCUS% eredmény után kapsz 1 fókusz jelzőt. Minden egyes %EVADE% eredmény után kapsz 1 kitérés jelzőt. Ha mindkettő eredmény üres, az ellenfeled választ, hogy fókusz vagy kitérés. Kapsz 1, a választásnak megfelelő jelzőt."
     },
     "Lando Calrissian (Scum)": {
-      text: "Kockadobás után elkölthetsz 1 zöld jelzőt, hogy újradobj 2 kockádat."
+      display_name: "Lando Calrissian",
+      text: "<i>csak Söpredék</i>%LINEBREAK%Kockadobás után elkölthetsz 1 zöld jelzőt, hogy újradobj 2 kockádat."
     },
     "Lando's Millennium Falcon": {
-      text: "1 Escape Craft be lehet dokkolva. Amikor egy Escape Craft be van dokkolva, elköltheted a pajzsait, mintha a te hajódon lenne. Amikor végrehajtasz egy elsődleges támadást stresszelt hajó ellen, dobj 1-gyel több támadókockával."
+      display_name: "Lando’s Millennium Falcon",
+      text: "<i>csak Söpredék</i>%LINEBREAK%1 Escape Craft be lehet dokkolva. Amikor egy Escape Craft be van dokkolva, elköltheted a pajzsait, mintha a te hajódon lenne. Amikor végrehajtasz egy elsődleges támadást stresszelt hajó ellen, dobj 1-gyel több támadókockával."
     },
     "Latts Razzi": {
-      text: "Amikor védekezel, ha a támadó stresszelt, levehetsz 1 stressz jelzőt a támadóról, hogy megváltoztass 1 üres/%FOCUS% eredményed %EVADE% eredményre."
+      display_name: "Latts Razzi",
+      text: "<i>csak Söpredék</i>%LINEBREAK%Amikor védekezel, ha a támadó stresszelt, levehetsz 1 stressz jelzőt a támadóról, hogy megváltoztass 1 üres/%FOCUS% eredményed %EVADE% eredményre."
     },
     "Leia Organa": {
-      text: "Az aktivációs fázis elején, elkölthetsz 3 %CHARGE% jelzőt. Ezen fázis alatt minden baráti hajó csökkentse a piros manőverei nehézségét."
+      display_name: "Leia Organa",
+      text: "<i>csak Lázadók</i>%LINEBREAK%Az Aktivációs fázis elején, elkölthetsz 3&nbsp;%CHARGE% jelzőt. Ezen fázis alatt minden baráti hajó csökkentse a piros manőverei nehézségét."
     },
     "Lone Wolf": {
-      text: "Amikor védekezel vagy támadást hajtasz végre, ha nincs másik baráti hajó 0-2-es távolságban, elkölthetsz 1 %CHARGE% jelzőt, hogy újradobj 1 kockádat."
+      display_name: "Lone Wolf",
+      text: "Amikor védekezel vagy támadást hajtasz végre, ha nincs másik baráti hajó 0-2-es távolságban, elkölthetsz 1&nbsp;%CHARGE% jelzőt, hogy újradobj 1 kockádat."
     },
     "Luke Skywalker": {
-      text: "Az ütközet fázis elején, elkölthetsz 1 %FORCE% jelzőt, hogy forgasd a %SINGLETURRETARC% mutatódat."
+      display_name: "Luke Skywalker",
+      text: "<i>csak Lázadók</i>%LINEBREAK%Az Ütközet fázis elején, elkölthetsz 1&nbsp;%FORCE% jelzőt, hogy forgasd a %SINGLETURRETARC% mutatódat."
     },
     "Magva Yarro": {
-      text: "Miután védekezel, ha a támadás talált, feltehetsz egy bemérőt a támadóra."
-    },
-    "Marauder": {
-      text: "Amikor végrehajtasz egy elsődleges %REARARC% támadást, újradobhatsz 1 támadókockádat. Kapsz egy %GUNNER% fejlesztés helyet."
+      display_name: "Magva Yarro",
+      text: "<i>csak Lázadók</i>%LINEBREAK%Miután védekezel, ha a támadás talált, feltehetsz egy bemérőt a támadóra."
     },
     "Marksmanship": {
-      text: "Amikor végrehajtasz egy támadást, ha a védekező benne van a %BULLSEYEARC% tűzívedben, megváltoztathatsz 1 %HIT% eredményt %CRIT% eredményre."
+      display_name: "Marksmanship",
+      text: "Amikor végrehajtasz egy támadást, ha a védekező benne van a %BULLSEYEARC% tűzívedben, megváltoztathatsz 1&nbsp;%HIT% eredményt %CRIT% eredményre."
     },
     "Maul": {
-      text: "<i>Követelmény: Scum vagy Ezra Bridger</i> %LINEBREAK% miután sérülést szenvedsz, kaphatsz 1 stressz jelzőt, hogy visszatölts 1 %FORCE% jelzőt. Felszerelhetsz \"Dark Side\" fejlesztéseket."
-    },
-    "Millennium Falcon": {
-      text: "<i>Kapott akció: %EVADE%</i> %LINEBREAK% Amikor védekezel, ha van kitérés jelződ, újradobhatsz 1 védekezőkockát."
+      display_name: "Maul",
+      text: "<i>Söpredék vagy Ezra Bridger a csapatban</i>%LINEBREAK%Miután sérülést szenvedsz, kaphatsz 1 stressz jelzőt, hogy visszatölts 1&nbsp;%FORCE% jelzőt. Felszerelhetsz <strong>Dark Side</strong> fejlesztéseket."
     },
     "Minister Tua": {
-      text: "Az ütközet fázis elején, ha sérült vagy, végrehajthatsz egy piros %REINFORCE% akciót."
-    },
-    "Mist Hunter": {
-      text: "<i>Kapott akció: %BARRELROLL% </i> %LINEBREAK% Kapsz egy %CANNON% fejlesztés helyet."
+      display_name: "Minister Tua",
+      text: "<i>csak Birodalom</i>%LINEBREAK%Az Ütközet fázis elején, ha sérült vagy, végrehajthatsz egy piros %REINFORCE% akciót."
     },
     "Moff Jerjerrod": {
-      text: "<i>Követelmény: %COORDINATE%</i> %LINEBREAK% A rendszer fázis alatt, elkölthetsz 2 %CHARGE% jelzőt. Ha így teszel, válassz a (1 %BANKLEFT%), (1 %STRAIGHT%) vagy (1 %BANKRIGHT%) sablonokból. Minden baráti hajó végrehajthat egy piros %BOOST% akciót a kiválasztott sablonnal."
-    },
-    "Moldy Crow": {
-      text: "Kapsz egy %FRONTARC% elsődleges fegyvert 3-as támadóértékkel. A vége fázis alatt megtarthatsz maximum 2 fókusz jelzőt."
+      display_name: "Moff Jerjerrod",
+      text: "<i>Követelmény: %COORDINATE% vagy <r>%COORDINATE%</r></i>%LINEBREAK%<i>csak Birodalom</i>%LINEBREAK%A Rendszer fázis alatt, elkölthetsz 2&nbsp;%CHARGE% jelzőt. Ha így teszel, válassz a [1&nbsp;%BANKLEFT%], [1&nbsp;%STRAIGHT%] vagy [1&nbsp;%BANKRIGHT%] sablonokból. Minden baráti hajó végrehajthat egy piros %BOOST% akciót a kiválasztott sablonnal."
     },
     "Munitions Failsafe": {
-      text: "Amikor végrehajtasz egy %TORPEDO% vagy %MISSILE% támadást, a támadókockák eldobása után, elvetheted az összes kocka eredményed, hogy visszatölts 1 %CHARGE% jelzőt, amit a támadáshoz elköltöttél."
+      display_name: "Munitions Failsafe",
+      text: "Amikor végrehajtasz egy %TORPEDO% vagy %MISSILE% támadást, a támadókockák eldobása után, elvetheted az összes kocka eredményed, hogy visszatölts 1&nbsp;%CHARGE% jelzőt, amit a támadáshoz elköltöttél."
     },
     "Nien Nunb": {
-      text: "Csökkentsd az íves manőverek [%BANKLEFT% és %BANKRIGHT%] nehézségét."
+      display_name: "Nien Nunb",
+      text: "<i>csak Lázadók</i>%LINEBREAK%Csökkentsd az íves manőverek [%BANKLEFT% és %BANKRIGHT%] nehézségét."
     },
     "Novice Technician": {
+      display_name: "Novice Technician",
       text: "A kör végén dobhatsz 1 támadó kockával, hogy megjavíts egy felfordított sérülés kártyát. %HIT% eredménynél, fordíts fel egy sérülés kártyát."
     },
     "Os-1 Arsenal Loadout": {
-      text: "Amikor pontosan 1 'inaktív fegyverzet' jelződ van, akkor is végre tudsz hajtani %TORPEDO% és %MISSILE% támadást bemért célpontok ellen. Ha így teszel, nem használhatod el a bemérődet a támadás alatt. Kapsz egy %TORPEDO% és egy %MISSILE% fejlesztés helyet."
+      display_name: "Os-1 Arsenal Loadout",
+      text: "<i>Kapsz egy %TORPEDO% és egy %MISSILE% fejlesztés helyet.</i>%LINEBREAK%Amikor pontosan 1 'inaktív fegyverzet' jelződ van, akkor is végre tudsz hajtani %TORPEDO% és %MISSILE% támadást bemért célpontok ellen. Ha így teszel, nem használhatod el a bemérődet a támadás alatt."
     },
     "Outmaneuver": {
-      text: "Amikor végrehajtasz egy %FRONTARC% támadást, ha nem vagy a védekező tűzívében, a védekező 1-ggyel kevesebb védekezőkockával dob."
-    },
-    "Outrider": {
-      text: "Amikor végrehajtasz egy támadást ami egy akadály által akadályozott, a védekező 1-gyel kevesebb védekezőkockával dob. Miután teljesen végrehajtottál egy manővert, ha áthaladtál vagy átfedésbe kerültél egy akadállyal, levehetsz 1 piros vagy narancs jelződet."
+      display_name: "Outmaneuver",
+      text: "Amikor végrehajtasz egy %FRONTARC% támadást, ha nem vagy a védekező tűzívében, a védekező 1-gyel kevesebb védekezőkockával dob."
     },
     "Perceptive Copilot": {
+      display_name: "Perceptive Copilot",
       text: "Miután végrehajtasz egy %FOCUS% akciót, kapsz 1 fókusz jelzőt."
     },
-    "Phantom": {
-      text: "Be tudsz dokkolni 0-1 távolságból."
-    },
     "Pivot Wing": {
-      text: "<b>Csukva:</b> Amikor védekezel, 1-gyel kevesebb védekezőkockával dobsz. Miután végrehajtasz egy [0 %STOP%] manővert, elforgathatod a hajód 90 vagy 180 fokkal. Mielőtt aktiválódsz, megfordíthatod ezt a kártyát. %LINEBREAK% <b>Nyitva:</b> Mielőtt aktiválódsz, megfordíthatod ezt a kártyát."
+      display_name: "Pivot Wing",
+      text: "<strong>Csukva: </strong>Amikor védekezel, 1-gyel kevesebb védekezőkockával dobsz. Miután végrehajtasz egy [0&nbsp;%STOP%] manővert, elforgathatod a hajód 90 vagy 180 fokkal. Mielőtt aktiválódsz, megfordíthatod ezt a kártyát.%LINEBREAK%<strong>Nyitva:</Strong> Mielőtt aktiválódsz, megfordíthatod ezt a kártyát."
     },
     "Predator": {
+      display_name: "Predator",
       text: "Amikor végrehajtasz egy elsődleges támadást, ha a védekező benne van a %BULLSEYEARC% tűzívedben, újradobhatsz 1 támadókockát."
     },
     "Proton Bombs": {
-      text: "[Bomba] A rendszer fázisban elkölthetsz 1 %CHARGE% jelzőt, hogy kidobj egy Proton bombát az [1 %STRAIGHT%] sablonnal."
+      display_name: "Proton Bombs",
+      text: "<strong>Bomba</strong>%LINEBREAK%A Rendszer fázisban elkölthetsz 1&nbsp;%CHARGE% jelzőt, hogy kidobj egy Proton bombát az [1&nbsp;%STRAIGHT%] sablonnal."
     },
     "Proton Rockets": {
-      text: "Támadás (%FOCUS%): Költs el 1 %CHARGE% jelzőt."
+      display_name: "Proton Rockets",
+      text: "<strong>Támadás (%FOCUS%):</strong> költs el 1&nbsp;%CHARGE% jelzőt."
     },
     "Proton Torpedoes": {
-      text: "Támadás (%LOCK%): Költs el 1 %CHARGE% jelzőt. Változtass 1 %HIT% eredményt %CRIT% eredményre."
+      display_name: "Proton Torpedoes",
+      text: "<strong>Támadás (%LOCK%):</strong> költs el 1&nbsp;%CHARGE% jelzőt. Változtass 1&nbsp;%HIT% eredményt %CRIT% eredményre."
     },
     "Proximity Mines": {
-      text: "[Akna] A rendszer fázisban elkölthetsz 1 %CHARGE% jelzőt, hogy ledobj egy Proximity aknát az [1 %STRAIGHT%] sablonnal. Ennak a kártyának a %CHARGE% jelzője NEM újratölthető."
-    },
-    "Punishing One": {
-      text: "Amikor végrehajtasz egy elsődleges támadást, ha a védekező benne van a %FRONTARC% tűzívedben, dobj 1-gyel több támadókockával. Elveszted a %CREW% fejlesztés helyet. Kapsz egy %ASTROMECH% fejlesztés helyet. "
+      display_name: "Proximity Mines",
+      text: "<strong>Akna</strong>%LINEBREAK%A Rendszer fázisban elkölthetsz 1&nbsp;%CHARGE% jelzőt, hogy ledobj egy Proximity aknát az [1&nbsp;%STRAIGHT%] sablonnal. Ennak a kártyának a %CHARGE% jelzője <strong>nem</strong> újratölthető."
     },
     "Qi'ra": {
-      text: "Amikor mozogsz vagy támadást hajtasz végre, figyelmen kívül hagyhatod az összes akadályt, amit bemértél."
+      display_name: "Qi’ra",
+      text: "<i>csak Söpredék</i>%LINEBREAK%Amikor mozogsz vagy támadást hajtasz végre, figyelmen kívül hagyhatod az összes akadályt, amit bemértél."
     },
     "R2 Astromech": {
-      text: "Miután felfeded a tárcsád, elkölthetsz 1 %CHARGE% jelzőt és kapsz 1 'inaktív fegyverzet' jelzőt, hogy visszatölts egy pajzsot."
-    },
-    "R2-D2": {
-      text: "Miután felfeded a tárcsád, elkölthetsz 1 %CHARGE% jelzőt és kapsz 1 'inaktív fegyverzet' jelzőt, hogy visszatölts egy pajzsot."
+      display_name: "R2 Astromech",
+      text: "Miután felfeded a tárcsád, elkölthetsz 1&nbsp;%CHARGE% jelzőt és kapsz 1 'inaktív fegyverzet' jelzőt, hogy visszatölts egy pajzsot."
     },
     "R2-D2 (Crew)": {
-      text: "A vége fázis alatt, ha sérült vagy és nincs pajzsod, dobhatsz 1 támadókockával, hogy visszatölts 1 pajzsot. %HIT% eredménynél, fordíts fel 1 sérüléskártyát."
+      display_name: "R2-D2",
+      text: "<i>csak Lázadók</i>%LINEBREAK%A Vége fázis alatt, ha sérült vagy és nincs pajzsod, dobhatsz 1 támadókockával, hogy visszatölts 1 pajzsot. %HIT% eredménynél fordíts fel 1 sérüléskártyát."
+    },
+    "R2-D2": {
+      display_name: "R2-D2",
+      text: "<i>csak Lázadók</i>%LINEBREAK%Miután felfeded a tárcsád, elkölthetsz 1&nbsp;%CHARGE% jelzőt és kapsz 1 'inaktív fegyverzet' jelzőt, hogy visszatölts egy pajzsot."
     },
     "R3 Astromech": {
+      display_name: "R3 Astromech",
       text: "Fenntarthatsz 2 bemérőt. Mindegyik bemérő más célponton kell legyen. Miután végrehajtasz egy %LOCK% akciót, feltehetsz egy bemérőt."
     },
     "R4 Astromech": {
-      text: "<i>Követelmény: kis talp</i> %LINEBREAK% Csökkentsd a nehézségét az 1-2 sebességű alapmanővereidnek (%TURNLEFT%, %BANKLEFT%, %STRAIGHT%, %BANKRIGHT%, %TURNRIGHT%)."
+      display_name: "R4 Astromech",
+      text: "<i>csak kis hajó</i>%LINEBREAK%Csökkentsd a nehézségét az 1-2 sebességű alapmanővereidnek (%TURNLEFT%, %BANKLEFT%, %STRAIGHT%, %BANKRIGHT%, %TURNRIGHT%)."
     },
     "R5 Astromech": {
-      text: "Akció: Költs el 1 %CHARGE% jelzőt, hogy megjavíts egy lefordított sérülés kártyát.%LINEBREAK%Akció: Javíts meg 1 felfordított 'Ship' sérülés kártyát."
+      display_name: "R5 Astromech",
+      text: "<strong>Akció:</strong> költs el 1&nbsp;%CHARGE% jelzőt, hogy megjavíts egy lefordított sérülés kártyát.%LINEBREAK%<strong>Akció:</strong> javíts meg 1 felfordított <strong>Ship</strong> sérülés kártyát."
     },
     "R5-D8": {
-      text: "Akció: Költs el 1 %CHARGE% jelzőt, hogy megjavíts egy lefordított sérülés kártyát.%LINEBREAK%Akció: Javíts meg 1 felfordított 'Ship' sérülés kártyát."
+      display_name: "R5-D8",
+      text: "<i>csak Lázadók</i>%LINEBREAK%<strong>Akció:</strong> költs el 1&nbsp;%CHARGE% jelzőt, hogy megjavíts egy lefordított sérülés kártyát.%LINEBREAK%<strong>Akció:</strong> javíts meg 1 felfordított <strong>Ship</strong> sérülés kártyát."
     },
     "R5-P8": {
-      text: "Amikor végrehajtasz egy támadást a %FRONTARC% tűzívedben lévő védekező ellen, elkölthetsz 1 %CHARGE% jelzőt, hogy újradobj 1 támadókockát. Ha az újradobott eredmény %CRIT%, szenvedj el 1 %CRIT% sérülést."
+      display_name: "R5-P8",
+      text: "<i>csak Söpredék</i>%LINEBREAK%Amikor végrehajtasz egy támadást a %FRONTARC% tűzívedben lévő védekező ellen, elkölthetsz 1&nbsp;%CHARGE% jelzőt, hogy újradobj 1 támadókockát. Ha az újradobott eredmény %CRIT%, szenvedj el 1&nbsp;%CRIT% sérülést."
     },
     "R5-TK": {
-      text: "Végrehajthatsz támadást baráti hajó ellen."
+      display_name: "R5-TK",
+      text: "<i>csak Söpredék</i>%LINEBREAK%Végrehajthatsz támadást baráti hajó ellen."
     },
     "Rigged Cargo Chute": {
-      text: "<i>Követelmény: közepes vagy nagy talp</i> %LINEBREAK% Akció: Költs el 1 %CHARGE% jelzőt. Dobj ki 1 rakomány jelzőt az [1 %STRAIGHT%] sablonnal."
+      display_name: "Rigged Cargo Chute",
+      text: "<i>csak közepes vagy nagy hajó</i>%LINEBREAK%<strong>Akció:</strong> költs el 1&nbsp;%CHARGE% jelzőt. Dobj ki 1 rakomány jelzőt az [1&nbsp;%STRAIGHT%] sablonnal."
     },
     "Ruthless": {
-      text: "Amikor végrehajtasz egy támadást, kiválaszthatsz másik  baráti hajót 0-1-es távolságra a védekezőtől. Ha így teszel, a kiválasztott hajó elszenved 1 %HIT% sérülést és te megváltoztathatsz 1 kocka eredményed %HIT% eredményre."
+      display_name: "Ruthless",
+      text: "<i>csak Birodalom</i>%LINEBREAK%Amikor végrehajtasz egy támadást, kiválaszthatsz másik baráti hajót 0-1-es távolságra a védekezőtől. Ha így teszel, a kiválasztott hajó elszenved 1&nbsp;%HIT% sérülést és te megváltoztathatsz 1 kocka eredményed %HIT% eredményre."
     },
     "Sabine Wren": {
-      text: "Felhelyezés: tegyél fel 1 ion, 1 zavarás, 1 stressz és 1 vonósugár jelzőt erre a kártyára. Miután egy hajó sérülést szenved egy baráti bombától, levehetsz 1 ion, 1 zavarás, 1 stressz vagy 1 vonosugár jelzőt erről a kártyáról. Ha így teszel, az a hajó megkapja ezt a jelzőt."
+      display_name: "Sabine Wren",
+      text: "<i>csak Lázadók</i>%LINEBREAK%<strong>Felhelyezés:</strong> tegyél fel 1 ion, 1 zavarás, 1 stressz és 1 vonósugár jelzőt erre a kártyára. Miután egy hajó sérülést szenved egy baráti bombától, levehetsz 1 ion, 1 zavarás, 1 stressz vagy 1 vonósugár jelzőt erről a kártyáról. Ha így teszel, az a hajó megkapja ezt a jelzőt."
     },
     "Saturation Salvo": {
-      text: "<i>Követelmény: %RELOAD%</i> %LINEBREAK% Amikor végrehajtasz egy %TORPEDO% vagy %MISSILE% támadást, elkölthetsz 1 %CHARGE% jelzőt arról a kártyától. Ha így teszel, válassz 2 védekezőkockát. A védekezőnek újra kell dobnia azokat a kockákat."
+      display_name: "Saturation Salvo",
+      text: "<i>Követelmény %RELOAD% vagy <r>%RELOAD%</r></i>%LINEBREAK%Amikor végrehajtasz egy %TORPEDO% vagy %MISSILE% támadást, elkölthetsz 1&nbsp;%CHARGE% jelzőt arról a kártyától. Ha így teszel, válassz 2 védekezőkockát. A védekezőnek újra kell dobnia azokat a kockákat."
     },
     "Saw Gerrera": {
-      text: "Amikor végrehajtasz egy támadást, elszenvedhetsz 1 %HIT% sérülést, hogy megváltoztasd az összes %FOCUS% eredményed %CRIT% eredményre."
+      display_name: "Saw Gerrera",
+      text: "<i>csak Lázadók</i>%LINEBREAK%Amikor végrehajtasz egy támadást, elszenvedhetsz 1&nbsp;%HIT% sérülést, hogy megváltoztasd az összes %FOCUS% eredményed %CRIT% eredményre."
     },
     "Seasoned Navigator": {
+      display_name: "Seasoned Navigator",
       text: "Miután felfedted a tárcsádat, átállíthatod egy másik nem piros manőverre ugyanazon sebességen. Amikor végrehajtod azt a manővert növeld meg a nehézségét."
     },
     "Seismic Charges": {
-      text: "[Bomba] A rendszer fázisban elkölthetsz 1 %CHARGE% jelzőt, hogy ledobj egy Seismic Charge bombát az [1 %STRAIGHT%] sablonnal."
+      display_name: "Seismic Charges",
+      text: "<strong>Bomba</strong>%LINEBREAK%A Rendszer fázisban elkölthetsz 1&nbsp;%CHARGE% jelzőt, hogy ledobj egy Seismic Charge bombát az [1&nbsp;%STRAIGHT%] sablonnal."
     },
     "Selfless": {
-      text: "Amikor másik baráti hajó 0-1-es távolságban védekezik, az 'eredmények semlegesítése' lépés előtt, ha benne vagy a támadási tűzívben, elszenvedhetsz 1 %CRIT% sérülést, hogy semlegesíts 1 %CRIT% eredményt."
+      display_name: "Selfless",
+      text: "<i>csak Lázadók</i>%LINEBREAK%Amikor másik baráti hajó 0-1-es távolságban védekezik, az <strong>Eredmények semlegesítése</strong> lépés előtt, ha benne vagy a támadási tűzívben, elszenvedhetsz 1&nbsp;%CRIT% sérülést, hogy semlegesíts 1&nbsp;%CRIT% eredményt."
     },
     "Sense": {
-      text: "A rendszer fázis alatt kiválaszthatsz 1 hajót 0-1-es távolságban és megnézheted a tárcsáját. Ha elköltesz 1 %FORCE% jelzőt választhatsz 0-3-as távolságból is hajót."
+      display_name: "Sense",
+      text: "A Rendszer fázis alatt kiválaszthatsz 1 hajót 0-1-es távolságban és megnézheted a tárcsáját. Ha elköltesz 1&nbsp;%FORCE% jelzőt választhatsz 0-3-as távolságból hajót."
     },
     "Servomotor S-Foils": {
-      text: "<b>Csukva:</b> Amikor végrehajtasz egy elsődleges támadást, 1-gyel kevesebb támadókockával dobj. Mielőtt aktiválódsz, megfordíthatod ezt a kártyát. %LINEBREAK% <i>Kapott akciók: %BOOST%, %FOCUS% > <r>%BOOST%</r></i> %LINEBREAK% <b>Nyitva:</b> Mielőtt aktiválódsz, megfordíthatod ezt a kártyát"
+      display_name: "Servomotor S-foils",
+      text: "<strong>Closed: </strong><i>Adds %BOOST% ,  %FOCUS%&nbsp;<i class=\"xwing-miniatures-font xwing-miniatures-font-linked\"></i>&nbsp;<r>%BOOST%</r></i>%LINEBREAK% While you perform a primary attack, roll 1 fewer attack die.%LINEBREAK%Before you activate, you may flip this card.%LINEBREAK%<strong>Open:</strong> Before you activate, you may flip this card."
     },
     "Seventh Sister": {
-      text: "Ha egy ellenséges hajó 0-1-es távolságra egy stressz jelzőt kapna, elkölthetsz 1 %FORCE% jelzőt, hogy 1 zavarás vagy vonósugár jelzőt kapjon helyette."
-    },
-    "Shadow Caster": {
-      text: "Miután végrehajtasz egy támadást ami talál, ha a védekező benne van egyszerre a %SINGLETURRETARC% és %FRONTARC% tűzívedben, a védekező kap 1 vonósugár jelzőt."
+      display_name: "Seventh Sister",
+      text: "<i>csak Birodalom</i>%LINEBREAK%Ha egy ellenséges hajó 0-1-es távolságra egy stressz jelzőt kapna, elkölthetsz 1&nbsp;%FORCE% jelzőt, hogy 1 zavarás vagy vonósugár jelzőt kapjon helyette."
     },
     "Shield Upgrade": {
+      display_name: "Shield Upgrade",
       text: "Adj 1 pajzs értéket a hajódhoz.%LINEBREAK%<i>Ennek a fejlesztésnek változó a költsége. 3, 4, 6 vagy 8 pont attól függően, hogy a hajó 0, 1, 2 vagy 3 védekezésű.</i>"
     },
     "Skilled Bombardier": {
+      display_name: "Skilled Bombardier",
       text: "Ha ledobsz vagy kilősz egy eszközt, megegyező irányban használhatsz 1-gyel nagyob vagy kisebb sablont."
     },
-    "Slave I": {
-      text: "Miután felfedtél egy kanyar (%TURNLEFT% or %TURNRIGHT%) vagy ív (%BANKLEFT% or %BANKRIGHT%) manővert, átforgathatod a tárcsádat az ellenkező irányba megtartva a sebességet és a mozgásformát. Kapsz egy %TORPEDO% fejlesztés helyet."
-    },
     "Squad Leader": {
-      text: "<i>Kapott akció: <r>%COORDINATE%</r></i> %LINEBREAK% Amikor koordinálsz, a kiválasztott hajó csak olyan akciót hajthat végre, ami a te akciósávodon is rajta van."
-    },
-    "ST-321": {
-      text: "Amikor végrehajtasz egy %COORDINATE% akciót, kiválaszthatsz egy ellenséges hajót 0-3-as távolságban a koordinált hajótól. Ha így teszel, tegyél fel egy bemérőt arra az ellenséges hajóra figyelmen kívül hagyva a távolság megkötéseket."
+      display_name: "Squad Leader",
+      text: "<i>Kapott akció <r>%COORDINATE%</r></i>%LINEBREAK%WAmikor koordinálsz, a kiválasztott hajó csak olyan akciót hajthat végre, ami a te akciósávodon is rajta van."
     },
     "Static Discharge Vanes": {
+      display_name: "Static Discharge Vanes",
       text: "Mielőtt kapnál 1 ion vagy zavarás jelzőt, ha nem vagy stresszes, választhatsz egy másik hajót 0-1-es távolságban és kapsz 1 stressz jelzőt. Ha így teszel, a kiválasztott hajó kapja meg az ion vagy zavarás jelzőt helyetted."
     },
     "Stealth Device": {
-      text: "Amikor védekezel, ha a %CHARGE% jelződ aktív, dobj 1-gyel több védekezőkockával. Miután elszenvedsz egy sérülés, elvesztesz 1 %CHARGE% jelzőt. %LINEBREAK%<i>Ennek a fejlesztésnek változó a költsége. 3, 4, 6 vagy 8 pont attól függően, hogy a hajó 0, 1, 2 vagy 3 védekezésű.</i>"
+      display_name: "Stealth Device",
+      text: "Amikor védekezel, ha a %CHARGE% jelződ aktív, dobj 1-gyel több védekezőkockával. Miután elszenvedsz egy sérülés, elvesztesz 1&nbsp;%CHARGE% jelzőt.%LINEBREAK%<i>Ennek a fejlesztésnek változó a költsége. 3, 4, 6 vagy 8 pont attól függően, hogy a hajó 0, 1, 2 vagy 3 védekezésű.</i>"
     },
     "Supernatural Reflexes": {
-      text: "<i>Követelmény: kis talp</i> %LINEBREAK% Mielőtt aktiválódsz, elkölthetsz 1 %FORCE% jelzőt, hogy végrehajts egy %BARRELROLL% vagy %BOOST% akciót. Ha olyan akciót hajtottál végre, ami nincs az akciósávodon, elszenvedsz 1 %HIT% sérülést."
+      display_name: "Supernatural Reflexes",
+      text: "<i>csak kis hajó</i>%LINEBREAK%Mielőtt aktiválódsz, elkölthetsz 1&nbsp;%FORCE% jelzőt, hogy végrehajts egy %BARRELROLL% vagy %BOOST% akciót. Ha olyan akciót hajtottál végre, ami nincs az akciósávodon, elszenvedsz 1&nbsp;%HIT% sérülést."
     },
     "Swarm Tactics": {
+      display_name: "Swarm Tactics",
       text: "Az ütközet fázis elején, kiválaszthatsz 1 baráti hajót 1-es távolságban. Ha így teszel, az a hajó a kör végéig kezelje úgy a kezdeményezés értékét, mintha egyenlő lenne a tiéddel."
     },
     "Tactical Officer": {
-      text: "<i>Követelmény: <r>%COORDINATE%</r>. Kapott akció: %COORDINATE%</i>"
+      display_name: "Tactical Officer",
+      text: "<i>Kapott akció: %COORDINATE%</i>%LINEBREAK%<i>Követelmény: <r>%COORDINATE%</r></i>"
     },
     "Tactical Scrambler": {
-      text: "<i>Követelmény: közepes vagy nagy talp</i> %LINEBREAK% Amikor akadályozod egy ellenséges hajó támadását, a védekező 1-gyel több védekezőkockával dob."
+      display_name: "Tactical Scrambler",
+      text: "<i>csak közepes vagy nagy hajó</i>%LINEBREAK%Amikor akadályozod egy ellenséges hajó támadását, a védekező 1-gyel több védekezőkockával dob."
     },
     "Tobias Beckett": {
-      text: "Felhelyezés: a hajók felhelyezése után, kiválaszthatsz 1 akadályt a pályáról. Ha így teszel, helyezd át bárhová 2-es távolságra a szélektől vagy hajóktól és 1-es távolságra más akadályoktól."
+      display_name: "Tobias Beckett",
+      text: "<i>csak Söpredék</i>%LINEBREAK%<strong>Felhelyezés:</strong> a hajók felhelyezése után, kiválaszthatsz 1 akadályt a pályáról. Ha így teszel, helyezd át bárhová 2-es távolságra a szélektől vagy hajóktól és 1-es távolságra más akadályoktól."
     },
     "Tractor Beam": {
-      text: "Támadás: ha a támadás talált, minden %HIT%/%CRIT% eredmény után sérülés helyett vonósugár jelzőt kap a védekező."
+      display_name: "Tractor Beam",
+      text: "<strong>Támadás:</strong> ha a támadás talált, minden %HIT%/%CRIT% eredmény után sérülés helyett vonósugár jelzőt kap a védekező."
     },
     "Trajectory Simulator": {
-      text: "A rendszer fázis alatt, ha ledobsz vagy kilősz egy bombát, kilőheted a (5 %STRAIGHT%) sablonnal."
+      display_name: "Trajectory Simulator",
+      text: "A Rendszer fázis alatt, ha ledobsz vagy kilősz egy bombát, kilőheted a [5&nbsp;%STRAIGHT%] sablonnal."
     },
     "Trick Shot": {
+      display_name: "Trick Shot",
       text: "Amikor végrehajtasz egy támadást ami akadályozott egy akadály által, dobj 1-gyel több támadókockával."
     },
     "Unkar Plutt": {
-      text: "Miután részlegesen végrehajtottál egy manővert, elszenvedhetsz 1 %HIT% sérülést, hogy végrehajts 1 fehér akciót."
+      display_name: "Unkar Plutt",
+      text: "<i>csak Söpredék</i>%LINEBREAK%Miután részlegesen végrehajtottál egy manővert, elszenvedhetsz 1&nbsp;%HIT% sérülést, hogy végrehajts 1 fehér akciót."
     },
     "Veteran Tail Gunner": {
-      text: "<i>Követelmény: %REARARC%</i> %LINEBREAK% miután végrehajtasz egy elsődleges %FRONTARC% támadást, végrehajthatsz egy bónusz elsődleges %REARARC% támadást."
+      display_name: "Veteran Tail Gunner",
+      text: "<i>Követelmény: %REARARC%</i> %LINEBREAK%Miután végrehajtasz egy elsődleges %FRONTARC% támadást, végrehajthatsz egy bónusz elsődleges %REARARC% támadást."
     },
     "Veteran Turret Gunner": {
-      text: "<i>Követelmény: %ROTATEARC%</i> %LINEBREAK% Amikor végrehajtasz egy elsődleges támadást, végrehajthatsz egy bónusz %SINGLETURRETARC% támadást egy olyan %SINGLETURRETARC% tűzívben, amiből még nem támadtál ebben a körben."
-    },
-    "Virago": {
-      text: "A vége fázis alatt, elkölthetsz 1 %CHARGE% jelzőt, hogy végrehajts egy piros %BOOST% akciót. Kapsz egy %MODIFICATION% fejlesztés helyet. Adj 1 pajzs értéket a hajódhoz."
+      display_name: "Veteran Turret Gunner",
+      text: "<i>Követelmény: %ROTATEARC% vagy <r>%ROTATEARC%</r></i>%LINEBREAK%Amikor végrehajtasz egy elsődleges támadást, végrehajthatsz egy bónusz %SINGLETURRETARC% támadást egy olyan %SINGLETURRETARC% tűzívben, amiből még nem támadtál ebben a körben."
     },
     "Xg-1 Assault Configuration": {
-      text: "Amikor pontosan 1 'inaktív fegyverzet' jelződ van, akkor is végrehajthatsz %CANNON% támadást. Amikor %CANNON% támadást hajtasz végre 'inaktív fegyverzet' jelzővel, maximum 3 támadókockával dobhatsz. Kapsz egy %CANNON% fejlesztés helyet."
-    },
-    '"Zeb" Orrelios': {
-      text: "Végrehajthatsz elsődleges támadást 0-ás távolságban. Az ellenséges hajók 0-ás távolságban végrehajthatnak elsődleges támadást ellened."
+      display_name: "Xg-1 Assault Configuration",
+      text: "Amikor pontosan 1 'inaktív fegyverzet' jelződ van, akkor is végrehajthatsz %CANNON% támadást. Amikor %CANNON% támadást hajtasz végre 'inaktív fegyverzet' jelzővel, maximum 3 támadókockával dobhatsz.%LINEBREAK%Kapsz egy %CANNON% fejlesztés helyet."
     },
     "Zuckuss": {
-      text: "Amikor végrehajtasz egy támadást, ha nem vagy stresszes, válaszhatsz 1 védekezőkockát és kapsz 1 stressz jelzőt. Ha így teszel, a védekezőnek újra kell dobnia azt a kockát."
+      display_name: "Zuckuss",
+      text: "<i>csak Söpredék</i>%LINEBREAK%Amikor végrehajtasz egy támadást, ha nem vagy stresszes, válaszhatsz 1 védekezőkockát és kapsz 1 stressz jelzőt. Ha így teszel, a védekezőnek újra kell dobnia azt a kockát."
     },
-    'GNK "Gonk" Droid': {
-      text: "Felhelyezés: Elvesztesz 1 %CHARGE% jelzőt. Akció: tölts vissza 1 %CHARGE% jelzőt. Akció: Költs el 1 %CHARGE% jelzőt, hogy visszatölts egy pajzsot."
+    '"Chopper" (Crew)': {
+      display_name: "“Chopper”",
+      text: "<i>csak Lázadók</i>%LINEBREAK%Az <strong>Akció végrehajtása</strong> lépés közben még stresszesen is végrehajthatsz 1 akciót. Miután stresszesen végrehajtasz egy akciót szenvedj el 1&nbsp;%HIT% sérülést vagy fordítsd fel 1 sérülés kártyád."
+    },
+    '"Chopper" (Astromech)': {
+      display_name: "“Chopper”",
+      text: "<i>csak Lázadók</i>%LINEBREAK%<strong>Akció:</strong> költs el 1 nem-újratölthető %CHARGE% jelzőt egy másik felszerelt fejlesztésről, hogy visszatölts 1 pajzsot%LINEBREAK%<strong>Akció:</strong> költs el 2 pajzsot, hogy visszatölts 1 nem-újratölthető %CHARGE% jelzőt egy felszerelt fejlesztésen."
+    },
+    '"Genius"': {
+      display_name: "“Genius”",
+      text: "<i>csak Söpredék</i>%LINEBREAK%Miután teljesen végrehajtottál egy manővert, ha még nem dobtál vagy lőttél ki eszközt ebben a körben, kidobhatsz 1 bombát."
+    },
+    '"Zeb" Orrelios': {
+      display_name: "“Zeb” Orrelios",
+      text: "<i>csak Lázadók</i>%LINEBREAK%Végrehajthatsz elsődleges támadást 0-ás távolságban. Az ellenséges hajók 0-ás távolságban végrehajthatnak elsődleges támadást ellened."
     },
     "Hardpoint: Cannon": {
       text: "Kapsz egy %CANNON% fejlesztés helyet."
@@ -17236,144 +17863,147 @@ exportObj.cardLoaders.Magyar = function() {
       text: "Kapsz egy %TORPEDO% fejlesztés helyet."
     },
     "Black One": {
-      text: "<i>Kapott akció: %SLAM%</i> %LINEBREAK% Miután végrehajtasz egy %SLAM% akciót, elvesztesz 1 %CHARGE% jelzőt. Ezután kaphatsz 1 ion jelzőt, hogy levedd az inaktív fegyverzet jelzőt. %LINEBREAK% Ha a %CHARGE% nem aktív, nem hajthatsz végre %SLAM% akciót."
+      text: "<i>Kapott akció: %SLAM%</i> %LINEBREAK% Miután végrehajtasz egy %SLAM% akciót, elvesztesz 1&nbsp;%CHARGE% jelzőt. Ezután kaphatsz 1 ion jelzőt, hogy levedd az inaktív fegyverzet jelzőt. Ha a %CHARGE% nem aktív, nem hajthatsz végre %SLAM% akciót."
     },
     "Heroic": {
       text: "Amikor védekezel vagy támadást hajtasz végre, ha 2 vagy több csak üres eredményed van, újradobhatsz akárhány kockát."
     },
     "Rose Tico": {
-      text: " ??? "
+      text: "Amikor védekezel vagy támadást hajtasz végre, elkölthetsz egy dobás eredményed, hogy bemérőt rakj az ellenséges hajóra."
     },
     "Finn": {
-      text: "Amikor védekezel vagy elsődleges támadást hajtasz végre, ha az ellenséges hajó benne van a %FRONTARC% tűzívedben, hozzáadhatsz 1 üres eredményt a dobásodhoz ... can be rerolled or otherwise ...  "
+      text: "Amikor védekezel vagy elsődleges támadást hajtasz végre,ha az ellenséges hajó a %FRONTARC% tűzívedben van, hozzáadhatsz 1 üres eredményt a dobásodhoz (ez a kocka újradobható vagy módosítható)."
     },
     "Integrated S-Foils": {
-      text: "<b>Zárva:</b> Amikor végrehajtasz egy elsődleges támadást, ha a védekező nincs a %BULLSEYEARC% tűzívedben, 1-gyel kevesebb támadókockával dobj. Mielőtt aktiválódsz, megfordíthatod ezt a kártyát. %LINEBREAK% <i>Kapott akció: %BARRELROLL%, %FOCUS% > <r>%BARRELROLL%</r></i> %LINEBREAK% <b>Nyitva:</b> ???"
+      text: "<strong>Csukva: </strong><i>Kapott akció %BARRELROLL%, %FOCUS% &nbsp;<i class=\"xwing-miniatures-font xwing-miniatures-font-linked\"></i>&nbsp;<r>%BARRELROLL%</r></i>%LINEBREAK% Amikor végrehajtasz egy elsődleges támadást, ha a védekező nincs a %BULLSEYEARC% tűzívedben, 1-gyel kevesebb támadókockával dobj. Mielőtt aktiválódsz, megfordíthatod ezt a kártyát.%LINEBREAK% <b>Nyitva:</b> Mielőtt aktiválódsz, megfordíthatod ezt a kártyát."
     },
     "Targeting Synchronizer": {
-      text: "<i>Requires: %LOCK%</i> %LINEBREAK% While a friendly ship at range 1-2 performs an attack against a target you have locked, that ship ignores the %LOCK% attack requirement. "
+      text: "<i>Követelmény: %LOCK%</i> %LINEBREAK% Amikor egy baráti hajó 1-2-es távolságban végrehajt egy támadást olyan célpont ellen, amit már bemértél, az a hajó figyelmen kívül hagyhatja a %LOCK% támadási követelményt."
     },
     "Primed Thrusters": {
-      text: "<i>Követelmény: kis talp</i> %LINEBREAK% Amikor 2 vagy kevesebb stressz jelződ van, végrehajthatsz %BARRELROLL% és %BOOST% akciót stresszesen is."
+      text: "<i>csak kis hajó</i> %LINEBREAK%Amikor 2 vagy kevesebb stressz jelződ van, végrehajthatsz %BARRELROLL% és %BOOST% akciót még ha stresszes is vagy."
     },
     "Kylo Ren": {
-      text: " Action: Choose 1 enemy ship at range 1-3. If you do, spend 1 %FORCE% to assign the I'll Show You the Dark Side condition to that ship. "
+      text: "<strong>Akció: </strong> Válassz 1 ellenséges hajót 1-3-as távolságban. Ha így teszel, költs el 1&nbsp;%FORCE% jelzőt, hogy hozzárendeled az <strong>I'll Show You the Dark Side</strong> kondíciós kártyát a kiválasztott hajóhoz."
     },
     "General Hux": {
-      text: " ... perform a white %COORDINATE% action ... it as red. If you do, you ... up to 2 additional ships ... ship type, and each ship you coordinate must perform the same action, treating that action as red. "
+      text: "Amikor végrehajtasz egy fehér %COORDINATE% akciót, kezelheted pirosként. Ha így teszel, koordinálhatsz további 2 azonos típusú hajót, mindegyikét azonos akcióval és pirosként kezelve."
     },
     "Fanatical": {
-      text: " While you perform a primary attack, if you are not shielded, you may change 1 %FOCUS% result to a %HIT% result. "
+      text: "Amikor végrehajtasz egy elsődleges támadást, ha nincs pajzsod, megváltoztathatsz 1&nbsp;%FOCUS% eredményt %HIT% eredményre."
     },
     "Special Forces Gunner": {
-      text: " ... you perform a primary %FRONTARC% attack, ... your %SINGLETURRETARC% is in your %FRONTARC%, you may roll 1 additional attack die. After you perform a primary %FRONTARC% attack, ... your %TURRET% is in your %BACKARC%, you may perform a bonus primary %SINGLETURRETARC% attack. "
+      text: "Amikor végrehajtasz egy elsődleges %FRONTARC% támadást, ha a %SINGLETURRETARC% tűzíved a %FRONTARC% tűzívedben van, 1-gyel több kockával dobhatsz. Miután végrehajtottál egy elsődleges %FRONTARC% támadást, ha a %SINGLETURRETARC% tűzíved a %REARARC% tűzívedben van, végrehajthatsz egy bónusz elsődleges %SINGLETURRETARC% támadást."
     },
     "Captain Phasma": {
-      text: " ??? "
+      text: "Az Ütközet fázis végén, minden 0-1 távolságban lévő ellenséges hajó ami nem stresszes, kap 1 stressz jelzőt."
     },
     "Supreme Leader Snoke": {
-      text: " ??? "
+      text: "A Rendszer fázis alatt kiválaszthatsz bármennyi hajót 1-es távolságon túl. Ha így teszel költs el annyi %FORCE% jelzőt, amennyi hajót kiválasztottál, hogy felfordítsd a tárcsájukat."
     },
     "Hyperspace Tracking Data": {
-      text: " Setup: Before placing forces, you may ... 0 and 6 ... "
+      text: "<strong>Felhelyezés:</strong> a hajó felhelyezés előtt válassz egy számot 0 és 6 között. Kezeld a Initiative-od a kiválasztott számnak megfelelően. A felhelyezés után rendelj hozzá 1&nbsp;%FOCUS% vagy %EVADE% jelzőt minden baráti hajóra 0-2-es távolságban."
     },
     "Advanced Optics": {
-      text: " While you perform an attack, you may spend 1 focus to change 1 of your blank results to a %HIT% result. "
+      text: "Amikor támadást hajtasz végre, elkölthetsz 1&nbsp;%FOCUS% jelzőt, hogy 1 üres eredményed %HIT% eredményre változtass."
     },
     "Rey": {
-      text: " ... defend or ... If the ... in your %SINGLETURRETARC% ... 1 %FORCE% to ... 1 of your blank results to a %EVADE% or %HIT% result. "
+      text: "Amikor védekezel vagy támadást hajtasz végre, ha az ellenséges hajó benne van a %FRONTARC% tűzívedben, elkölthetsz 1&nbsp;%FORCE% jelzőt, hogy 1 üres eredményed %EVADE% vagy %HIT% eredményre változtass."
     },
     "Chewbacca (Resistance)": {
-      text: " Setup: Lose 1 %CHARGE%. %LINEBREAK% After a friendly ship at range 0-3 is dealt 1 damage card, recover 1 %CHARGE%. %LINEBREAK% While you perform an attack, you may spend 2 %CHARGE% to change 1 %FOCUS% result to a %CRIT% result."
+      text: "<strong>Felhelyezés:</strong>: elvesztesz el 1&nbsp;%CHARGE% jelzőt. %LINEBREAK% Miután egy baráti hajó 0-3-as távolságban felhúz 1 sérülés kártyát, állítsd helyre 1&nbsp;%CHARGE% jelzőt. Amikor támadást hajtasz végre elkölthetsz 2&nbsp;%CHARGE% jelzőt, hogy 1&nbsp;%FOCUS% eredményed %CRIT% eredményre változtass."
     },
     "Paige Tico": {
-      text: " After you perform a primary attack, you may drop 1 bomb or rotate your %SINGLETURRETARC%. After you are destroyed, you may drop 1 bomb. "
+      text: "Miután véggrehajtasz egy elsődleges támadást, ledobhatsz egy bombát vagy forgathatod a %SINGLETURRETARC% tűzívedet. Miután megsemmisültél ledobhatsz 1 bombát."
     },
     "R2-HA": {
-      text: " While you defend, you may spend your lock on the attacker to reroll any number of your defense dice. "
+      text: "Amikor védekezel, elköltheted a támadón lévő bemérődet, hogy újradobd bármennyi védőkockádat."
     },
     "C-3PO (Resistance)": {
-      text: " <i>Adds: %CALCULATE% <r>%COORDINATE%</r></i> %LINEBREAK% While you coordinate, you can choose friendly ships beyond range 2 if they have %CALCULATE% on their action bar. %LINEBREAK% After you perform the %CALCULATE% or %COORDINATE% action, gain 1 calculate token. "
+      text: " <i>Kapott akció: %CALCULATE% <r>%COORDINATE%</r></i> %LINEBREAK% Amikor koordinálsz, választhatsz baráti hajót 2-es távolságon túl, ha annak van %CALCULATE% akciója. Miután végrehajtod a %CALCULATE% vagy %COORDINATE% akciót, kapsz 1&nbsp;%CALCULATE% jelzőt."
     },
     "Han Solo (Resistance)": {
-      text: " <i>Adds: <r>%EVADE%</r></i> %LINEBREAK% After you perform an %EVADE% action, gain additional evade tokens equal to the number of enemy ships at range 0-1. "
+      text: " <i>Kapott akció: <r>%EVADE%</r></i> %LINEBREAK%Miután végrehajtasz egy %EVADE% akciót, annyival több %EVADE% jelzőt kapsz, ahány ellenséges hajó van 0-1-es távolságban."
     },
-    "Rey's Millenium Falcon": {
-      text: " If you have 2 or fewer stress tokens, ou can execute red Segnor's Loop (%SLOOPLEFT% or %SLOOPRIGHT%) maneuvers and perform %BOOST% and %ROTATEARC% actions even while stressed. "
+    "Rey's Millennium Falcon": {
+      text: "Ha 2 vagy kevesebb stressz jelződ van, végrehajthatsz piros Segnor Csavar manővert [%SLOOPLEFT% vagy %SLOOPRIGHT%] és végrehajthatsz %BOOST% és %ROTATEARC% akciókat, még ha stresszes is vagy."
     },
     "Petty Officer Thanisson": {
-      text: " During the Activation or Engagement Phase, after an enemy ship in your %FRONTARC% at range 0-1 gains a red or orange token, if you are not stressed, you may gain 1 stress token. if you do, that ship gains an additional token of the type that it gained. "
+      text: "Az Aktivációs vagy Ütközet fázis közben, miután egy ellenséges hajó a %FRONTARC% tűzívedben 0-1-es távolságban kap egy piros vagy narancs jelzőt, ha nem vagy stresszes, kaphatsz egy stressz jelzőt. Ha így teszel, az a hajó kap még egy jelzőt abból, amit kapott."
     },
     "BB-8": {
-      text: " Before you execute a blue maneuver, you may spend 1 %CHARGE% to perform a %BARRELROLL% or %BOOST% action. "
+      text: "Mielőtt végrehajtasz egy kék manővert, elkölthetsz 1&nbsp;%CHARGE% jelzőt, hogy végrehajts egy %BARRELROLL% vagy %BOOST% akciót."
     },
     "BB Astromech": {
-      text: " Before you execute a blue maneuver, you may spend 1 %CHARGE% to perform a %BARRELROLL% action. "
+      text: "Mielőtt végrehajtasz egy kék manővert, elkölthetsz 1&nbsp;%CHARGE% jelzőt, hogy végrehajts egy %BARRELROLL% akciót."
     },
     "M9-G8": {
-      text: " While a ship you are locking performs an attack, you may choose 1 attack die. If you do, the attacker rerolls that die. "
+      text: "Amikor egy hajó amit bemértél végrehajt egy támadást, kiválaszthatsz egy támadókockát. Ha így teszel, a támadó újradobja azt a kockát."
     },
     "Ferrosphere Paint": {
-      text: " After an enemy ship locks you, if you are not in that ship's %BULLSEYEARC%, that ship gains 1 stress token. "
+      text: "Miután egy ellenséges hajó bemért téged, ha nem vagy annak a hajónak a %BULLSEYEARC% tűzívében, az kap egy stressz jelzőt."
     },
     "Brilliant Evasion": {
-      text: " While you defend, if you are not in the attacker's %BULLSEYEARC%, you may spend 1 %FORCE% to change 2 of your %FOCUS% results to %EVADE% results. "
+      text: "Amikor védekezel, ha nem vagy a támadó %BULLSEYEARC% tűzívében, elkölthetsz 1&nbsp;%FORCE% jelzőt, hogy 2&nbsp;%FOCUS% eredményed %EVADE% eredményre változtass."
     },
     "Calibrated Laser Targeting": {
-      text: " While you perform a primary attack, if the defender is in your %BULLSEYEARC%, add 1 %FOCUS% result. "
+      text: "Amikor végrehajtasz egy elsődleges támadást, ha a védekező benne van a %BULLSEYEARC% tűzívedben, adj a dobásodhoz 1&nbsp;%FOCUS% eredményt."
     },
     "Delta-7B": {
-      text: " <i>Adds: 1 attack, 2 shields %LINEBREAK% Removes: 1 agility</i> "
+      text: " <i>Kapott : 1 támadási érték, 2 pajzs %LINEBREAK% Elveszett: 1 védekezés</i> "
     },
     "Biohexacrypt Codes": {
-      text: " While you coordinate or jam, if you have a lock on a ship, you may spend that lock to choose that ship, ignoring range restrictions. "
+      text: "Amikor koordinálsz vagy zavarsz, ha van bemérőd egy hajón, elköltheted azt a bemérőt, hogy a távolság követelményeket figyelmen kívül hagyd a hajó kiválasztákor."
     },
     "Predictive Shot": {
-      text: " After you declare an attack, if the defender is in your %BULLSEYEARC%, you may spend 1 %FORCE%. If you do, during the Roll Defense Dice step, the defender cannot roll more defense dice than the number of your %HIT%/%CRIT% results. "
+      text: "Miután támadásra jelölsz egy célpontot, ha a védekező benne van a %BULLSEYEARC% tűzívedben, elkölthetsz 1&nbsp;%FORCE% jelzőt. Ha így teszel, a védekező a <strong>Védekezőkockák dobása</strong> lépésben nem dobhat több kockával, mint a %HIT%/%CRIT% eredményeid száma."
     },
     "Hate": {
-      text: " After you suffer 1 or more damage, recover that many %FORCE% "
+      text: "Miután elszenvedsz 1 vagy több sérülést, feltölthetsz ugyanannyi %FORCE% jelzőt."
     },
     "R5-X3": {
-      text: " Before you activate or engage, you may spend 1 %CHARGE% to ignore obstacles until the end of this phase. "
+      text: "Mielőtt aktiválódsz vagy rád kerül a sor az Ütközet fázisban, elkölthetsz 1&nbsp;%CHARGE% jelzőt, hogy figyelmen kívül hagyd az akadályokat annak a fázisnak a végéig."
     },
     "Pattern Analyzer": {
-      text: " While you fully execute a red maneuver, before the Check Difficulty step, you may perform 1 action. "
+      text: "Amikor teljesen végrehajtasz egy piros manővert, a <strong>Nehézség ellenőrzése</strong> lépés előtt végrehjathatsz 1 akciót."
     }
   };
   condition_translations = {
     'Suppressive Fire': {
-      text: 'Amikor végrehajtasz egy támadást más hajó ellen mint <strong>Captain Rex</strong>, dobj 1-gyel kevesebb kockával. %LINEBREAK% Miután <strong>Captain Rex</strong> védekezik, vedd le ezt a kártyát.  %LINEBREAK% Az ütközet fázis végén, ha <strong>Captain Rex</strong> nem hajtott végre támadást ebben a fázisban, vedd le ezt a kártyát. %LINEBREAK% Miután <strong>Captain Rex</strong> megsemmisült, vedd le ezt a kártyát.'
+      text: 'Amikor végrehajtasz egy támadást más hajó ellen mint <strong>Captain Rex</strong>, dobj 1-gyel kevesebb kockával.%LINEBREAK% Miután <strong>Captain Rex</strong> védekezik, vedd le ezt a kártyát. %LINEBREAK% Az Ütközet fázis végén, ha <strong>Captain Rex</strong> nem hajtott végre támadást ebben a fázisban, vedd le ezt a kártyát. %LINEBREAK% Miután <strong>Captain Rex</strong> megsemmisült, vedd le ezt a kártyát.'
     },
     'Hunted': {
       text: 'Miután megsemmisültél, választanod kell egy baráti hajót és átadni neki ezt a kondíció kártyát.'
     },
     'Listening Device': {
-      text: 'A rendszer fázisban, ha egy ellenséges hajó az <strong>Informant</strong> fejlesztéssel 0-2-es távolságban van, fedd fel a tárcsád.'
+      text: 'A Rendszer fázisban, ha egy ellenséges hajó az <strong>Informant</strong> fejlesztéssel 0-2-es távolságban van, fedd fel a tárcsád.'
+    },
+    'Rattled': {
+      text: 'Miután egy bomba vagy akna 0-1-es távolságban felrobban, elszenvedsz 1 %CRIT% sérülést. Aztán vedd le ezt a kártyát.%LINEBREAK%<strong>Akció:</strong> Ha nincs bomba vagy akna 0-1-es távolságban, vedd ele ezt a kártyát.'
     },
     'Optimized Prototype': {
-      text: 'Amikor végrehajtasz egy elsődleges %FRONTARC% támadást egy olyan hajó ellen, amit bemért <strong>Director Krennic</strong> fejlesztéssel felszerelt hajó, elkölthetsz 1 %HIT%/%CRIT%/%FOCUS% eredményt. Ha így teszel, választhatsz, hogy a védekező elveszt 1 pajzsot vagy a védekező felfordítja 1 sérüléskártyáját.'
+      text: 'Amikor végrehajtasz egy elsődleges %FRONTARC% támadást egy olyan hajó ellen, amit bemért <strong>Director Krennic</strong> fejlesztéssel felszerelt hajó, elkölthetsz 1&nbsp;%HIT%/%CRIT%/%FOCUS% eredményt. Ha így teszel, választhatsz, hogy a védekező elveszt 1 pajzsot vagy a védekező felfordítja 1 sérüléskártyáját.'
     },
     'I\'ll Show You the Dark Side': {
-      text: ' ??? '
+      text: 'Mikor ezt a kártyát hozzárendelik egy hajódhoz, ha nincs felfordított sérüléskártya rajta, az ellenfél kikeres a sérüléskártyáidból egy pilóta típusút és felfordítva ráteszi. Aztán megkeveri a paklit. Amikor elszenvednél 1&nbsp;%CRIT% sérülést, ezen a kártyán lévő sérüléskártyát kapod meg. Aztán vedd le ezt a lapot.'
     },
     'Proton Bomb': {
-      text: '(Bomba jelző) - Az aktivációs fázis végén ez az eszköz felrobban. Amikor ez az eszköz felrobban, minden hajó 0–1-es távolságban elszenved 1 %CRIT% sérülést.'
+      text: '(Bomba jelző) - Az Aktivációs fázis végén ez az eszköz felrobban. Amikor ez az eszköz felrobban, minden hajó 0–1-es távolságban elszenved 1&nbsp;%CRIT% sérülést.'
     },
     'Seismic Charge': {
-      text: '(Bomb jelző) - Az aktivációs fázis végén ez az eszköz felrobban. Amikor ez az eszköz felrobban, válassz 1 akadály 0–1-es távolságban. Minden hajó 0–1-es távolságra az akadálytól elszenved 1 %HIT% sérülést. Aztán vedd le az akadályt. '
+      text: '(Bomba jelző) - Az Aktivációs fázis végén ez az eszköz felrobban. Amikor ez az eszköz felrobban, válassz 1 akadály 0–1-es távolságban. Minden hajó 0–1-es távolságra az akadálytól elszenved 1 %HIT% sérülést.'
     },
     'Bomblet': {
-      text: '(Bomb jelző) - Az aktivációs fázis végén ez az eszköz felrobban. Amikor ez az eszköz felrobban, minden hajó 0–1-es távolságban dob 2 támadókockával. Minden hajó elszenved 1 %HIT% sérülést minden egyes %HIT%/%CRIT% eredmény után.'
+      text: '(Bomba jelző) - Az Aktivációs fázis végén ez az eszköz felrobban. Amikor ez az eszköz felrobban, minden hajó 0–1-es távolságban dob 2 támadókockával. Minden hajó elszenved 1&nbsp;%HIT% sérülést minden egyes %HIT%/%CRIT% eredmény után.'
     },
     'Loose Cargo': {
-      text: '(Űrszemég jelző) - A kidobott rakomány űrszemétnek számít.'
+      text: '(Űrszemét jelző) - A kidobott rakomány űrszemétnek számít.'
     },
     'Conner Net': {
-      text: '(Akna jelző) - Miután egy hajó átmozog vagy átfedésbe kerül ezzel az eszközzel, az felrobban. Amikor ez az eszköz felrobban, a hajó elszenved 1 %HIT% sérülést és kap 3 ion jelzőt.'
+      text: '(Akna jelző) - Miután egy hajó átmozog vagy átfedésbe kerül ezzel az eszközzel, az felrobban. Amikor ez az eszköz felrobban, a hajó elszenved 1&nbsp;%HIT% sérülést és kap 3 ion jelzőt.'
     },
     'Proximity Mine': {
-      text: '(Akna jelző) - Miután egy hajó átmozog vagy átfedésbe kerül ezzel az eszközzel,  az felrobban. Amikor ez az eszköz felrobban, a hajó dob 2 támadókockával, aztán elszenved 1 %HIT%, valamint a dobott eremény szerint 1-1 %HIT%/%CRIT% sérülést.'
+      text: '(Akna jelző) - Miután egy hajó átmozog vagy átfedésbe kerül ezzel az eszközzel, az felrobban. Amikor ez az eszköz felrobban, a hajó dob 2 támadókockával, aztán elszenved 1&nbsp;%HIT%, valamint a dobott eremény szerint 1-1 %HIT%/%CRIT% sérülést.'
     }
   };
   return exportObj.setupCardData(basic_cards, pilot_translations, upgrade_translations, condition_translations);
@@ -20063,7 +20693,7 @@ exportObj.manifestByExpansion = {
       type: 'pilot',
       count: 1
     }, {
-      name: 'Nien Numb',
+      name: 'Nien Nunb',
       type: 'pilot',
       count: 1
     }, {
@@ -20155,7 +20785,7 @@ exportObj.manifestByExpansion = {
       type: 'upgrade',
       count: 1
     }, {
-      name: "Rey's Millenium Falcon",
+      name: "Rey's Millennium Falcon",
       type: 'upgrade',
       count: 1
     }, {
@@ -20446,7 +21076,7 @@ exportObj.manifestByExpansion = {
       type: 'pilot',
       count: 1
     }, {
-      name: 'Nien Numb',
+      name: 'Nien Nunb',
       type: 'pilot',
       count: 1
     }, {
@@ -20485,6 +21115,30 @@ exportObj.manifestByExpansion = {
       name: 'Blue Squadron Rookie',
       type: 'pilot',
       count: 1
+    }, {
+      name: 'Black One',
+      type: 'upgrade',
+      count: 1
+    }, {
+      name: 'BB-8',
+      type: 'upgrade',
+      count: 1
+    }, {
+      name: 'BB Astromech',
+      type: 'upgrade',
+      count: 1
+    }, {
+      name: 'Integrated S-Foils',
+      type: 'upgrade',
+      count: 1
+    }, {
+      name: 'M9-G8',
+      type: 'upgrade',
+      count: 1
+    }, {
+      name: 'Targeting Synchronizer',
+      type: 'upgrade',
+      count: 1
     }
   ],
   'RZ-2 A-Wing Expansion Pack': [
@@ -20515,6 +21169,26 @@ exportObj.manifestByExpansion = {
     }, {
       name: 'Blue Squadron Recruit',
       type: 'pilot',
+      count: 1
+    }, {
+      name: 'Heroic',
+      type: 'upgrade',
+      count: 1
+    }, {
+      name: 'Ferrosphere Paint',
+      type: 'upgrade',
+      count: 1
+    }, {
+      name: 'Homing Missiles',
+      type: 'upgrade',
+      count: 1
+    }, {
+      name: 'Primed Thrusters',
+      type: 'upgrade',
+      count: 1
+    }, {
+      name: 'Proton Rockets',
+      type: 'upgrade',
       count: 1
     }
   ],
@@ -20609,11 +21283,11 @@ exportObj.manifestByExpansion = {
     }, {
       name: "Omega Squadron Expert",
       type: 'pilot',
-      count: 1
+      count: 4
     }, {
       name: "Zeta Squadron Survivor",
       type: 'pilot',
-      count: 1
+      count: 5
     }, {
       name: "Kylo Ren",
       type: 'pilot',
@@ -20633,11 +21307,11 @@ exportObj.manifestByExpansion = {
     }, {
       name: "First Order Test Pilot",
       type: 'pilot',
-      count: 1
+      count: 3
     }, {
       name: "Sienar-Jaemus Engineer",
       type: 'pilot',
-      count: 1
+      count: 3
     }, {
       name: "Captain Cardinal",
       type: 'pilot',
@@ -20661,7 +21335,7 @@ exportObj.manifestByExpansion = {
     }, {
       name: "Starkiller Base Pilot",
       type: 'pilot',
-      count: 1
+      count: 3
     }, {
       name: "Primed Thrusters",
       type: 'upgrade',
@@ -20671,13 +21345,9 @@ exportObj.manifestByExpansion = {
       type: 'upgrade',
       count: 1
     }, {
-      name: "Fanatical",
-      type: 'upgrade',
-      count: 1
-    }, {
       name: "Special Forces Gunner",
       type: 'upgrade',
-      count: 1
+      count: 4
     }, {
       name: "Supreme Leader Snoke",
       type: 'upgrade',
@@ -20710,6 +21380,206 @@ exportObj.manifestByExpansion = {
       name: "Hate",
       type: 'upgrade',
       count: 1
+    }, {
+      name: 'Crack Shot',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Daredevil',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Debris Gambit',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Elusive',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Fanatical',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Intimidation',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Juke',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Lone Wolf',
+      type: 'upgrade',
+      count: 1
+    }, {
+      name: 'Marksmanship',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Outmaneuver',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Predator',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Squad Leader',
+      type: 'upgrade',
+      count: 1
+    }, {
+      name: 'Swarm Tactics',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Trick Shot',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Advanced Optics',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Pattern Analyzer',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Primed Thrusters',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Targeting Synchronizer',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Hyperspace Tracking Data',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Advanced Sensors',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Collision Detector',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Fire-Control System',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Heavy Laser Cannon',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Ion Cannon',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Jamming Beam',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Tractor Beam',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Adv. Proton Torpedoes',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Proton Torpedoes',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Ion Torpedoes',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Cluster Missiles',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Concussion Missiles',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Homing Missiles',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Ion Missiles',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Proton Rockets',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Freelance Slicer',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'GNK "Gonk" Droid',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Informant',
+      type: 'upgrade',
+      count: 1
+    }, {
+      name: 'Novice Technician',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Perceptive Copilot',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Seasoned Navigator',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Hotshot Gunner',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Ablative Plating',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Electronic Baffle',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Engine Upgrade',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Hull Upgrade',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Munitions Failsafe',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Shield Upgrade',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Static Discharge Vanes',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Stealth Device',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Tactical Scrambler',
+      type: 'upgrade',
+      count: 2
     }
   ],
   'TIE/FO Fighter Expansion Pack': [
@@ -20766,25 +21636,253 @@ exportObj.manifestByExpansion = {
       type: 'pilot',
       count: 1
     }, {
-      name: 'Targeting Synchronizer',
+      name: 'Fanatical',
+      type: 'upgrade',
+      count: 3
+    }, {
+      name: 'Crack Shot',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Daredevil',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Debris Gambit',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Elusive',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Intimidation',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Juke',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Lone Wolf',
       type: 'upgrade',
       count: 1
     }, {
-      name: 'Advanced Optics',
+      name: 'Marksmanship',
       type: 'upgrade',
-      count: 1
+      count: 2
     }, {
-      name: 'Swarm Tactics',
+      name: 'Outmaneuver',
       type: 'upgrade',
-      count: 1
+      count: 2
+    }, {
+      name: 'Predator',
+      type: 'upgrade',
+      count: 2
     }, {
       name: 'Squad Leader',
       type: 'upgrade',
       count: 1
     }, {
-      name: 'Fanatical',
+      name: 'Swarm Tactics',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Trick Shot',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Advanced Optics',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Pattern Analyzer',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Primed Thrusters',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Targeting Synchronizer',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Hyperspace Tracking Data',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Advanced Sensors',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Collision Detector',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Fire-Control System',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Heavy Laser Cannon',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Ion Cannon',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Jamming Beam',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Tractor Beam',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Adv. Proton Torpedoes',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Proton Torpedoes',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Ion Torpedoes',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Cluster Missiles',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Concussion Missiles',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Homing Missiles',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Ion Missiles',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Proton Rockets',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Freelance Slicer',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'GNK "Gonk" Droid',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Informant',
       type: 'upgrade',
       count: 1
+    }, {
+      name: 'Novice Technician',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Perceptive Copilot',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Seasoned Navigator',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Hotshot Gunner',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Special Forces Gunner',
+      type: 'upgrade',
+      count: 4
+    }, {
+      name: 'Contraband Cybernetics',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: "Deadman's Switch",
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Feedback Array',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Inertial Dampeners',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Rigged Cargo Chute',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Bomblet Generator',
+      type: 'upgrade',
+      count: 1
+    }, {
+      name: 'Conner Nets',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Proton Bombs',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Proximity Mines',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Seismic Charges',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Ablative Plating',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Advanced SLAM',
+      type: 'upgrade',
+      count: 1
+    }, {
+      name: 'Electronic Baffle',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Engine Upgrade',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Hull Upgrade',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Munitions Failsafe',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Shield Upgrade',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Static Discharge Vanes',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Stealth Device',
+      type: 'upgrade',
+      count: 2
+    }, {
+      name: 'Tactical Scrambler',
+      type: 'upgrade',
+      count: 2
     }
   ],
   'Loose Ships': [
@@ -20989,7 +22087,7 @@ exportObj.manifestByExpansion = {
       type: 'ship',
       count: 3
     }, {
-      name: 'TIE Silencer',
+      name: 'TIE/VN Silencer',
       type: 'ship',
       count: 3
     }, {
@@ -21080,7 +22178,7 @@ exportObj.manifestByExpansion = {
       type: 'ship',
       count: 3
     }, {
-      name: 'TIE Silencer',
+      name: 'TIE/VN Silencer',
       type: 'ship',
       count: 3
     }
@@ -21573,7 +22671,7 @@ exportObj.setupTranslationSupport = function() {
                     parent: ___iced_passed_deferral
                   });
                   builder.container.trigger('xwing:beforeLanguageLoad', __iced_deferrals.defer({
-                    lineno: 22923
+                    lineno: 23713
                   }));
                   __iced_deferrals._fulfill();
                 })(_next);
@@ -21788,7 +22886,6 @@ exportObj.SquadBuilder = (function() {
     };
     this.total_points = 0;
     this.isCustom = false;
-    this.isSecondEdition = false;
     this.isHyperspace = false;
     this.maxSmallShipsOfOneType = null;
     this.maxLargeShipsOfOneType = null;
@@ -21867,7 +22964,7 @@ exportObj.SquadBuilder = (function() {
     DEFAULT_RANDOMIZER_SHIPS_OR_UPGRADES = 3;
     this.status_container = $(document.createElement('DIV'));
     this.status_container.addClass('container-fluid');
-    this.status_container.append($.trim('<div class="row-fluid">\n    <div class="span3 squad-name-container">\n        <div class="display-name">\n            <span class="squad-name"></span>\n            <i class="fa fa-pencil"></i>\n        </div>\n        <div class="input-append">\n            <input type="text" maxlength="64" placeholder="Name your squad..." />\n            <button class="btn save"><i class="fa fa-pencil-square-o"></i></button>\n        </div>\n    </div>\n    <div class="span4 points-display-container">\n        Points: <span class="total-points">0</span> / <input type="number" class="desired-points" value="100">\n        <select class="game-type-selector">\n            <option value="standard">Extended</option>\n            <option value="hyperspace">Hyperspace</option>\n            <option value="second_edition">Second Edition</option>\n            <option value="custom">Custom</option>\n        </select>\n        <span class="points-remaining-container">(<span class="points-remaining"></span>&nbsp;left)</span>\n        <span class="content-warning unreleased-content-used hidden"><br /><i class="fa fa-exclamation-circle"></i>&nbsp;<span class="translated"></span></span>\n        <span class="content-warning collection-invalid hidden"><br /><i class="fa fa-exclamation-circle"></i>&nbsp;<span class="translated"></span></span>\n    </div>\n    <div class="span5 pull-right button-container">\n        <div class="btn-group pull-right">\n\n            <button class="btn btn-primary view-as-text"><span class="hidden-phone"><i class="fa fa-print"></i>&nbsp;Print/View as </span>Text</button>\n            <!-- <button class="btn btn-primary print-list hidden-phone hidden-tablet"><i class="fa fa-print"></i>&nbsp;Print</button> -->\n            <a class="btn btn-primary hidden collection"><i class="fa fa-folder-open hidden-phone hidden-tablet"></i>&nbsp;Your Collection</a>\n            \n            <button class="btn btn-primary randomize" ><i class="fa fa-random hidden-phone hidden-tablet"></i>&nbsp;Random!</button>\n            <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">\n                <span class="caret"></span>\n            </button>\n            <ul class="dropdown-menu">\n                <li><a class="randomize-options">Randomizer Options</a></li>\n            </ul>\n            \n\n        </div>\n    </div>\n</div>\n\n<div class="row-fluid">\n    <div class="span12">\n        <button class="show-authenticated btn btn-primary save-list"><i class="fa fa-floppy-o"></i>&nbsp;Save</button>\n        <button class="show-authenticated btn btn-primary save-list-as"><i class="fa fa-files-o"></i>&nbsp;Save As...</button>\n        <button class="show-authenticated btn btn-primary delete-list disabled"><i class="fa fa-trash-o"></i>&nbsp;Delete</button>\n        <button class="show-authenticated btn btn-primary backend-list-my-squads show-authenticated">Load Squad</button>\n        <button class="btn btn-danger clear-squad">New Squad</button>\n        <span class="show-authenticated backend-status"></span>\n    </div>\n</div>'));
+    this.status_container.append($.trim('<div class="row-fluid">\n    <div class="span3 squad-name-container">\n        <div class="display-name">\n            <span class="squad-name"></span>\n            <i class="fa fa-pencil"></i>\n        </div>\n        <div class="input-append">\n            <input type="text" maxlength="64" placeholder="Name your squad..." />\n            <button class="btn save"><i class="fa fa-pencil-square-o"></i></button>\n        </div>\n    </div>\n    <div class="span4 points-display-container">\n        Points: <span class="total-points">0</span> / <input type="number" class="desired-points" value="100">\n        <select class="game-type-selector">\n            <option value="standard">Extended</option>\n            <option value="hyperspace">Hyperspace</option>\n            <option value="custom">Custom</option>\n        </select>\n        <span class="points-remaining-container">(<span class="points-remaining"></span>&nbsp;left)</span>\n        <span class="content-warning unreleased-content-used hidden"><br /><i class="fa fa-exclamation-circle"></i>&nbsp;<span class="translated"></span></span>\n        <span class="content-warning collection-invalid hidden"><br /><i class="fa fa-exclamation-circle"></i>&nbsp;<span class="translated"></span></span>\n    </div>\n    <div class="span5 pull-right button-container">\n        <div class="btn-group pull-right">\n\n            <button class="btn btn-primary view-as-text"><span class="hidden-phone"><i class="fa fa-print"></i>&nbsp;Print/View as </span>Text</button>\n            <!-- <button class="btn btn-primary print-list hidden-phone hidden-tablet"><i class="fa fa-print"></i>&nbsp;Print</button> -->\n            <a class="btn btn-primary hidden collection"><i class="fa fa-folder-open hidden-phone hidden-tablet"></i>&nbsp;Your Collection</a>\n            \n            <button class="btn btn-primary randomize" ><i class="fa fa-random hidden-phone hidden-tablet"></i>&nbsp;Random!</button>\n            <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">\n                <span class="caret"></span>\n            </button>\n            <ul class="dropdown-menu">\n                <li><a class="randomize-options">Randomizer Options</a></li>\n            </ul>\n            \n\n        </div>\n    </div>\n</div>\n\n<div class="row-fluid">\n    <div class="span12">\n        <button class="show-authenticated btn btn-primary save-list"><i class="fa fa-floppy-o"></i>&nbsp;Save</button>\n        <button class="show-authenticated btn btn-primary save-list-as"><i class="fa fa-files-o"></i>&nbsp;Save As...</button>\n        <button class="show-authenticated btn btn-primary delete-list disabled"><i class="fa fa-trash-o"></i>&nbsp;Delete</button>\n        <button class="show-authenticated btn btn-primary backend-list-my-squads show-authenticated">Load Squad</button>\n        <button class="btn btn-danger clear-squad">New Squad</button>\n        <span class="show-authenticated backend-status"></span>\n    </div>\n</div>'));
     this.container.append(this.status_container);
     this.list_modal = $(document.createElement('DIV'));
     this.list_modal.addClass('modal hide fade text-list-modal');
@@ -22263,7 +23360,7 @@ exportObj.SquadBuilder = (function() {
                   return results = arguments[0];
                 };
               })(),
-              lineno: 23660
+              lineno: 24448
             }));
             __iced_deferrals._fulfill();
           })(function() {
@@ -22627,15 +23724,13 @@ exportObj.SquadBuilder = (function() {
   };
 
   SquadBuilder.prototype.onGameTypeChanged = function(gametype, cb) {
-    var oldHyperspace, oldSecondEdition;
+    var oldHyperspace;
     if (cb == null) {
       cb = $.noop;
     }
-    oldSecondEdition = this.isSecondEdition;
     oldHyperspace = this.isHyperspace;
     switch (gametype) {
       case 'standard':
-        this.isSecondEdition = false;
         this.isHyperspace = false;
         this.isCustom = false;
         this.desired_points_input.val(200);
@@ -22643,45 +23738,37 @@ exportObj.SquadBuilder = (function() {
         this.maxLargeShipsOfOneType = null;
         break;
       case 'hyperspace':
-        this.isSecondEdition = false;
         this.isHyperspace = true;
         this.isCustom = false;
         this.desired_points_input.val(200);
         this.maxSmallShipsOfOneType = null;
         this.maxLargeShipsOfOneType = null;
         break;
-      case 'second_edition':
-        this.isSecondEdition = true;
-        this.isHyperspace = false;
-        this.isCustom = false;
-        this.desired_points_input.val(200);
-        this.maxSmallShipsOfOneType = null;
-        this.maxLargeShipsOfOneType = null;
-        break;
       case 'custom':
-        this.isSecondEdition = false;
         this.isHyperspace = false;
         this.isCustom = true;
         this.maxSmallShipsOfOneType = null;
         this.maxLargeShipsOfOneType = null;
     }
-    if (oldSecondEdition !== this.isSecondEdition || oldHyperspace !== this.isHyperspace) {
+    if (oldHyperspace !== this.isHyperspace) {
       this.newSquadFromScratch();
     }
     return this.onPointsUpdated(cb);
   };
 
   SquadBuilder.prototype.onPointsUpdated = function(cb) {
-    var bbcode_ships, conditions, conditions_set, htmlview_ships, i, points_left, reddit_ships, ship, ship_uses_unreleased_content, tts_ships, unreleased_content_used, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
+    var bbcode_ships, conditions, conditions_set, htmlview_ships, i, points_left, reddit_ships, ship, ship_uses_unreleased_content, tts_ships, unreleased_content_used, _i, _j, _k, _len, _len1, _ref, _ref1, _ref2;
     if (cb == null) {
       cb = $.noop;
     }
     this.total_points = 0;
     unreleased_content_used = false;
-    _ref = this.ships;
-    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-      ship = _ref[i];
+    for (i = _i = _ref = this.ships.length - 1; _ref <= -1 ? _i < -1 : _i > -1; i = _ref <= -1 ? ++_i : --_i) {
+      ship = this.ships[i];
       ship.validate();
+      if (!ship) {
+        continue;
+      }
       this.total_points += ship.getPoints();
       ship_uses_unreleased_content = ship.checkUnreleasedContent();
       if (ship_uses_unreleased_content) {
@@ -22701,7 +23788,7 @@ exportObj.SquadBuilder = (function() {
     bbcode_ships = [];
     htmlview_ships = [];
     _ref1 = this.ships;
-    for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+    for (_j = 0, _len = _ref1.length; _j < _len; _j++) {
       ship = _ref1[_j];
       if (ship.pilot != null) {
         this.fancy_container.append(ship.toHTML());
@@ -22720,7 +23807,7 @@ exportObj.SquadBuilder = (function() {
     if (typeof Set !== "undefined" && Set !== null) {
       conditions_set = new Set();
       _ref2 = this.ships;
-      for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
+      for (_k = 0, _len1 = _ref2.length; _k < _len1; _k++) {
         ship = _ref2[_k];
         ship.getConditions().forEach(function(condition) {
           return conditions_set.add(condition);
@@ -22820,8 +23907,6 @@ exportObj.SquadBuilder = (function() {
           return 's';
         case 'hyperspace':
           return 'h';
-        case 'second_edition':
-          return 'se';
         case 'custom':
           return "c=" + ($.trim(this.desired_points_input.val()));
       }
@@ -22841,7 +23926,7 @@ exportObj.SquadBuilder = (function() {
   };
 
   SquadBuilder.prototype.loadFromSerialized = function(serialized) {
-    var game_type_abbrev, matches, new_ship, re, serialized_ship, serialized_ships, version, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3;
+    var game_type_abbrev, matches, new_ship, re, serialized_ship, serialized_ships, ship, ships_with_unmet_dependencies, version, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref2, _ref3;
     this.suppress_automatic_new_ship = true;
     this.removeAllShips();
     re = /^v(\d+)!(.*)/;
@@ -22862,28 +23947,34 @@ exportObj.SquadBuilder = (function() {
               this.game_type_selector.val('hyperspace');
               this.game_type_selector.change();
               break;
-            case 'se':
-              this.game_type_selector.val('second_edition');
-              this.game_type_selector.change();
-              break;
             default:
               this.game_type_selector.val('custom');
               this.desired_points_input.val(parseInt(game_type_abbrev.split('=')[1]));
               this.desired_points_input.change();
           }
+          ships_with_unmet_dependencies = [];
           _ref1 = serialized_ships.split(';');
           for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
             serialized_ship = _ref1[_i];
             if (serialized_ship !== '') {
               new_ship = this.addShip();
-              new_ship.fromSerialized(version, serialized_ship);
+              if ((!new_ship.fromSerialized(version, serialized_ship)) || !new_ship.pilot) {
+                ships_with_unmet_dependencies.push([new_ship, serialized_ship]);
+              }
             }
+          }
+          for (_j = 0, _len1 = ships_with_unmet_dependencies.length; _j < _len1; _j++) {
+            ship = ships_with_unmet_dependencies[_j];
+            if (!ship[0].pilot) {
+              ship[0] = this.addShip();
+            }
+            ship[0].fromSerialized(version, ship[1]);
           }
           break;
         case 2:
           _ref2 = matches[2].split(';');
-          for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
-            serialized_ship = _ref2[_j];
+          for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
+            serialized_ship = _ref2[_k];
             if (serialized_ship !== '') {
               new_ship = this.addShip();
               new_ship.fromSerialized(version, serialized_ship);
@@ -22892,8 +23983,8 @@ exportObj.SquadBuilder = (function() {
       }
     } else {
       _ref3 = serialized.split(';');
-      for (_k = 0, _len2 = _ref3.length; _k < _len2; _k++) {
-        serialized_ship = _ref3[_k];
+      for (_l = 0, _len3 = _ref3.length; _l < _len3; _l++) {
+        serialized_ship = _ref3[_l];
         if (serialized !== '') {
           new_ship = this.addShip();
           new_ship.fromSerialized(1, serialized_ship);
@@ -22986,7 +24077,7 @@ exportObj.SquadBuilder = (function() {
           funcname: "SquadBuilder.removeShip"
         });
         ship.destroy(__iced_deferrals.defer({
-          lineno: 24322
+          lineno: 25111
         }));
         __iced_deferrals._fulfill();
       });
@@ -22998,7 +24089,7 @@ exportObj.SquadBuilder = (function() {
             funcname: "SquadBuilder.removeShip"
           });
           _this.container.trigger('xwing:pointsUpdated', __iced_deferrals.defer({
-            lineno: 24323
+            lineno: 25112
           }));
           __iced_deferrals._fulfill();
         })(function() {
@@ -23029,10 +24120,8 @@ exportObj.SquadBuilder = (function() {
   };
 
   SquadBuilder.prototype.isItemAvailable = function(item_data) {
-    if (!this.isSecondEdition && !this.isHyperspace) {
+    if (!this.isHyperspace) {
       return true;
-    } else if (this.isSecondEdition) {
-      return exportObj.secondEditionCheck(item_data, this.faction);
     } else {
       return exportObj.hyperspaceCheck(item_data, this.faction);
     }
@@ -23126,7 +24215,9 @@ exportObj.SquadBuilder = (function() {
       _results = [];
       for (pilot_name in available_faction_pilots) {
         pilot = available_faction_pilots[pilot_name];
-        if ((pilot.unique == null) || __indexOf.call(this.uniques_in_use['Pilot'], pilot) < 0 || pilot.canonical_name.getXWSBaseName() === (include_pilot != null ? include_pilot.canonical_name.getXWSBaseName() : void 0)) {
+        if (((pilot.unique == null) || __indexOf.call(this.uniques_in_use['Pilot'], pilot) < 0 || pilot.canonical_name.getXWSBaseName() === (include_pilot != null ? include_pilot.canonical_name.getXWSBaseName() : void 0)) && ((pilot.restriction_func == null) || pilot.restriction_func({
+          builder: this
+        }, pilot))) {
           _results.push(pilot);
         }
       }
@@ -24476,7 +25567,7 @@ Ship = (function() {
                   });
                   _this.builder.container.trigger('xwing:claimUnique', [
                     new_pilot, 'Pilot', __iced_deferrals.defer({
-                      lineno: 25331
+                      lineno: 26118
                     })
                   ]);
                   __iced_deferrals._fulfill();
@@ -24534,7 +25625,7 @@ Ship = (function() {
             });
             _this.builder.container.trigger('xwing:releaseUnique', [
               _this.pilot, 'Pilot', __iced_deferrals.defer({
-                lineno: 25348
+                lineno: 26135
               })
             ]);
             __iced_deferrals._fulfill();
@@ -24581,7 +25672,7 @@ Ship = (function() {
           upgrade = _ref[_i];
           if (upgrade != null) {
             upgrade.destroy(__iced_deferrals.defer({
-              lineno: 25362
+              lineno: 26149
             }));
           }
         }
@@ -24641,8 +25732,7 @@ Ship = (function() {
       }
       return _results;
     } else {
-      this.pilot_selector.select2('data', null);
-      return this.pilot_selector.data('select2').container.toggle(this.ship_selector.val() !== '');
+      return this.pilot_selector.select2('data', null);
     }
   };
 
@@ -24858,6 +25948,8 @@ Ship = (function() {
             return "<i class=\"xwing-miniatures-font red xwing-miniatures-font-linked\"></i> <i class=\"xwing-miniatures-font info-attack red xwing-miniatures-font-barrelroll\"></i>&nbsp;";
           case "R> Focus":
             return "<i class=\"xwing-miniatures-font red xwing-miniatures-font-linked\"></i> <i class=\"xwing-miniatures-font info-attack red xwing-miniatures-font-focus\"></i>&nbsp;";
+          case "> Rotate Arc":
+            return "<i class=\"xwing-miniatures-font xwing-miniatures-font-linked\"></i> <i class=\"xwing-miniatures-font info-attack xwing-miniatures-font-rotatearc\"></i>&nbsp;";
           case "R> Rotate Arc":
             return "<i class=\"xwing-miniatures-font red xwing-miniatures-font-linked\"></i> <i class=\"xwing-miniatures-font info-attack red xwing-miniatures-font-rotatearc\"></i>&nbsp;";
           case "> Rotate Arc":
@@ -25165,7 +26257,8 @@ Ship = (function() {
   };
 
   Ship.prototype.fromSerialized = function(version, serialized) {
-    var addon_cls, addon_id, addon_type_serialized, conferred_addon, conferredaddon_pair, conferredaddon_pairs, deferred_id, deferred_ids, i, pilot_id, upgrade, upgrade_conferred_addon_pairs, upgrade_id, upgrade_ids, version_4_compatibility_placeholder_mod, version_4_compatibility_placeholder_title, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _len5, _len6, _len7, _len8, _m, _n, _o, _p, _q, _ref, _ref1, _ref10, _ref11, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
+    var addon_cls, addon_id, addon_type_serialized, conferred_addon, conferredaddon_pair, conferredaddon_pairs, deferred_id, deferred_ids, everythingadded, i, pilot_id, upgrade, upgrade_conferred_addon_pairs, upgrade_id, upgrade_ids, version_4_compatibility_placeholder_mod, version_4_compatibility_placeholder_title, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _len5, _len6, _len7, _len8, _m, _n, _o, _p, _q, _ref, _ref1, _ref10, _ref11, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
+    everythingadded = true;
     switch (version) {
       case 1:
         _ref = serialized.split(':'), pilot_id = _ref[0], upgrade_ids = _ref[1];
@@ -25223,6 +26316,9 @@ Ship = (function() {
           _ref6 = serialized.split(':'), pilot_id = _ref6[0], upgrade_ids = _ref6[1], version_4_compatibility_placeholder_title = _ref6[2], version_4_compatibility_placeholder_mod = _ref6[3], conferredaddon_pairs = _ref6[4];
         }
         this.setPilotById(parseInt(pilot_id));
+        if (!this.validate) {
+          return false;
+        }
         deferred_ids = [];
         _ref7 = upgrade_ids.split(',');
         for (i = _m = 0, _len4 = _ref7.length; _m < _len4; i = ++_m) {
@@ -25235,6 +26331,7 @@ Ship = (function() {
             deferred_ids.push(upgrade_id);
           } else {
             this.upgrades[i].setById(upgrade_id);
+            everythingadded &= this.upgrades[i].lastSetValid;
           }
         }
         for (_n = 0, _len5 = deferred_ids.length; _n < _len5; _n++) {
@@ -25243,9 +26340,11 @@ Ship = (function() {
           for (i = _o = 0, _len6 = _ref9.length; _o < _len6; i = ++_o) {
             upgrade = _ref9[i];
             if (upgrade.isOccupied() || upgrade.slot !== exportObj.upgradesById[deferred_id].slot) {
+              everythingadded = false;
               continue;
             }
             upgrade.setById(deferred_id);
+            everythingadded &= upgrade.lastSetValid;
             break;
           }
         }
@@ -25271,6 +26370,7 @@ Ship = (function() {
               conferred_addon = upgrade.conferredAddons[i];
               if (conferred_addon instanceof addon_cls) {
                 conferred_addon.setById(addon_id);
+                everythingadded &= conferred_addon.lastSetValid;
               } else {
                 throw new Error("Expected addon class " + addon_cls.constructor.name + " for conferred addon at index " + i + " but " + conferred_addon.constructor.name + " is there");
               }
@@ -25278,7 +26378,8 @@ Ship = (function() {
           }
         }
     }
-    return this.updateSelections();
+    this.updateSelections();
+    return everythingadded;
   };
 
   Ship.prototype.effectiveStats = function() {
@@ -25317,17 +26418,24 @@ Ship = (function() {
   };
 
   Ship.prototype.validate = function() {
-    var func, i, max_checks, upgrade, valid, _i, _j, _len, _ref, _ref1, _ref2, _ref3, _ref4;
+    var func, i, max_checks, pilot_func, unchanged, upgrade, valid, _i, _j, _len, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8;
+    unchanged = true;
     max_checks = 128;
     for (i = _i = 0; 0 <= max_checks ? _i < max_checks : _i > max_checks; i = 0 <= max_checks ? ++_i : --_i) {
       valid = true;
-      _ref = this.upgrades;
-      for (_j = 0, _len = _ref.length; _j < _len; _j++) {
-        upgrade = _ref[_j];
-        func = (_ref1 = (_ref2 = upgrade != null ? (_ref3 = upgrade.data) != null ? _ref3.validation_func : void 0 : void 0) != null ? _ref2 : upgrade != null ? (_ref4 = upgrade.data) != null ? _ref4.restriction_func : void 0 : void 0) != null ? _ref1 : void 0;
+      pilot_func = (_ref = (_ref1 = (_ref2 = this.pilot) != null ? _ref2.validation_func : void 0) != null ? _ref1 : (_ref3 = this.pilot) != null ? _ref3.restriction_func : void 0) != null ? _ref : void 0;
+      if ((pilot_func != null) && !pilot_func(this, this.pilot)) {
+        this.builder.removeShip(this);
+        return false;
+      }
+      _ref4 = this.upgrades;
+      for (_j = 0, _len = _ref4.length; _j < _len; _j++) {
+        upgrade = _ref4[_j];
+        func = (_ref5 = (_ref6 = upgrade != null ? (_ref7 = upgrade.data) != null ? _ref7.validation_func : void 0 : void 0) != null ? _ref6 : upgrade != null ? (_ref8 = upgrade.data) != null ? _ref8.restriction_func : void 0 : void 0) != null ? _ref5 : void 0;
         if ((func != null) && !func(this, upgrade)) {
           upgrade.setById(null);
           valid = false;
+          unchanged = false;
           break;
         }
       }
@@ -25335,7 +26443,8 @@ Ship = (function() {
         break;
       }
     }
-    return this.updateSelections();
+    this.updateSelections();
+    return unchanged;
   };
 
   Ship.prototype.checkUnreleasedContent = function() {
@@ -25482,7 +26591,7 @@ GenericAddon = (function() {
             });
             _this.ship.builder.container.trigger('xwing:releaseUnique', [
               _this.data, _this.type, __iced_deferrals.defer({
-                lineno: 26070
+                lineno: 26887
               })
             ]);
             __iced_deferrals._fulfill();
@@ -25623,7 +26732,7 @@ GenericAddon = (function() {
               });
               _this.ship.builder.container.trigger('xwing:releaseUnique', [
                 _this.unadjusted_data, _this.type, __iced_deferrals.defer({
-                  lineno: 26143
+                  lineno: 26961
                 })
               ]);
               __iced_deferrals._fulfill();
@@ -25645,7 +26754,7 @@ GenericAddon = (function() {
                 });
                 _this.ship.builder.container.trigger('xwing:claimUnique', [
                   new_data, _this.type, __iced_deferrals.defer({
-                    lineno: 26147
+                    lineno: 26965
                   })
                 ]);
                 __iced_deferrals._fulfill();
@@ -25668,6 +26777,7 @@ GenericAddon = (function() {
             } else {
               _this.deoccupyOtherUpgrades();
             }
+            _this.lastSetValid = _this.ship.validate();
             return __iced_k(_this.ship.builder.container.trigger('xwing:pointsUpdated'));
           });
         };
@@ -25731,7 +26841,7 @@ GenericAddon = (function() {
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           addon = _ref[_i];
           addon.destroy(__iced_deferrals.defer({
-            lineno: 26186
+            lineno: 27006
           }));
         }
         __iced_deferrals._fulfill();
@@ -26054,7 +27164,8 @@ exportObj.toXWSFaction = {
 };
 
 exportObj.toXWSUpgrade = {
-  'Modification': 'modification'
+  'Modification': 'modification',
+  'Force': 'force-power'
 };
 
 exportObj.fromXWSUpgrade = {
@@ -26063,7 +27174,8 @@ exportObj.fromXWSUpgrade = {
   'ept': 'Talent',
   'elitepilottalent': 'Talent',
   'system': 'Sensor',
-  'mod': 'Modification'
+  'mod': 'Modification',
+  'force-power': 'Force'
 };
 
 SPEC_URL = 'https://github.com/elistevens/xws-spec';
