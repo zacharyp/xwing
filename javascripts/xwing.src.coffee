@@ -1421,7 +1421,7 @@ exportObj.hyperspaceExclusions = [
     {name: 'Debris Gambit', faction: ''},
     {name: 'Saturation Salvo', faction: ''},
     {name: 'Adv. Proton Torpedoes', faction: ''},
-    {name: 'Dorsal Turret', faction: ''},
+    {name: 'Dorsal Turret', faction: ''}
 ]
 
 # Ships not released, and only in conversion kits
@@ -1432,6 +1432,7 @@ exportObj.hyperspaceShipInclusions = [
     {name: 'MG-100 StarFortress', faction: 'Resistance'},
     {name: 'TIE/VN Silencer', faction: 'First Order'},
     {name: 'TIE/SF Fighter', faction: 'First Order'},
+    {name: 'Upsilon-Class Shuttle', faction: 'First Order'}
 ]
 
 # Upgrades in Hyperspace that were only in the three original conversion kits
