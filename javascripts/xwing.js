@@ -1614,177 +1614,6 @@ exportObj.isReleased = function(data) {
   return false;
 };
 
-exportObj.hyperspaceExclusions = [
-  {
-    name: 'Y-Wing',
-    faction: 'Scum and Villainy'
-  }, {
-    name: 'TIE Fighter',
-    faction: 'Rebel Alliance'
-  }, {
-    name: 'Biohexacrypt Codes',
-    faction: ''
-  }, {
-    name: 'Ion Cannon',
-    faction: ''
-  }, {
-    name: 'Jamming Beam',
-    faction: ''
-  }, {
-    name: 'Tractor Beam',
-    faction: ''
-  }, {
-    name: 'Freelance Slicer',
-    faction: ''
-  }, {
-    name: 'GNK "Gonk" Droid',
-    faction: ''
-  }, {
-    name: 'Novice Technician',
-    faction: ''
-  }, {
-    name: 'Bomblet Generator',
-    faction: ''
-  }, {
-    name: 'Cloaking Device',
-    faction: ''
-  }, {
-    name: 'Contraband Cybernetics',
-    faction: ''
-  }, {
-    name: 'Feedback Array',
-    faction: ''
-  }, {
-    name: 'Barrage Rockets',
-    faction: ''
-  }, {
-    name: 'Ablative Plating',
-    faction: ''
-  }, {
-    name: 'Advanced SLAM',
-    faction: ''
-  }, {
-    name: 'Electronic Baffle',
-    faction: ''
-  }, {
-    name: 'Tactical Scrambler',
-    faction: ''
-  }, {
-    name: 'Debris Gambit',
-    faction: ''
-  }, {
-    name: 'Saturation Salvo',
-    faction: ''
-  }, {
-    name: 'Adv. Proton Torpedoes',
-    faction: ''
-  }, {
-    name: 'Dorsal Turret',
-    faction: ''
-  }
-];
-
-exportObj.hyperspaceShipInclusions = [
-  {
-    name: 'YT-1300',
-    faction: 'Rebel Alliance'
-  }, {
-    name: 'TIE Striker',
-    faction: 'Galactic Empire'
-  }, {
-    name: 'Scavenged YT-1300',
-    faction: 'Resistance'
-  }, {
-    name: 'MG-100 StarFortress',
-    faction: 'Resistance'
-  }, {
-    name: 'TIE/VN Silencer',
-    faction: 'First Order'
-  }, {
-    name: 'TIE/SF Fighter',
-    faction: 'First Order'
-  }, {
-    name: 'Upsilon-Class Shuttle',
-    faction: 'First Order'
-  }
-];
-
-exportObj.hyperspaceUpgradeInclusions = [
-  {
-    name: 'Chewbacca',
-    faction: 'Rebel Alliance',
-    slot: 'Crew'
-  }, {
-    name: 'Lando Calrissian',
-    faction: 'Rebel Alliance',
-    slot: 'Crew'
-  }, {
-    name: 'Leia Organa',
-    faction: 'Rebel Alliance',
-    slot: 'Crew'
-  }, {
-    name: 'Nien Nunb',
-    faction: 'Rebel Alliance',
-    slot: 'Crew'
-  }, {
-    name: 'R2-D2',
-    faction: 'Rebel Alliance',
-    slot: 'Crew'
-  }, {
-    name: 'Han Solo',
-    faction: 'Rebel Alliance',
-    slot: 'Gunner'
-  }, {
-    name: 'Luke Skywalker',
-    faction: 'Rebel Alliance',
-    slot: 'Gunner'
-  }, {
-    name: 'Millennium Falcon',
-    faction: 'Rebel Alliance',
-    slot: 'Title'
-  }
-];
-
-exportObj.hyperspaceExpansions = ['Second Edition Core Set', "Saw's Renegades Expansion Pack", 'TIE Reaper Expansion Pack', 'T-65 X-Wing Expansion Pack', 'BTL-A4 Y-Wing Expansion Pack', 'TIE/ln Fighter Expansion Pack', 'TIE Advanced x1 Expansion Pack', 'Slave I Expansion Pack', 'Fang Fighter Expansion Pack', "Lando's Millennium Falcon Expansion Pack", 'T-70 X-Wing Expansion Pack', 'RZ-2 A-Wing Expansion Pack', 'Mining Guild TIE Expansion Pack', 'TIE/FO Fighter Expansion Pack', 'First Order Conversion Kit', 'Resistance Conversion Kit'];
-
-exportObj.hyperspaceCheck = function(data, faction) {
-  var exc, inc, ship, source, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref2, _ref3;
-  if (faction == null) {
-    faction = '';
-  }
-  _ref = exportObj.hyperspaceExclusions;
-  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-    exc = _ref[_i];
-    if (data.name === exc.name && (exc.faction === faction || exc.faction === '')) {
-      return false;
-    }
-  }
-  if (data.ship !== null) {
-    _ref1 = exportObj.hyperspaceShipInclusions;
-    for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-      ship = _ref1[_j];
-      if ((data.name === ship.name || data.ship === ship.name) && (ship.faction === faction || ship.faction === '')) {
-        return true;
-      }
-    }
-  }
-  _ref2 = exportObj.hyperspaceUpgradeInclusions;
-  for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
-    inc = _ref2[_k];
-    if (data.name === inc.name && (inc.faction === faction) && (data.slot === inc.slot)) {
-      return true;
-    }
-  }
-  _ref3 = data.sources;
-  for (_l = 0, _len3 = _ref3.length; _l < _len3; _l++) {
-    source = _ref3[_l];
-    if (__indexOf.call(exportObj.hyperspaceExpansions, source) >= 0) {
-      return true;
-    }
-  }
-  return false;
-};
-
 String.prototype.canonicalize = function() {
   return this.toLowerCase().replace(/[^a-z0-9]/g, '').replace(/\s+/g, '-');
 };
@@ -7497,6 +7326,102 @@ exportObj.randomizer = function(faction_name, points) {
   var listcount, shiplistmaster;
   shiplistmaster = exportObj.basicCardData;
   return listcount = 0;
+};
+
+exportObj.hyperspaceShipInclusions = [
+  {
+    name: 'X-Wing',
+    faction: 'Rebel Alliance'
+  }, {
+    name: 'YT-1300',
+    faction: 'Rebel Alliance'
+  }, {
+    name: 'Y-Wing',
+    faction: 'Rebel Alliance'
+  }, {
+    name: 'U-Wing',
+    faction: 'Rebel Alliance'
+  }, {
+    name: 'TIE Advanced',
+    faction: 'Galactic Empire'
+  }, {
+    name: 'TIE Fighter',
+    faction: 'Galactic Empire'
+  }, {
+    name: 'TIE Reaper',
+    faction: 'Galactic Empire'
+  }, {
+    name: 'TIE Striker',
+    faction: 'Galactic Empire'
+  }, {
+    name: 'Firespray-31',
+    faction: 'Scum and Villainy'
+  }, {
+    name: 'Escape Craft',
+    faction: 'Scum and Villainy'
+  }, {
+    name: 'Fang Fighter',
+    faction: 'Scum and Villainy'
+  }, {
+    name: 'Customized YT-1300',
+    faction: 'Scum and Villainy'
+  }, {
+    name: 'TIE Fighter',
+    faction: 'Scum and Villainy'
+  }, {
+    name: 'Scavenged YT-1300',
+    faction: 'Resistance'
+  }, {
+    name: 'T-70 X-Wing',
+    faction: 'Resistance'
+  }, {
+    name: 'RZ-2 A-Wing',
+    faction: 'Resistance'
+  }, {
+    name: 'MG-100 StarFortress',
+    faction: 'Resistance'
+  }, {
+    name: 'TIE/FO Fighter',
+    faction: 'First Order'
+  }, {
+    name: 'TIE/VN Silencer',
+    faction: 'First Order'
+  }, {
+    name: 'TIE/SF Fighter',
+    faction: 'First Order'
+  }, {
+    name: 'Upsilon-Class Shuttle',
+    faction: 'First Order'
+  }
+];
+
+exportObj.hyperspacePilotExclusions = ['Bodhi Rook', 'Cassian Andor', 'Heff Tobber', 'Blue Squadron Scout'];
+
+exportObj.hyperspaceUpgradeExclusions = ['Ion Cannon', 'Jamming Beam', 'Tractor Beam', 'Freelance Slicer', 'GNK "Gonk" Droid', 'Novice Technician', 'Bomblet Generator', 'Cloaking Device', 'Contraband Cybernetics', 'Feedback Array', 'Barrage Rockets', 'Ablative Plating', 'Advanced SLAM', 'Electronic Baffle', 'Tactical Scrambler', 'Debris Gambit', 'Saturation Salvo', 'Adv. Proton Torpedoes', 'Dorsal Turret', '"Chopper" (Astromech)', '"Zeb" Orrelios', '"Chopper" (Crew)', 'Baze Malbus', 'C-3PO', 'Cassian Andor', 'Hera Syndulla', 'Jyn Erso', 'Kanan Jarrus', 'Sabine Wren', 'Bistan', 'Ezra Bridger', 'Admiral Sloane', 'Agent Kallus', 'Ciena Ree', 'Darth Vader', 'Grand Inquisitor', 'Grand Moff Tarkin', 'Minister Tua', 'Moff Jerjerrod', 'Seventh Sister', 'Emperor Palpatine', 'Fifth Brother', '"Genius"', 'R5-TK', 'R5-P8', '0-0-0', '4-LOM', 'Cad Bane', 'Cikatro Vizago', 'IG-88D', 'Ketsu Onyo', 'Latts Razzi', 'Maul', 'Unkar Plutt', 'Zuckuss', 'Jabba the Hutt', 'Bossk', 'BT-1', 'Dengar', 'Greedo', 'Biohexacrypt Codes'];
+
+exportObj.hyperspaceCheck = function(data, faction, shipCheck) {
+  var ship, _i, _len, _ref, _ref1, _ref2;
+  if (faction == null) {
+    faction = '';
+  }
+  if (shipCheck == null) {
+    shipCheck = false;
+  }
+  if (shipCheck || (data.ship != null)) {
+    if ((_ref = data.name, __indexOf.call(exportObj.hyperspacePilotExclusions, _ref) >= 0)) {
+      return false;
+    }
+    _ref1 = exportObj.hyperspaceShipInclusions;
+    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+      ship = _ref1[_i];
+      if (ship.faction === faction && (data.name === ship.name || data.ship === ship.name)) {
+        return true;
+      }
+    }
+    return false;
+  } else {
+    return _ref2 = data.name, __indexOf.call(exportObj.hyperspaceUpgradeExclusions, _ref2) < 0;
+  }
 };
 
 
@@ -22674,7 +22599,7 @@ exportObj.setupTranslationSupport = function() {
                     parent: ___iced_passed_deferral
                   });
                   builder.container.trigger('xwing:beforeLanguageLoad', __iced_deferrals.defer({
-                    lineno: 23714
+                    lineno: 23744
                   }));
                   __iced_deferrals._fulfill();
                 })(_next);
@@ -23363,7 +23288,7 @@ exportObj.SquadBuilder = (function() {
                   return results = arguments[0];
                 };
               })(),
-              lineno: 24449
+              lineno: 24479
             }));
             __iced_deferrals._fulfill();
           })(function() {
@@ -24080,7 +24005,7 @@ exportObj.SquadBuilder = (function() {
           funcname: "SquadBuilder.removeShip"
         });
         ship.destroy(__iced_deferrals.defer({
-          lineno: 25112
+          lineno: 25142
         }));
         __iced_deferrals._fulfill();
       });
@@ -24092,7 +24017,7 @@ exportObj.SquadBuilder = (function() {
             funcname: "SquadBuilder.removeShip"
           });
           _this.container.trigger('xwing:pointsUpdated', __iced_deferrals.defer({
-            lineno: 25113
+            lineno: 25143
           }));
           __iced_deferrals._fulfill();
         })(function() {
@@ -24122,11 +24047,14 @@ exportObj.SquadBuilder = (function() {
     }
   };
 
-  SquadBuilder.prototype.isItemAvailable = function(item_data) {
+  SquadBuilder.prototype.isItemAvailable = function(item_data, shipCheck) {
+    if (shipCheck == null) {
+      shipCheck = false;
+    }
     if (!this.isHyperspace) {
       return true;
     } else {
-      return exportObj.hyperspaceCheck(item_data, this.faction);
+      return exportObj.hyperspaceCheck(item_data, this.faction, shipCheck);
     }
   };
 
@@ -24143,7 +24071,7 @@ exportObj.SquadBuilder = (function() {
     for (ship_name in _ref) {
       ship_data = _ref[ship_name];
       if (this.isOurFaction(ship_data.factions) && (this.matcher(ship_data.name, term) || (ship_data.display_name && this.matcher(ship_data.display_name, term)))) {
-        if (this.isItemAvailable(ship_data)) {
+        if (this.isItemAvailable(ship_data, true)) {
           if (!ship_data.huge || this.isCustom) {
             if (ship_data.display_name) {
               ships.push({
@@ -25570,7 +25498,7 @@ Ship = (function() {
                   });
                   _this.builder.container.trigger('xwing:claimUnique', [
                     new_pilot, 'Pilot', __iced_deferrals.defer({
-                      lineno: 26119
+                      lineno: 26149
                     })
                   ]);
                   __iced_deferrals._fulfill();
@@ -25628,7 +25556,7 @@ Ship = (function() {
             });
             _this.builder.container.trigger('xwing:releaseUnique', [
               _this.pilot, 'Pilot', __iced_deferrals.defer({
-                lineno: 26136
+                lineno: 26166
               })
             ]);
             __iced_deferrals._fulfill();
@@ -25675,7 +25603,7 @@ Ship = (function() {
           upgrade = _ref[_i];
           if (upgrade != null) {
             upgrade.destroy(__iced_deferrals.defer({
-              lineno: 26150
+              lineno: 26180
             }));
           }
         }
@@ -26594,7 +26522,7 @@ GenericAddon = (function() {
             });
             _this.ship.builder.container.trigger('xwing:releaseUnique', [
               _this.data, _this.type, __iced_deferrals.defer({
-                lineno: 26888
+                lineno: 26918
               })
             ]);
             __iced_deferrals._fulfill();
@@ -26735,7 +26663,7 @@ GenericAddon = (function() {
               });
               _this.ship.builder.container.trigger('xwing:releaseUnique', [
                 _this.unadjusted_data, _this.type, __iced_deferrals.defer({
-                  lineno: 26962
+                  lineno: 26992
                 })
               ]);
               __iced_deferrals._fulfill();
@@ -26757,7 +26685,7 @@ GenericAddon = (function() {
                 });
                 _this.ship.builder.container.trigger('xwing:claimUnique', [
                   new_data, _this.type, __iced_deferrals.defer({
-                    lineno: 26966
+                    lineno: 26996
                   })
                 ]);
                 __iced_deferrals._fulfill();
@@ -26844,7 +26772,7 @@ GenericAddon = (function() {
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           addon = _ref[_i];
           addon.destroy(__iced_deferrals.defer({
-            lineno: 27007
+            lineno: 27037
           }));
         }
         __iced_deferrals._fulfill();
