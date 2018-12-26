@@ -20649,13 +20649,17 @@ exportObj.manifestByExpansion = {
       type: 'pilot',
       count: 1
     }, {
+      name: 'Black Squadron Ace (T-70)',
+      type: 'pilot',
+      count: 1
+    }, {
       name: 'Red Squadron Expert',
       type: 'pilot',
       count: 4
     }, {
       name: 'Blue Squadron Rookie',
       type: 'pilot',
-      count: 1
+      count: 4
     }, {
       name: 'R2-HA',
       type: 'upgrade',
@@ -20751,7 +20755,7 @@ exportObj.manifestByExpansion = {
     }, {
       name: 'Heroic',
       type: 'upgrade',
-      count: 2
+      count: 3
     }, {
       name: 'Intimidation',
       type: 'upgrade',
@@ -21169,15 +21173,7 @@ exportObj.manifestByExpansion = {
       type: 'pilot',
       count: 1
     }, {
-      name: 'Lieutenant Rivas',
-      type: 'pilot',
-      count: 1
-    }, {
       name: '"Muse"',
-      type: 'pilot',
-      count: 1
-    }, {
-      name: 'TN-3465',
       type: 'pilot',
       count: 1
     }, {
@@ -21190,10 +21186,6 @@ exportObj.manifestByExpansion = {
       count: 1
     }, {
       name: '"Scorch"',
-      type: 'pilot',
-      count: 1
-    }, {
-      name: 'Commander Malarus',
       type: 'pilot',
       count: 1
     }, {
@@ -21327,7 +21319,7 @@ exportObj.manifestByExpansion = {
     }, {
       name: 'Fanatical',
       type: 'upgrade',
-      count: 2
+      count: 3
     }, {
       name: 'Intimidation',
       type: 'upgrade',
@@ -21566,47 +21558,7 @@ exportObj.manifestByExpansion = {
     }, {
       name: 'Fanatical',
       type: 'upgrade',
-      count: 3
-    }, {
-      name: 'Crack Shot',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Daredevil',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Debris Gambit',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Elusive',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Intimidation',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Juke',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Lone Wolf',
-      type: 'upgrade',
       count: 1
-    }, {
-      name: 'Marksmanship',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Outmaneuver',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Predator',
-      type: 'upgrade',
-      count: 2
     }, {
       name: 'Squad Leader',
       type: 'upgrade',
@@ -21614,203 +21566,15 @@ exportObj.manifestByExpansion = {
     }, {
       name: 'Swarm Tactics',
       type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Trick Shot',
-      type: 'upgrade',
-      count: 2
+      count: 1
     }, {
       name: 'Advanced Optics',
       type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Pattern Analyzer',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Primed Thrusters',
-      type: 'upgrade',
-      count: 2
+      count: 1
     }, {
       name: 'Targeting Synchronizer',
       type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Hyperspace Tracking Data',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Advanced Sensors',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Collision Detector',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Fire-Control System',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Heavy Laser Cannon',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Ion Cannon',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Jamming Beam',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Tractor Beam',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Adv. Proton Torpedoes',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Proton Torpedoes',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Ion Torpedoes',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Cluster Missiles',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Concussion Missiles',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Homing Missiles',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Ion Missiles',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Proton Rockets',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Freelance Slicer',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'GNK "Gonk" Droid',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Informant',
-      type: 'upgrade',
       count: 1
-    }, {
-      name: 'Novice Technician',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Perceptive Copilot',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Seasoned Navigator',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Hotshot Gunner',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Special Forces Gunner',
-      type: 'upgrade',
-      count: 4
-    }, {
-      name: 'Contraband Cybernetics',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: "Deadman's Switch",
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Feedback Array',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Inertial Dampeners',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Rigged Cargo Chute',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Bomblet Generator',
-      type: 'upgrade',
-      count: 1
-    }, {
-      name: 'Conner Nets',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Proton Bombs',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Proximity Mines',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Seismic Charges',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Ablative Plating',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Advanced SLAM',
-      type: 'upgrade',
-      count: 1
-    }, {
-      name: 'Electronic Baffle',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Engine Upgrade',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Hull Upgrade',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Munitions Failsafe',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Shield Upgrade',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Static Discharge Vanes',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Stealth Device',
-      type: 'upgrade',
-      count: 2
-    }, {
-      name: 'Tactical Scrambler',
-      type: 'upgrade',
-      count: 2
     }
   ],
   'Loose Ships': [
@@ -22599,7 +22363,7 @@ exportObj.setupTranslationSupport = function() {
                     parent: ___iced_passed_deferral
                   });
                   builder.container.trigger('xwing:beforeLanguageLoad', __iced_deferrals.defer({
-                    lineno: 23744
+                    lineno: 23449
                   }));
                   __iced_deferrals._fulfill();
                 })(_next);
@@ -23288,7 +23052,7 @@ exportObj.SquadBuilder = (function() {
                   return results = arguments[0];
                 };
               })(),
-              lineno: 24479
+              lineno: 24184
             }));
             __iced_deferrals._fulfill();
           })(function() {
@@ -24005,7 +23769,7 @@ exportObj.SquadBuilder = (function() {
           funcname: "SquadBuilder.removeShip"
         });
         ship.destroy(__iced_deferrals.defer({
-          lineno: 25142
+          lineno: 24847
         }));
         __iced_deferrals._fulfill();
       });
@@ -24017,7 +23781,7 @@ exportObj.SquadBuilder = (function() {
             funcname: "SquadBuilder.removeShip"
           });
           _this.container.trigger('xwing:pointsUpdated', __iced_deferrals.defer({
-            lineno: 25143
+            lineno: 24848
           }));
           __iced_deferrals._fulfill();
         })(function() {
@@ -25498,7 +25262,7 @@ Ship = (function() {
                   });
                   _this.builder.container.trigger('xwing:claimUnique', [
                     new_pilot, 'Pilot', __iced_deferrals.defer({
-                      lineno: 26149
+                      lineno: 25854
                     })
                   ]);
                   __iced_deferrals._fulfill();
@@ -25556,7 +25320,7 @@ Ship = (function() {
             });
             _this.builder.container.trigger('xwing:releaseUnique', [
               _this.pilot, 'Pilot', __iced_deferrals.defer({
-                lineno: 26166
+                lineno: 25871
               })
             ]);
             __iced_deferrals._fulfill();
@@ -25603,7 +25367,7 @@ Ship = (function() {
           upgrade = _ref[_i];
           if (upgrade != null) {
             upgrade.destroy(__iced_deferrals.defer({
-              lineno: 26180
+              lineno: 25885
             }));
           }
         }
@@ -26522,7 +26286,7 @@ GenericAddon = (function() {
             });
             _this.ship.builder.container.trigger('xwing:releaseUnique', [
               _this.data, _this.type, __iced_deferrals.defer({
-                lineno: 26918
+                lineno: 26623
               })
             ]);
             __iced_deferrals._fulfill();
@@ -26663,7 +26427,7 @@ GenericAddon = (function() {
               });
               _this.ship.builder.container.trigger('xwing:releaseUnique', [
                 _this.unadjusted_data, _this.type, __iced_deferrals.defer({
-                  lineno: 26992
+                  lineno: 26697
                 })
               ]);
               __iced_deferrals._fulfill();
@@ -26685,7 +26449,7 @@ GenericAddon = (function() {
                 });
                 _this.ship.builder.container.trigger('xwing:claimUnique', [
                   new_data, _this.type, __iced_deferrals.defer({
-                    lineno: 26996
+                    lineno: 26701
                   })
                 ]);
                 __iced_deferrals._fulfill();
@@ -26772,7 +26536,7 @@ GenericAddon = (function() {
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           addon = _ref[_i];
           addon.destroy(__iced_deferrals.defer({
-            lineno: 27037
+            lineno: 26742
           }));
         }
         __iced_deferrals._fulfill();
