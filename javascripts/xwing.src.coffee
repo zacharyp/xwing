@@ -852,9 +852,9 @@ class exportObj.CardBrowser
                                     <label class = "advanced-search-label toggle-unique">
                                         <input type="checkbox" class="unique-checkbox advanced-search-checkbox" /> Is unique
                                     </label>
-                                    <label class = "advanced-search-label toggle-second-edition">
-                                        <input type="checkbox" class="second-edition-checkbox advanced-search-checkbox" /> Second-Edition only
-                                        <span class="advanced-search-tooltip" tooltip="Check to exclude cards only obtainable from conversion kits."> &#9432 </span>
+                                    <label class = "advanced-search-label toggle-hyperspace">
+                                        <input type="checkbox" class="hyperspace-checkbox advanced-search-checkbox" /> Hyperspace only
+                                        <span class="advanced-search-tooltip" tooltip="Check to search only hyperspace compatible cards."> &#9432 </span>
                                     </label>
                                 </div>
                             </div>
@@ -977,7 +977,7 @@ class exportObj.CardBrowser
         @minimum_point_costs = ($ @container.find('.xwing-card-browser .minimum-point-cost'))[0]
         @maximum_point_costs = ($ @container.find('.xwing-card-browser .maximum-point-cost'))[0]
         @variable_point_costs = ($ @container.find('.xwing-card-browser .variable-point-cost-checkbox'))[0]
-        @second_edition_checkbox = ($ @container.find('.xwing-card-browser .second-edition-checkbox'))[0]
+        @hyperspace_checkbox = ($ @container.find('.xwing-card-browser .hyperspace-checkbox'))[0]
         @unique_checkbox = ($ @container.find('.xwing-card-browser .unique-checkbox'))[0]
         @slot_available_selection = ($ @container.find('.xwing-card-browser select.slot-available-selection'))
         for slot of exportObj.upgradesBySlotCanonicalName
@@ -1024,7 +1024,7 @@ class exportObj.CardBrowser
         @minimum_point_costs.oninput = => @renderList @sort_selector.val()
         @maximum_point_costs.oninput = => @renderList @sort_selector.val()
         @variable_point_costs.onclick = => @renderList @sort_selector.val()
-        @second_edition_checkbox.onclick = => @renderList @sort_selector.val()
+        @hyperspace_checkbox.onclick = => @renderList @sort_selector.val()
         @unique_checkbox.onclick = => @renderList @sort_selector.val()
         @slot_available_selection[0].onchange = => @renderList @sort_selector.val()
         @slot_used_selection[0].onchange = => @renderList @sort_selector.val()
@@ -1341,8 +1341,8 @@ class exportObj.CardBrowser
         # check if faction matches
         return false unless @faction_selectors[card.data.faction].checked
 
-        # check if second-edition only matches
-        return false unless exportObj.secondEditionCheck(card.data) or not @second_edition_checkbox.checked
+        # check if hyperspace only matches
+        return false unless exportObj.hyperspaceCheck(card.data) or not @hyperspace_checkbox.checked
 
         # check for slot requirements
         required_slots = @slot_available_selection.val()
@@ -2660,7 +2660,7 @@ exportObj.basicCardData = ->
         "Scavenged YT-1300":
             name: "Scavenged YT-1300"
             canonical_name: 'Scavenged YT-1300'.canonicalize()
-            xws: "Scavenged YT-1300 Light Freighter".canonicalize()
+            xws: "Scavenged YT-1300".canonicalize()
             factions: [ "Resistance" ]
             attackdt: 3
             agility: 1
@@ -9456,6 +9456,7 @@ exportObj.basicCardData = ->
             name: "Rey"
             id: 187
             slot: "Gunner"
+            xws: "rey-gunner"
             points: 14
             unique: true
             force: 1
@@ -9492,6 +9493,7 @@ exportObj.basicCardData = ->
             name: "C-3PO (Resistance)"
             id: 191
             slot: "Crew"
+            xws: "c3po-crew"
             points: 6
             unique: true
             faction: "Resistance"
@@ -9928,6 +9930,7 @@ exportObj.hyperspaceShipInclusions = [
     {name: 'TIE Striker', faction: 'Galactic Empire'},
     {name: 'Firespray-31', faction: 'Scum and Villainy'},
     {name: 'Escape Craft', faction: 'Scum and Villainy'},
+    {name: 'Mining Guild TIE Fighter', faction: 'Scum and Villainy'},
     {name: 'Fang Fighter', faction: 'Scum and Villainy'},
     {name: 'Customized YT-1300', faction: 'Scum and Villainy'},
     {name: 'TIE Fighter', faction: 'Scum and Villainy'},
@@ -10146,10 +10149,8 @@ exportObj.translations.Deutsch =
         '.collection-invalid .translated': 'Du kannst diese Staffel nicht mit deiner Sammlung aufstellen!'
         # Type selector
         '.game-type-selector option[value="standard"]': 'Standard'
+        '.game-type-selector option[value="hyperspace"]': 'Hyperspace'
         '.game-type-selector option[value="custom"]': 'Benutzerdefiniert'
-        '.game-type-selector option[value="Second Edition"]': 'Zweite Edition'
-        '.game-type-selector option[value="epic"]': 'Episch'
-        '.game-type-selector option[value="team-epic"]': 'Team Episch'
         # Card browser
         '.select2-choice' : '<span>Typ (nach Namen)</span><abbr class="select2-search-choice-close"></abbr>   <div><b></b></div></a>'  # default-option
         '.xwing-card-browser option[value="name"]': 'Name'
@@ -11928,9 +11929,8 @@ exportObj.translations.English =
         '.collection-invalid .translated': 'You cannot field this list with your collection!'
         # Type selector
         '.game-type-selector option[value="standard"]': 'Extended'
+        '.game-type-selector option[value="hyperspace"]': 'Hyperspace'
         '.game-type-selector option[value="custom"]': 'Custom'
-        '.game-type-selector option[value="epic"]': 'Epic'
-        '.game-type-selector option[value="team-epic"]': 'Team Epic'
         # Card browser
         '.xwing-card-browser option[value="name"]': 'Name'
         '.xwing-card-browser option[value="source"]': 'Source'
@@ -13586,10 +13586,8 @@ exportObj.translations['Español'] =
         '.collection-invalid .translated': 'No puedes desplegar esta lista con tu colección!'
         # Type selector
         '.game-type-selector option[value="standard"]': 'Ampliada'
+        '.game-type-selector option[value="hyperspace"]': 'Hyperspace'
         '.game-type-selector option[value="custom"]': 'Personalizada'
-        '.game-type-selector option[value="Second Edition"]': 'Segunda Edición'
-        '.game-type-selector option[value="epic"]': 'Épico'
-        '.game-type-selector option[value="team-epic"]': 'Épico por Equipos'
         # Card browser
         '.select2-choice' : '<span>Tipo (por Nombre)</span><abbr class="select2-search-choice-close"></abbr>   <div><b></b></div></a>'  # default-option
         '.xwing-card-browser option[value="name"]': 'Nombre'
@@ -15184,7 +15182,7 @@ exportObj.translations['Français'] =
         '.collection-invalid .translated': 'Vous ne pouvez pas ajouter cette liste à votre collection !'
         # Type selector
         '.game-type-selector option[value="standard"]': 'Standard'
-        '.game-type-selector option[value="second_edition"]': 'Seconde Édition'
+        '.game-type-selector option[value="hyperspace"]': 'Hyperspace'
         '.game-type-selector option[value="custom"]': 'Personnalisé'
         # Card browser
         '.select2-choice' : '<span>Type (par nom)</span><abbr class="select2-search-choice-close"></abbr>   <div><b></b></div></a>'  # default-option
@@ -16632,9 +16630,8 @@ exportObj.translations.Magyar =
         '.collection-invalid .translated': 'Ez a lista nem vihető pályára a készletedből!'
         # Type selector
         '.game-type-selector option[value="standard"]': 'Kiterjesztett'
+        '.game-type-selector option[value="hyperspace"]': 'Hyperspace'
         '.game-type-selector option[value="custom"]': 'Egyéni'
-        '.game-type-selector option[value="epic"]': 'Epikus'
-        '.game-type-selector option[value="team-epic"]': 'Csapat epikus'
         # Card browser
         '.xwing-card-browser option[value="name"]': 'Név'
         '.xwing-card-browser option[value="source"]': 'Forrás'
