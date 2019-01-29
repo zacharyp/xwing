@@ -26788,10 +26788,15 @@ exportObj.SquadBuilder = (function() {
     return this.container.trigger('xwing-backend:squadDirtinessChanged');
   };
 
-  SquadBuilder.prototype.newSquadFromScratch = function() {
-    this.squad_name_input.val('New Squadron');
+  SquadBuilder.prototype.newSquadFromScratch = function(squad_name) {
+    if (squad_name == null) {
+      squad_name = 'New Squadron';
+    }
+    this.squad_name_input.val(squad_name);
     this.removeAllShips();
-    this.addShip();
+    if (!this.suppress_automatic_new_ship) {
+      this.addShip();
+    }
     this.current_obstacles = [];
     this.resetCurrentSquad();
     return this.notes.val('');
@@ -27606,7 +27611,7 @@ exportObj.SquadBuilder = (function() {
         this.maxLargeShipsOfOneType = null;
     }
     if (oldHyperspace !== this.isHyperspace) {
-      this.newSquadFromScratch();
+      this.newSquadFromScratch($.trim(this.current_squad.name));
     }
     return this.onPointsUpdated(cb);
   };
