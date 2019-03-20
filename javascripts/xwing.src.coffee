@@ -394,6 +394,22 @@ class exportObj.SquadBuilderBackend
                 methods_ul.append li
             @ui_ready = true
 
+        @reload_done_modal = $ document.createElement('DIV')
+        @reload_done_modal.addClass 'modal hide fade hidden-print'
+        $(document.body).append @reload_done_modal
+        @reload_done_modal.append $.trim """
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3>Reload Done</h3>
+            </div>
+            <div class="modal-body">
+                <p>All squads of that faction have been reloaded.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" aria-hidden="true" data-dismiss="modal">Well done!</button>
+            </div>
+        """
+
         @squad_list_modal = $ document.createElement('DIV')
         @squad_list_modal.addClass 'modal hide fade hidden-print squad-list'
         $(document.body).append @squad_list_modal
@@ -418,10 +434,11 @@ class exportObj.SquadBuilderBackend
                 </div>
                 <div class="btn-group squad-display-mode">
                     <button class="btn btn-inverse show-all-squads">All</button>
-                    <button class="btn show-standard-squads">Standard</button>
-                    <button class="btn show-epic-squads">Epic</button>
-                    <button class="btn show-team-epic-squads">Team<span class="hidden-phone"> Epic</span></button>
+                    <button class="btn show-extended-squads">Extended</button>
+                    <button class="btn show-hyperspace-squads">Hyperspace</button>
+                    <button class="btn show-quickbuild-squads">Quickbuild</button>
                 </div>
+                <button class="btn btn reload-all">Reload<span class="hidden-phone"> all squads (this might take a while)</span></button>
                 <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
             </div>
         """
@@ -454,6 +471,35 @@ class exportObj.SquadBuilderBackend
                                     Error deleting #{li.data('squad').name}: <em>#{results.error}</em>
                                 """
 
+        @squad_list_modal.find('button.reload-all').click (e) =>
+            ul = @squad_list_modal.find('ul.squad-list') 
+            squadProcessingStack = [ () =>
+                @reload_done_modal.modal 'show' ]
+            squadDataStack = []
+            for li in ul.find('li')
+                li = $ li
+                squadDataStack.push li.data('squad')
+                builder = li.data('builder')
+                squadProcessingStack.push () => 
+                    sqd = squadDataStack.pop()
+                    # console.log("loading " + sqd.name)
+                    builder.container.trigger 'xwing-backend:squadLoadRequested', [ sqd, () =>
+                        additional_data =
+                            points: builder.total_points
+                            description: builder.describeSquad()
+                            cards: builder.listCards()
+                            notes: builder.notes.val().substr(0, 1024)
+                            obstacles: builder.getObstacles()
+                        # console.log("saving " + builder.current_squad.name)
+                        @save builder.serialize(), builder.current_squad.id, builder.current_squad.name, builder.faction, additional_data, squadProcessingStack.pop() ]
+                        
+            @squad_list_modal.modal 'hide'
+            if builder.current_squad.dirty
+                    @warnUnsaved builder, squadProcessingStack.pop()
+            else
+                squadProcessingStack.pop()()
+
+
         @select_all_button = $ @squad_list_modal.find('button.select-all')
         @select_all_button.click (e) =>
             ul = @squad_list_modal.find('ul.squad-list') 
@@ -466,9 +512,6 @@ class exportObj.SquadBuilderBackend
                              li.find('.squad-delete-confirm').fadeIn 'fast'
                     @number_of_selected_squads_to_be_deleted += 1
 
-        # Hide selection of Standard/epic/team epic as those modes do not exist.
-        @squad_list_modal.find('div.squad-display-mode').hide()
-
         @show_all_squads_button = $ @squad_list_modal.find('.show-all-squads')
         @show_all_squads_button.click (e) =>
             unless @squad_display_mode == 'all'
@@ -477,32 +520,32 @@ class exportObj.SquadBuilderBackend
                 @show_all_squads_button.addClass 'btn-inverse'
                 @squad_list_modal.find('.squad-list li').show()
 
-        @show_standard_squads_button = $ @squad_list_modal.find('.show-standard-squads')
-        @show_standard_squads_button.click (e) =>
-            unless @squad_display_mode == 'standard'
-                @squad_display_mode = 'standard'
+        @show_extended_squads_button = $ @squad_list_modal.find('.show-extended-squads')
+        @show_extended_squads_button.click (e) =>
+            unless @squad_display_mode == 'extended'
+                @squad_display_mode = 'extended'
                 @squad_list_modal.find('.squad-display-mode .btn').removeClass 'btn-inverse'
-                @show_standard_squads_button.addClass 'btn-inverse'
+                @show_extended_squads_button.addClass 'btn-inverse'
                 @squad_list_modal.find('.squad-list li').each (idx, elem) ->
-                    $(elem).toggle (($(elem).data().squad.serialized.search(/v\d+!e/) == -1) and ($(elem).data().squad.serialized.search(/v\d+!t/) == -1))
+                    $(elem).toggle $(elem).data().squad.serialized.search(/v\d+!s/) != -1
 
-        @show_epic_squads_button = $ @squad_list_modal.find('.show-epic-squads')
-        @show_epic_squads_button.click (e) =>
-            unless @squad_display_mode == 'epic'
-                @squad_display_mode = 'epic'
+        @show_hyperspace_squads_button = $ @squad_list_modal.find('.show-hyperspace-squads')
+        @show_hyperspace_squads_button.click (e) =>
+            unless @squad_display_mode == 'hyperspace'
+                @squad_display_mode = 'hyperspace'
                 @squad_list_modal.find('.squad-display-mode .btn').removeClass 'btn-inverse'
-                @show_epic_squads_button.addClass 'btn-inverse'
+                @show_hyperspace_squads_button.addClass 'btn-inverse'
                 @squad_list_modal.find('.squad-list li').each (idx, elem) ->
-                    $(elem).toggle $(elem).data().squad.serialized.search(/v\d+!e/) != -1
+                    $(elem).toggle $(elem).data().squad.serialized.search(/v\d+!h/) != -1
 
-        @show_team_epic_squads_button = $ @squad_list_modal.find('.show-team-epic-squads')
-        @show_team_epic_squads_button.click (e) =>
-            unless @squad_display_mode == 'team-epic'
-                @squad_display_mode = 'team-epic'
+        @show_quickbuild_squads_button = $ @squad_list_modal.find('.show-quickbuild-squads')
+        @show_quickbuild_squads_button.click (e) =>
+            unless @squad_display_mode == 'quickbuild'
+                @squad_display_mode = 'quickbuild'
                 @squad_list_modal.find('.squad-display-mode .btn').removeClass 'btn-inverse'
-                @show_team_epic_squads_button.addClass 'btn-inverse'
+                @show_quickbuild_squads_button.addClass 'btn-inverse'
                 @squad_list_modal.find('.squad-list li').each (idx, elem) ->
-                    $(elem).toggle $(elem).data().squad.serialized.search(/v\d+!t/) != -1
+                    $(elem).toggle $(elem).data().squad.serialized.search(/v\d+!q/) != -1
 
         @save_as_modal = $ document.createElement('DIV')
         @save_as_modal.addClass 'modal hide fade hidden-print'
@@ -1316,7 +1359,7 @@ class exportObj.CardBrowser
                 else
                     @card_viewer_container.find('tr.info-charge').hide()
 
-                @card_viewer_container.find('tr.info-actions td.info-data').html (((exportObj.translate(@language, 'action', action) for action in exportObj.ships[data.ship].actions).join(', ')).replace(/, <r><i class="xwing-miniatures-font xwing-miniatures-font-linked">/g,' <r><i class="xwing-miniatures-font xwing-miniatures-font-linked">')).replace(/, <i class="xwing-miniatures-font xwing-miniatures-font-linked">/g,' <i class="xwing-miniatures-font xwing-miniatures-font-linked">') #super ghetto double replace for linked actions
+                @card_viewer_container.find('tr.info-actions td.info-data').html (((exportObj.translate(@language, 'action', action) for action in exportObj.ships[data.ship].actions).join(', ')).replace(/, <r><i class="xwing-miniatures-font xwing-miniatures-font-linked red">/g,' <r><i class="xwing-miniatures-font xwing-miniatures-font-linked red">').replace(/, <r><i class="xwing-miniatures-font xwing-miniatures-font-linked">/g,' <r><i class="xwing-miniatures-font xwing-miniatures-font-linked">')).replace(/, <i class="xwing-miniatures-font xwing-miniatures-font-linked red">/g,' <i class="xwing-miniatures-font xwing-miniatures-font-linked red">').replace(/, <i class="xwing-miniatures-font xwing-miniatures-font-linked">/g,' <i class="xwing-miniatures-font xwing-miniatures-font-linked">') #super ghetto quadruple replace for linked actions
                 @card_viewer_container.find('tr.info-actions').show()
 
                 if ships[data.ship].actionsred?
@@ -2958,6 +3001,7 @@ exportObj.basicCardData = ->
                 "Focus"
                 "Evade"
                 "Lock"
+                "Barrel Roll"
                 "R> Evade"
             ]
             actionsred: [
@@ -2966,7 +3010,7 @@ exportObj.basicCardData = ->
               [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
               [ 3, 2, 2, 2, 3, 0, 0, 0, 0, 0]
               [ 1, 1, 2, 1, 1, 0, 0, 0, 3, 3]
-              [ 0, 1, 2, 1, 0, 3, 0, 0, 0, 0]
+              [ 0, 3, 2, 3, 0, 3, 0, 0, 0, 0]
               [ 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
               [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             ]
@@ -3002,6 +3046,7 @@ exportObj.basicCardData = ->
             attack: 3
             agility: 1
             hull: 6
+            large: true
             shields: 4
             actions: [
                 "Focus"
@@ -3068,6 +3113,55 @@ exportObj.basicCardData = ->
               [ 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
               [ 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
             ]
+        "Naboo Royal N-1 Starfighter":
+           name: "Naboo Royal N-1 Starfighter"               
+           xws: "Naboo Royal N-1 Starfighter".canonicalize()
+           factions: ["Galactic Republic"]
+           attack: 2
+           agility: 2
+           hull: 3
+           shields: 2
+           actions: [
+             "Focus"
+             "Lock"
+             "Barrel Roll"
+             "Boost"
+           ]
+           actionsred: [
+           ]
+           maneuvers: [
+             [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+             [ 0, 1, 1, 1, 0, 0, 0, 0, 0, 0]
+             [ 1, 2, 2, 2, 1, 0, 0, 0, 0, 0]
+             [ 1, 2, 2, 2, 1, 0, 0, 0, 3, 3]
+             [ 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
+             [ 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
+           ]
+        "Hyena-Class Droid Bomber":
+           name: "Hyena-Class Droid Bomber"               
+           xws: "Hyena-Class Droid Bomber".canonicalize()
+           factions: ["Separatist Alliance"]
+           attack: 2
+           agility: 2
+           hull: 5
+           shields: 0
+           actions: [
+             "Calculate"
+             "Lock"
+             "Barrel Roll"
+             "R> Lock"
+           ]
+           actionsred: [
+             "Reload"
+           ]
+           maneuvers: [
+             [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+             [ 1, 3, 1, 3, 1, 0, 0, 0, 0, 0]
+             [ 2, 1, 2, 1, 2, 3, 0, 0, 3, 3]
+             [ 1, 0, 2, 0, 1, 0, 0, 0, 0, 0]
+             [ 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
+             [ 0, 0, 3, 0, 0, 0, 0, 0, 0, 0]
+           ]
         
     # name field is for convenience only
     pilotsById: [
@@ -3198,7 +3292,7 @@ exportObj.basicCardData = ->
             ]
         }
         {
-            name: "Edrio Two-Tubes"
+            name: "Edrio Two Tubes"
             id: 8
             unique: true
             faction: "Rebel Alliance"
@@ -3643,7 +3737,7 @@ exportObj.basicCardData = ->
             ]
         }
         {
-            name: "Benthic Two-Tubes"
+            name: "Benthic Two Tubes"
             id: 36
             unique: true
             faction: "Rebel Alliance"
@@ -5750,7 +5844,8 @@ exportObj.basicCardData = ->
             restriction_func: (ship) ->
                 builder = ship.builder
                 for t, things of builder.uniques_in_use
-                    return true if 'houndstooth' in (thing.canonical_name.getXWSBaseName() for thing in things)
+                    if t != 'Slot'
+                        return true if 'houndstooth' in (thing.canonical_name.getXWSBaseName() for thing in things)
                 false
 
         }
@@ -6854,6 +6949,7 @@ exportObj.basicCardData = ->
         {
             name: '"Longshot"'
             id: 234
+            skip: true
             unique: true
             faction: "First Order"
             ship: "TIE/FO Fighter"
@@ -6919,7 +7015,7 @@ exportObj.basicCardData = ->
             faction: "First Order"
             ship: "Upsilon-Class Command Shuttle"
             skill: 2
-            points: 60
+            points: 70
             slots: [
                 "Tech"
                 "Tech"
@@ -7455,23 +7551,31 @@ exportObj.basicCardData = ->
             skill: 5
             force: 3
             darkside: true
-            points: 100
+            points: 65
             slots: [
                 "Force"
+                "Cannon"
+                "Torpedo"
+                "Crew"
+                "Crew"
+                "Device"
                 "Modification"
+                "Title"
+                "Tactical Relay"
             ]
         }
         {
-            name: "Anakin Skylwaker"
+            name: "Anakin Skywalker"
             id: 273
             unique: true
             faction: "Galactic Republic"
             ship: "Delta-7 Aethersprite"
             skill: 6
             force: 3
-            points: 100
+            points: 60
             slots: [
                 "Force"
+                "Astromech"
                 "Configuration"
                 "Modification"
             ]
@@ -7484,9 +7588,10 @@ exportObj.basicCardData = ->
             ship: "Delta-7 Aethersprite"
             skill: 4
             force: 2
-            points: 100
+            points: 44
             slots: [
                 "Force"
+                "Astromech"
                 "Configuration"
                 "Modification"
             ]
@@ -7497,11 +7602,12 @@ exportObj.basicCardData = ->
             unique: true
             faction: "Galactic Republic"
             ship: "Delta-7 Aethersprite"
-            skill: 6
-            force: 3
-            points: 100
+            skill: 4
+            force: 1
+            points: 43
             slots: [
                 "Force"
+                "Astromech"
                 "Configuration"
                 "Modification"
             ]
@@ -7514,9 +7620,10 @@ exportObj.basicCardData = ->
             ship: "Delta-7 Aethersprite"
             skill: 3
             force: 2
-            points: 100
+            points: 47
             slots: [
                 "Force"
+                "Astromech"
                 "Configuration"
                 "Modification"
             ]
@@ -7528,9 +7635,10 @@ exportObj.basicCardData = ->
             ship: "Delta-7 Aethersprite"
             skill: 3
             force: 1
-            points: 100
+            points: 39
             slots: [
                 "Force"
+                "Astromech"
                 "Configuration"
                 "Modification"
             ]
@@ -7542,10 +7650,11 @@ exportObj.basicCardData = ->
             faction: "Galactic Republic"
             ship: "Delta-7 Aethersprite"
             skill: 5
-            force: 2
-            points: 100
+            force: 3
+            points: 53
             slots: [
                 "Force"
+                "Astromech"
                 "Configuration"
                 "Modification"
             ]
@@ -7556,7 +7665,7 @@ exportObj.basicCardData = ->
             faction: "Separatist Alliance"
             ship: "Vulture-class Droid Fighter"
             skill: 1
-            points: 100
+            points: 20
             slots: [
                 "Missile"
                 "Configuration"
@@ -7566,12 +7675,12 @@ exportObj.basicCardData = ->
         {
             name: '"Sinker"'
             id: 280
+            unique: true
             faction: "Galactic Republic"
             ship: "ARC-170"
             skill: 3
-            points: 100
+            points: 54
             slots: [
-                "Talent"
                 "Torpedo"
                 "Crew"
                 "Gunner"
@@ -7978,16 +8087,18 @@ exportObj.basicCardData = ->
             ]
         }
         {
-            name: "General Grevious"
+            name: "General Grievous"
             id: 305
             faction: "Separatist Alliance"
             ship: "Belbullab-22 Starfighter"
             unique: true
             skill: 4
-            points: 100
+            points: 47
             slots: [
                 "Talent"
+                "Tactical Relay"
                 "Modification"
+                "Title"
             ]
         }
         {
@@ -7997,10 +8108,12 @@ exportObj.basicCardData = ->
             ship: "Belbullab-22 Starfighter"
             unique: true
             skill: 3
-            points: 100
+            points: 43
             slots: [
                 "Talent"
+                "Tactical Relay"
                 "Modification"
+                "Title"
             ]
         }
         {
@@ -8009,9 +8122,11 @@ exportObj.basicCardData = ->
             faction: "Separatist Alliance"
             ship: "Belbullab-22 Starfighter"
             skill: 1
-            points: 100
+            points: 37
             slots: [
+                "Tactical Relay"
                 "Modification"
+                "Title"
             ]
             ship_override:
                 actions: [
@@ -8030,10 +8145,11 @@ exportObj.basicCardData = ->
             ship: "Belbullab-22 Starfighter"
             unique: true
             skill: 2
-            points: 100
+            points: 39
             slots: [
-                "Configuration"
+                "Tactical Relay"
                 "Modification"
+                "Title"
             ]
         }
         {
@@ -8042,8 +8158,8 @@ exportObj.basicCardData = ->
             faction: "Separatist Alliance"
             ship: "Vulture-class Droid Fighter"
             skill: 3
-            points: 100
-            restricted: 3
+            points: 26
+            max_per_squad: 3
             slots: [
                 "Missile"
                 "Configuration"
@@ -8056,8 +8172,8 @@ exportObj.basicCardData = ->
             faction: "Separatist Alliance"
             ship: "Vulture-class Droid Fighter"
             skill: 1
-            points: 100
-            restricted: 2
+            points: 23
+            max_per_squad: 2
             slots: [
                 "Missile"
                 "Configuration"
@@ -8070,7 +8186,7 @@ exportObj.basicCardData = ->
             faction: "Separatist Alliance"
             ship: "Vulture-class Droid Fighter"
             skill: 3
-            points: 100
+            points: 27
             unique: true
             slots: [
                 "Missile"
@@ -8078,7 +8194,526 @@ exportObj.basicCardData = ->
                 "Modification"
             ]
         }
-    ]
+        {
+            name: "Plo Koon"
+            id: 312
+            unique: true
+            faction: "Galactic Republic"
+            ship: "Delta-7 Aethersprite"
+            skill: 5
+            force: 2
+            points: 51
+            slots: [
+                "Force"
+                "Astromech"
+                "Configuration"
+                "Modification"
+            ]
+        }
+        {
+            name: "Saesee Tiin"
+            id: 313
+            unique: true
+            faction: "Galactic Republic"
+            ship: "Delta-7 Aethersprite"
+            skill: 4
+            force: 2
+            points: 44
+            slots: [
+                "Force"
+                "Astromech"
+                "Configuration"
+                "Modification"
+            ]
+        }
+        {
+            name: "Mace Windu"
+            id: 314
+            unique: true
+            faction: "Galactic Republic"
+            ship: "Delta-7 Aethersprite"
+            skill: 4
+            force: 3
+            points: 46
+            slots: [
+                "Force"
+                "Astromech"
+                "Configuration"
+                "Modification"
+            ]
+        }
+        {
+            name: '"Kickback"'
+            id: 315
+            unique: true
+            faction: "Galactic Republic"
+            ship: "V-19 Torrent"
+            skill: 4
+            points: 36
+            slots: [
+                "Talent"
+                "Missile"
+                "Modification"
+            ]
+        }
+        {
+            name: '"Odd Ball"'
+            id: 316
+            unique: true
+            faction: "Galactic Republic"
+            ship: "V-19 Torrent"
+            skill: 5
+            points: 38
+            slots: [
+                "Talent"
+                "Missile"
+                "Modification"
+            ]
+        }
+        {
+            name: '"Swoop"'
+            id: 317
+            unique: true
+            faction: "Galactic Republic"
+            ship: "V-19 Torrent"
+            skill: 3
+            points: 32
+            slots: [
+                "Missile"
+                "Modification"
+            ]
+        }
+        {
+            name: '"Axe"'
+            id: 318
+            unique: true
+            faction: "Galactic Republic"
+            ship: "V-19 Torrent"
+            skill: 3
+            points: 33
+            slots: [
+                "Talent"
+                "Missile"
+                "Modification"
+            ]
+        }
+        {
+            name: '"Tucker"'
+            id: 319
+            unique: true
+            faction: "Galactic Republic"
+            ship: "V-19 Torrent"
+            skill: 2
+            points: 31
+            slots: [
+                "Missile"
+                "Modification"
+            ]
+        }
+        {
+            name: "Blue Squadron Protector"
+            id: 320
+            faction: "Galactic Republic"
+            ship: "V-19 Torrent"
+            skill: 3
+            points: 29
+            slots: [
+                "Talent"
+                "Missile"
+                "Modification"
+            ]
+        }
+        {
+            name: "Gold Squadron Trooper"
+            id: 321
+            faction: "Galactic Republic"
+            ship: "V-19 Torrent"
+            skill: 2
+            points: 25
+            slots: [
+                "Missile"
+                "Modification"
+            ]
+        }
+        {
+            name: "Anakin Skywalker (N-1 Starfighter)"
+            id: 322
+            unique: true
+            faction: "Galactic Republic"
+            ship: "Naboo Royal N-1 Starfighter"
+            skill: 4
+            force: 1
+            points: 200
+            slots: [
+                "Force"
+                "Sensor"
+                "Astromech"
+                "Torpedo"
+            ]
+        }
+        {
+            name: "Generic PS 2"
+            id: 323
+            faction: "Galactic Republic"
+            ship: "Naboo Royal N-1 Starfighter"
+            skill: 2
+            points: 200
+            slots: [
+                "Sensor"
+                "Astromech"
+                "Torpedo"
+            ]
+        }
+        {
+            name: "Generic PS 1"
+            id: 324
+            faction: "Separatist Alliance"
+            ship: "Hyena-Class Droid Bomber"
+            skill: 1
+            points: 200
+            slots: [
+                "Sensor"
+                "Torpedo"
+                "Missile"
+                "Missile"
+                "Device"
+                "Device"
+                "Configuration"
+            ]
+        }
+        {
+            name: "Bombardment Drone"
+            id: 325
+            faction: "Separatist Alliance"
+            ship: "Hyena-Class Droid Bomber"
+            skill: 3
+            points: 200
+            slots: [
+                "Sensor"
+                "Torpedo"
+                "Missile"
+                "Missile"
+                "Device"
+                "Device"
+                "Configuration"
+            ]
+        }
+        {
+            name: "Unique PS 4"
+            id: 326
+            unique: true
+            faction: "Separatist Alliance"
+            ship: "Hyena-Class Droid Bomber"
+            skill: 4
+            points: 200
+            slots: [
+                "Sensor"
+                "Torpedo"
+                "Missile"
+                "Missile"
+                "Device"
+                "Device"
+                "Configuration"
+            ]
+        }
+        {
+            name: "Unique PS 3"
+            id: 327
+            unique: true
+            faction: "Separatist Alliance"
+            ship: "Hyena-Class Droid Bomber"
+            skill: 3
+            points: 200
+            slots: [
+                "Sensor"
+                "Torpedo"
+                "Missile"
+                "Missile"
+                "Device"
+                "Device"
+                "Configuration"
+            ]
+        }
+        {
+            name: "Pilot PS 3"
+            id: 328
+            max_per_squad: 3
+            faction: "Separatist Alliance"
+            ship: "Hyena-Class Droid Bomber"
+            skill: 3
+            points: 200
+            slots: [
+                "Sensor"
+                "Torpedo"
+                "Missile"
+                "Missile"
+                "Device"
+                "Device"
+                "Configuration"
+            ]
+        }
+        {
+            name: "Pilot PS 1"
+            id: 329
+            max_per_squad: 2
+            faction: "Separatist Alliance"
+            ship: "Hyena-Class Droid Bomber"
+            skill: 1
+            points: 200
+            slots: [
+                "Sensor"
+                "Torpedo"
+                "Missile"
+                "Missile"
+                "Device"
+                "Device"
+                "Configuration"
+            ]
+        }
+        {
+            name: "Pilot PS 1"
+            id: 330
+            max_per_squad: 2
+            faction: "Galactic Republic"
+            ship: "Naboo Royal N-1 Starfighter"
+            skill: 1
+            points: 200
+            slots: [
+                "Sensor"
+                "Astromech"
+                "Torpedo"
+            ]
+        }
+        {
+            name: "Unique PS 3"
+            id: 331
+            unique: true
+            faction: "Galactic Republic"
+            ship: "Naboo Royal N-1 Starfighter"
+            skill: 3
+            points: 200
+            slots: [
+                "Sensor"
+                "Astromech"
+                "Torpedo"
+            ]
+        }
+        {
+            name: "Unique PS 4"
+            id: 332
+            unique: true
+            faction: "Galactic Republic"
+            ship: "Naboo Royal N-1 Starfighter"
+            skill: 4
+            points: 200
+            slots: [
+                "Sensor"
+                "Astromech"
+                "Torpedo"
+            ]
+        }
+        {
+            name: "Unique PS 5"
+            id: 333
+            unique: true
+            faction: "Galactic Republic"
+            ship: "Naboo Royal N-1 Starfighter"
+            skill: 5
+            points: 200
+            slots: [
+                "Sensor"
+                "Astromech"
+                "Torpedo"
+            ]
+        }
+        {
+            name: "Count Dooku"
+            id: 334
+            unique: true
+            faction: "Separatist Alliance"
+            ship: "Sith Infiltrator"
+            skill: 3
+            force: 3
+            darkside: true
+            points: 61
+            slots: [
+                "Force"
+                "Cannon"
+                "Torpedo"
+                "Crew"
+                "Crew"
+                "Device"
+                "Modification"
+                "Title"
+                "Tactical Relay"
+            ]
+        }
+        {
+            name: "O-66"
+            id: 335
+            unique: true
+            faction: "Separatist Alliance"
+            ship: "Sith Infiltrator"
+            skill: 3
+            points: 55
+            slots: [
+                "Cannon"
+                "Torpedo"
+                "Crew"
+                "Crew"
+                "Device"
+                "Modification"
+                "Title"
+                "Tactical Relay"
+            ]
+            ship_override:
+                actions: [
+                    "Calculate"
+                    "Lock"
+                ]
+        }
+        {
+            name: "Dark Courier"
+            id: 336
+            faction: "Separatist Alliance"
+            ship: "Sith Infiltrator"
+            skill: 2
+            points: 53
+            slots: [
+                "Cannon"
+                "Torpedo"
+                "Crew"
+                "Crew"
+                "Device"
+                "Modification"
+                "Title"
+                "Tactical Relay"
+            ]
+        }
+        {
+            name: "DFS-311"
+            id: 337
+            faction: "Separatist Alliance"
+            ship: "Vulture-class Droid Fighter"
+            skill: 1
+            points: 24
+            unique: true
+            slots: [
+                "Missile"
+                "Configuration"
+                "Modification"
+            ]
+        }
+        {
+            name: '"Odd Ball" (ARC-170)'
+            id: 338
+            unique: true
+            faction: "Galactic Republic"
+            ship: "ARC-170"
+            skill: 5
+            points: 55
+            slots: [
+                "Talent"
+                "Torpedo"
+                "Crew"
+                "Gunner"
+                "Astromech"
+                "Modification"
+            ]
+        }
+        {
+            name: '"Jag"'
+            id: 339
+            unique: true
+            faction: "Galactic Republic"
+            ship: "ARC-170"
+            skill: 3
+            points: 49
+            slots: [
+                "Torpedo"
+                "Crew"
+                "Gunner"
+                "Astromech"
+                "Modification"
+            ]
+        }
+        {
+            name: "Squad Seven Veteran"
+            id: 340
+            faction: "Galactic Republic"
+            ship: "ARC-170"
+            skill: 3
+            points: 47
+            slots: [
+                "Talent"
+                "Torpedo"
+                "Crew"
+                "Gunner"
+                "Astromech"
+                "Modification"
+            ]
+        }
+        {
+            name: "104th Battalion Pilot"
+            id: 341
+            faction: "Galactic Republic"
+            ship: "ARC-170"
+            skill: 2
+            points: 42
+            slots: [
+                "Torpedo"
+                "Crew"
+                "Gunner"
+                "Astromech"
+                "Modification"
+            ]
+        }
+        {
+            name: '"Wolffe"'
+            id: 342
+            unique: true
+            faction: "Galactic Republic"
+            ship: "ARC-170"
+            skill: 4
+            charge: 1
+            points: 51
+            slots: [
+                "Talent"
+                "Torpedo"
+                "Crew"
+                "Gunner"
+                "Astromech"
+                "Modification"
+            ]
+        }
+        {
+            name: "Separatist Drone"
+            id: 343
+            faction: "Separatist Alliance"
+            ship: "Vulture-class Droid Fighter"
+            skill: 3
+            points: 22
+            slots: [
+                "Missile"
+                "Configuration"
+                "Modification"
+            ]
+        }
+        {
+            name: "Skakoan Ace"
+            id: 344
+            faction: "Separatist Alliance"
+            ship: "Belbullab-22 Starfighter"
+            unique: true
+            skill: 3
+            points: 41
+            slots: [
+                "Talent"
+                "Tactical Relay"
+                "Modification"
+                "Title"
+            ]
+        }    ]
 
 
     upgradesById: [
@@ -8542,7 +9177,8 @@ exportObj.basicCardData = ->
                 builder = ship.builder
                 return true if builder.faction == "Scum and Villainy"
                 for t, things of builder.uniques_in_use
-                    return true if 'ezrabridger' in (thing.canonical_name.getXWSBaseName() for thing in things)
+                    if t != 'Slot'
+                        return true if 'ezrabridger' in (thing.canonical_name.getXWSBaseName() for thing in things)
                 false
        }
        {
@@ -8685,7 +9321,8 @@ exportObj.basicCardData = ->
                 builder = ship.builder
                 return true if builder.faction == "Scum and Villainy"
                 for t, things of builder.uniques_in_use
-                    return true if 'darthvader' in (thing.canonical_name.getXWSBaseName() for thing in things)
+                    if t != 'Slot'
+                        return true if 'darthvader' in (thing.canonical_name.getXWSBaseName() for thing in things)
                 false
        }
        {
@@ -8817,7 +9454,8 @@ exportObj.basicCardData = ->
                 builder = ship.builder
                 return true if builder.faction == "Scum and Villainy"
                 for t, things of builder.uniques_in_use
-                    return true if 'darthvader' in (thing.canonical_name.getXWSBaseName() for thing in things)
+                    if t != 'Slot'
+                        return true if 'darthvader' in (thing.canonical_name.getXWSBaseName() for thing in things)
                 false
        }
        {
@@ -9827,7 +10465,7 @@ exportObj.basicCardData = ->
             id: 185
             slot: "Tech"
             faction: "First Order"
-            points: 2
+            points: 10
             restriction_func: (ship) ->
                 ship.data.large?
        }
@@ -9955,14 +10593,19 @@ exportObj.basicCardData = ->
             name: "Brilliant Evasion"
             id: 199
             slot: "Force"
-            points: 0
+            points: '*'
+            pointsarray: [0,2,4,6]
+            variableagility: true
+            points: 6
        }
        {
             name: "Calibrated Laser Targeting"
             id: 200
             slot: "Configuration"
             ship: "Delta-7 Aethersprite"
-            points: 0
+            points: "*"
+            pointsarray: [4,4,4,4,6,8,10]
+            variableinit: true
             unequips_upgrades: [ "Modification" ]
             also_occupies_upgrades: [ "Modification" ]
        }
@@ -9971,7 +10614,9 @@ exportObj.basicCardData = ->
             id: 201
             slot: "Configuration"
             ship: "Delta-7 Aethersprite"
-            points: 0
+            points: "*"
+            pointsarray: [12,13,14,15,16,17,18]
+            variableinit: true
             modifier_func: (stats) ->
                 stats.attack += 1
                 stats.agility += -1
@@ -10020,14 +10665,14 @@ exportObj.basicCardData = ->
             ship: "Belbullab-22 Starfighter"
             charge: 2
             slot: "Modification"
-            points: 100
+            points: 6
        }
        {
             name: "Grappling Struts"
             id: 208
             ship: "Vulture-class Droid Fighter"
             slot: "Configuration"
-            points: 100
+            points: 3
        }
        {
             name: "Energy-Shell Charges"
@@ -10038,13 +10683,211 @@ exportObj.basicCardData = ->
             range: """2-3"""
             rangebonus: true 
             charge: 1
-            points: 100
+            points: 4
             restriction_func: (ship) ->
                 "Calculate" in ship.effectiveStats().actions or "Calculate" in ship.effectiveStats().actionsred
        }
-
-
-]
+       {
+            name: "Dedicated"
+            id: 210
+            faction: "Galactic Republic"
+            slot: "Talent"
+            points: 3
+            restriction_func: (ship) ->
+                not ship.pilot.unique
+       }
+       {
+            name: "Synchronized Console"
+            id: 211
+            faction: "Galactic Republic"
+            slot: "Modification"
+            points: 2
+            restriction_func: (ship) ->
+                "Lock" in ship.effectiveStats().actions or "Lock" in ship.effectiveStats().actionsred
+       }
+       {
+            name: "Battle Meditation"
+            id: 212
+            faction: "Galactic Republic"
+            slot: "Force"
+            points: "*"
+            pointsarray: [3,5,7,9,11,13,15]
+            variableinit: true
+            modifier_func: (stats) ->
+                stats.actions.push 'F-Coordinate' if 'F-Coordinate' not in stats.actions
+       }
+       {
+            name: "R4-P Astromech"
+            id: 213
+            faction: "Galactic Republic"
+            slot: "Astromech"
+            charge: 2
+            points: 4
+       }
+       {
+            name: "R4-P17"
+            id: 214
+            unique: true
+            faction: "Galactic Republic"
+            slot: "Astromech"
+            charge: 2
+            points: 5
+       }
+       {
+            name: "Spare Parts Canisters"
+            id: 215
+            slot: "Modification"
+            charge: 1
+            points: 4
+            restriction_func: (ship) ->
+                if "Astromech" in ship.pilot.slots
+                    if not ship.isSlotOccupied "Astromech"
+                        return true
+                else if ship.doesSlotExist "Astromech"
+                    if not ship.isSlotOccupied "Astromech"
+                        return true
+                false
+       }
+       {
+            name: "Scimitar"
+            id: 216
+            unique: true
+            ship: "Sith Infiltrator"
+            slot: "Title"
+            faction: "Separatist Alliance"
+            points: 4
+            modifier_func: (stats) ->
+                stats.actionsred.push 'Cloak' if 'Cloak' not in stats.actionsred
+                stats.actions.push 'Jam' if 'Jam' not in stats.actions
+       }
+       {
+            name: "Chancellor Palpatine"
+            id: 217
+            unique: true
+            slot: "Crew"
+            force: 1
+            points: 14
+            modifier_func: (stats) ->
+                stats.force += 1
+            modifier_func: (stats) ->
+                stats.actions.push 'F-Coordinate' if 'F-Coordinate' not in stats.actions
+            restriction_func: (ship) ->
+                builder = ship.builder
+                return true if builder.faction == "Galactic Republic" or builder.faction == "Separatist Alliance"
+                false
+       }
+       {
+            name: "Count Dooku"
+            id: 218
+            unique: true
+            slot: "Crew"
+            force: 1
+            faction: "Separatist Alliance"
+            points: 9
+            modifier_func: (stats) ->
+                stats.force += 1
+       }
+       {
+            name: "General Grievous"
+            id: 219
+            unique: true
+            slot: "Crew"
+            charge: 1
+            faction: "Separatist Alliance"
+            points: 3
+       }
+       {
+            name: "K2-B4"
+            id: 220
+            unique: true
+            solitary: true
+            slot: "Tactical Relay"
+            faction: "Separatist Alliance"
+            points: 5
+       }
+       {
+            name: "DRK-1 Probe Droids"
+            id: 221
+            slot: "Device"
+            faction: "Separatist Alliance"
+            charge: 2
+            points: 6
+            applies_condition: '''DRK-1 Probe Droid'''.canonicalize()
+       }
+       {
+            name: "Kraken"
+            id: 222
+            unique: true
+            slot: "Tactical Relay"
+            solitary: true
+            faction: "Separatist Alliance"
+            points: 10
+            modifier_func: (stats) ->
+                stats.actions.push 'Calculate' if 'Calculate' not in stats.actions
+       }
+       {
+            name: "TV-94"
+            id: 223
+            unique: true
+            solitary: true
+            slot: "Tactical Relay"
+            faction: "Separatist Alliance"
+            points: 5
+       }
+       {
+            name: "Discord Missiles"
+            id: 224
+            slot: "Missile"
+            faction: "Separatist Alliance"
+            charge: 1
+            max_per_squad: 3
+            points: 6
+            applies_condition: '''Buzz Droid Swarm'''.canonicalize()
+       }
+       {
+            name: "Clone Commander Cody"
+            id: 225
+            unique: true
+            slot: "Gunner"
+            faction: "Galactic Republic"
+            points: 3
+       }
+       {
+            name: "R4-P44"
+            id: 226
+            unique: true
+            faction: "Galactic Republic"
+            slot: "Astromech"
+            points: 5
+       }
+       {
+            name: "Seventh Fleet Gunner"
+            id: 227
+            charge: 1
+            slot: "Gunner"
+            faction: "Galactic Republic"
+            points: 9
+       }
+       {
+            name: "Treacherous"
+            id: 228
+            charge: 1
+            slot: "Talent"
+            faction: "Separatist Alliance"
+            points: 3
+       }
+       {
+            name: "Soulless One"
+            id: 229
+            slot: "Title"
+            unique: true
+            ship: "Belbullab-22 Starfighter"
+            faction: "Separatist Alliance"
+            points: 10
+            modifier_func: (stats) ->
+                stats.hull += 2
+       }
+    ]
 
 
     conditionsById: [
@@ -10105,6 +10948,3848 @@ exportObj.basicCardData = ->
             name: 'Rattled'
             id: 12
         }
+        {
+            name: 'DRK-1 Probe Droid'
+            id: 13
+        }
+        {
+            name: 'Buzz Droid Swarm'
+            id: 14
+        }
+    ]
+
+    quickbuildsById: [
+        {
+            id: 0
+            faction: "Galactic Empire"
+            pilot: "Valen Rudor"
+            ship: "TIE Fighter"
+            threat: 2
+            upgrades: [
+                "Elusive"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 1
+            faction: "Galactic Empire"
+            pilot: "Black Squadron Ace"
+            ship: "TIE Fighter"
+            threat: 2
+            upgrades: [
+                "Outmaneuver"
+                "Afterburners"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 2
+            faction: "Galactic Empire"
+            pilot: "Academy Pilot"
+            ship: "TIE Fighter"
+            threat: 1
+        }
+        {
+            id: 3
+            faction: "Galactic Empire"
+            pilot: "Iden Versio"
+            ship: "TIE Fighter"
+            threat: 2
+            upgrades: [
+                "Outmaneuver"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 4
+            faction: "Galactic Empire"
+            pilot: '"Night Beast"'
+            ship: "TIE Fighter"
+            threat: 2
+            upgrades: [
+                "Predator"
+                "Hull Upgrade"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 5
+            faction: "Galactic Empire"
+            pilot: "Obsidian Squadron Pilot"
+            ship: "TIE Fighter"
+            threat: 1
+        }
+        {
+            id: 6
+            faction: "Galactic Empire"
+            pilot: '"Scourge" Skutu'
+            ship: "TIE Fighter"
+            threat: 2
+            upgrades: [
+                "Predator"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 7
+            faction: "Galactic Empire"
+            pilot: '"Wampa"'
+            ship: "TIE Fighter"
+            threat: 2
+            upgrades: [
+                "Crack Shot"
+                "Hull Upgrade"
+                "Stealth Device"
+            ]
+        }
+        {
+            id: 8
+            faction: "Galactic Empire"
+            pilot: "Black Squadron Ace"
+            ship: "TIE Fighter"
+            threat: 2
+            upgrades: [
+                "Crack Shot"
+                "Afterburners"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 9
+            faction: "Galactic Empire"
+            pilot: "Gideon Hask"
+            ship: "TIE Fighter"
+            threat: 2
+            upgrades: [
+                "Crack Shot"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 10
+            faction: "Galactic Empire"
+            pilot: "Del Meeko"
+            ship: "TIE Fighter"
+            threat: 2
+            upgrades: [
+                "Juke"
+                "Stealth Device"
+            ]
+        }
+        {
+            id: 11
+            faction: "Galactic Empire"
+            pilot: "Obsidian Squadron Pilot"
+            ship: "TIE Fighter"
+            threat: 1
+            skip: true
+        }
+        {
+            id: 12
+            faction: "Galactic Empire"
+            pilot: '"Howlrunner"'
+            ship: "TIE Fighter"
+            threat: 2
+            upgrades: [
+                "Juke"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 13
+            faction: "Galactic Empire"
+            pilot: "Seyn Marana"
+            ship: "TIE Fighter"
+            threat: 2
+            upgrades: [
+                "Marksmanship"
+                "Afterburners"
+            ]
+        }
+        {
+            id: 14
+            faction: "Galactic Empire"
+            pilot: "Black Squadron Ace"
+            suffix: " (x2)"
+            linkedId: 14
+            ship: "TIE Fighter"
+            threat: 3
+            upgrades: [
+                "Juke"
+                "Stealth Device"
+            ]
+        }
+        {
+            id: 15
+            faction: "Galactic Empire"
+            pilot: "Obsidian Squadron Pilot"
+            suffix: " (x2)"
+            linkedId: 15
+            ship: "TIE Fighter"
+            threat: 3
+            upgrades: [
+                "Outmaneuver"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 16
+            faction: "Galactic Empire"
+            pilot: "Academy Pilot"
+            suffix: " (x2)"
+            linkedId: 16
+            ship: "TIE Fighter"
+            threat: 2
+        }
+        {
+            id: 17
+            faction: "Galactic Empire"
+            pilot: "Academy Pilot"
+            ship: "TIE Fighter"
+            threat: 1
+            skip: true
+        }
+        {
+            id: 18
+            faction: "Galactic Empire"
+            pilot: "Darth Vader"
+            ship: "TIE Advanced"
+            threat: 4
+            upgrades: [
+                "Supernatural Reflexes"
+                "Fire-Control System"
+                "Afterburners"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 19
+            faction: "Galactic Empire"
+            pilot: "Maarek Stele"
+            ship: "TIE Advanced"
+            threat: 3
+            upgrades: [
+                "Ruthless"
+                "Fire-Control System"
+                "Cluster Missiles"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 20
+            faction: "Galactic Empire"
+            pilot: "Storm Squadron Ace"
+            ship: "TIE Advanced"
+            threat: 2
+            upgrades: [
+                "Fire-Control System"
+            ]
+        }
+        {
+            id: 21
+            faction: "Galactic Empire"
+            pilot: "Ved Foslo"
+            ship: "TIE Advanced"
+            threat: 3
+            upgrades: [
+                "Outmaneuver"
+                "Fire-Control System"
+                "Cluster Missiles"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 22
+            faction: "Galactic Empire"
+            pilot: "Zertik Strom"
+            ship: "TIE Advanced"
+            threat: 3
+            upgrades: [
+                "Squad Leader"
+                "Fire-Control System"
+                "Cluster Missiles"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 23
+            faction: "Galactic Empire"
+            pilot: "Tempest Squadron Pilot"
+            ship: "TIE Advanced"
+            threat: 2
+            upgrades: [
+                "Cluster Missiles"
+            ]
+        }
+        {
+            id: 24
+            faction: "Galactic Empire"
+            pilot: "Colonel Jendon"
+            ship: "Lambda-Class Shuttle"
+            threat: 3
+            upgrades: [
+                "Collision Detector"
+                "Ion Cannon"
+                "Darth Vader"
+                "Freelance Slicer"
+                "ST-321"
+            ]
+        }
+        {
+            id: 25
+            faction: "Galactic Empire"
+            pilot: "Captain Kagi"
+            ship: "Lambda-Class Shuttle"
+            threat: 3
+            upgrades: [
+                "Collision Detector"
+                "Tractor Beam"
+                "Emperor Palpatine"
+                "Shield Upgrade"
+                "Static Discharge Vanes"
+            ]
+        }
+        {
+            id: 26
+            faction: "Galactic Empire"
+            pilot: "Lieutenant Sai"
+            ship: "Lambda-Class Shuttle"
+            threat: 3
+            upgrades: [
+                "Ciena Ree"
+                'GNK "Gonk" Droid'
+                "Advanced Sensors"
+                "Jamming Beam"
+            ]
+        }
+        {
+            id: 27
+            faction: "Galactic Empire"
+            pilot: "Omicron Group Pilot"
+            ship: "Lambda-Class Shuttle"
+            threat: 2
+            upgrades: [
+                "Admiral Sloane"
+                "Jamming Beam"
+            ]
+        }
+        {
+            id: 28
+            faction: "Galactic Empire"
+            pilot: "Lieutenant Kestal"
+            ship: "TIE Aggressor"
+            threat: 2
+            upgrades: [
+                "Elusive"
+                "Barrage Rockets"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 29
+            faction: "Galactic Empire"
+            pilot: "Onyx Squadron Scout"
+            ship: "TIE Aggressor"
+            threat: 2
+            upgrades: [
+                "Outmaneuver"
+                "Dorsal Turret"
+                "Proton Rockets"
+            ]
+        }
+        {
+            id: 30
+            faction: "Galactic Empire"
+            pilot: '"Double Edge"'
+            ship: "TIE Aggressor"
+            threat: 2
+            upgrades: [
+                "Ion Cannon Turret"
+                "Concussion Missiles"
+                "Hotshot Gunner"
+            ]
+        }
+        {
+            id: 31
+            faction: "Galactic Empire"
+            pilot: "Sienar Specialist"
+            ship: "TIE Aggressor"
+            threat: 2
+            upgrades: [
+                "Ion Cannon Turret"
+                "Homing Missiles"
+                "Veteran Turret Gunner"
+                "Hull Upgrade"
+            ]
+        }
+        {
+            id: 32
+            faction: "Galactic Empire"
+            pilot: '"Whisper"'
+            ship: "TIE Phantom"
+            threat: 3
+            upgrades: [
+                "Juke"
+                "Advanced Sensors"
+                "Agent Kallus"
+                "Stealth Device"
+            ]
+        }
+        {
+            id: 33
+            faction: "Galactic Empire"
+            pilot: "Sigma Squadron Ace"
+            ship: "TIE Phantom"
+            threat: 3
+            upgrades: [
+                "Predator"
+                "Advanced Sensors"
+                "Grand Inquisitor"
+            ]
+        }
+        {
+            id: 34
+            faction: "Galactic Empire"
+            pilot: '"Echo"'
+            ship: "TIE Phantom"
+            threat: 3
+            upgrades: [
+                "Lone Wolf"
+                "Collision Detector"
+                "Perceptive Copilot"
+                "Stealth Device"
+            ]
+        }
+        {
+            id: 35
+            faction: "Galactic Empire"
+            pilot: "Imdaar Test Pilot"
+            ship: "TIE Phantom"
+            threat: 2
+            upgrades: [
+                "Moff Jerjerrod"
+            ]
+        }
+        {
+            id: 36
+            faction: "Galactic Empire"
+            pilot: '"Duchess"'
+            ship: "TIE Striker"
+            threat: 2
+            upgrades: [
+                "Trick Shot"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 37
+            faction: "Galactic Empire"
+            pilot: "Black Squadron Scout"
+            ship: "TIE Striker"
+            threat: 2
+            upgrades: [
+                "Skilled Bombardier"
+                "Proximity Mines"
+                "Hull Upgrade"
+            ]
+        }
+        {
+            id: 38
+            faction: "Galactic Empire"
+            pilot: '"Countdown"'
+            ship: "TIE Striker"
+            threat: 2
+            upgrades: [
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 39
+            faction: "Galactic Empire"
+            pilot: "Planetary Sentinel"
+            suffix: " x2"
+            linkedId: 39
+            ship: "TIE Striker"
+            threat: 3
+            upgrades: [
+                "Conner Nets"
+            ]
+        }
+        {
+            id: 40
+            faction: "Galactic Empire"
+            pilot: '"Pure Sabacc"'
+            ship: "TIE Striker"
+            threat: 2
+            upgrades: [
+                "Stealth Device"
+            ]
+        }
+        {
+            id: 41
+            faction: "Galactic Empire"
+            pilot: "Black Squadron Scout"
+            ship: "TIE Striker"
+            threat: 2
+            upgrades: [
+                "Skilled Bombardier"
+                "Proximity Mines"
+                "Hull Upgrade"
+            ]
+            skip: true
+        }
+        {
+            id: 42
+            faction: "Galactic Empire"
+            pilot: "Countess Ryad"
+            ship: "TIE Defender"
+            threat: 4
+            upgrades: [
+                "Outmaneuver"
+                "Afterburners"
+            ]
+        }
+        {
+            id: 43
+            faction: "Galactic Empire"
+            pilot: "Onyx Squadron Ace"
+            ship: "TIE Defender"
+            threat: 3
+        }
+        {
+            id: 44
+            faction: "Galactic Empire"
+            pilot: "Rexler Brath"
+            ship: "TIE Defender"
+            threat: 4
+            upgrades: [
+                "Juke"
+                "Collision Detector"
+                "Cluster Missiles"
+            ]
+        }
+        {
+            id: 45
+            faction: "Galactic Empire"
+            pilot: "Colonel Vessery"
+            ship: "TIE Defender"
+            threat: 4
+            upgrades: [
+                "Juke"
+                "Fire-Control System"
+                "Cluster Missiles"
+            ]
+        }
+        {
+            id: 46
+            faction: "Galactic Empire"
+            pilot: "Onyx Squadron Ace"
+            ship: "TIE Defender"
+            threat: 4
+            upgrades: [
+                "Elusive"
+                "Advanced Sensors"
+                "Proton Rockets"
+            ]
+        }
+        {
+            id: 47
+            faction: "Galactic Empire"
+            pilot: "Tomax Bren"
+            ship: "TIE Bomber"
+            threat: 2
+            upgrades: [
+                "Crack Shot"
+                "Proton Torpedoes"
+                "Proton Bombs"
+            ]
+        }
+        {
+            id: 48
+            faction: "Galactic Empire"
+            pilot: '"Deathfire"'
+            ship: "TIE Bomber"
+            threat: 2
+            upgrades: [
+                "Cluster Missiles"
+                "Skilled Bombardier"
+                "Seismic Charges"
+                "Proximity Mines"
+                "Electronic Baffle"
+            ]
+        }
+        {
+            id: 49
+            faction: "Galactic Empire"
+            pilot: "Major Rhymer"
+            ship: "TIE Bomber"
+            threat: 2
+            upgrades: [
+                "Intimidation"
+                "Adv. Proton Torpedoes"
+                "Cluster Missiles"
+            ]
+        }
+        {
+            id: 50
+            faction: "Galactic Empire"
+            pilot: "Scimitar Squadron Pilot"
+            suffix: " x2"
+            linkedId: 50
+            ship: "TIE Bomber"
+            threat: 3
+            upgrades: [
+                "Ion Missiles"
+                "Proton Bombs"
+            ]
+        }
+        {
+            id: 51
+            faction: "Galactic Empire"
+            pilot: "Captain Jonus"
+            ship: "TIE Bomber"
+            threat: 2
+            upgrades: [
+                "Proton Torpedoes"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 52
+            faction: "Galactic Empire"
+            pilot: "Gamma Squadron Ace"
+            ship: "TIE Bomber"
+            threat: 2
+            upgrades: [
+                "Concussion Missiles"
+                "Skilled Bombardier"
+                "Bomblet Generator"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 53
+            faction: "Galactic Empire"
+            pilot: "Grand Inquisitor"
+            ship: "TIE Advanced Prototype"
+            threat: 3
+            upgrades: [
+                "Supernatural Reflexes"
+                "Concussion Missiles"
+            ]
+        }
+        {
+            id: 54
+            faction: "Galactic Empire"
+            pilot: "Inquisitor"
+            ship: "TIE Advanced Prototype"
+            threat: 2
+            upgrades: [
+                "Instinctive Aim"
+                "Cluster Missiles"
+                "Munitions Failsafe"
+            ]
+        }
+        {
+            id: 55
+            faction: "Galactic Empire"
+            pilot: "Seventh Sister"
+            ship: "TIE Advanced Prototype"
+            threat: 2
+            upgrades: [
+                "Homing Missiles"
+            ]
+        }
+        {
+            id: 56
+            faction: "Galactic Empire"
+            pilot: "Baron of the Empire"
+            ship: "TIE Advanced Prototype"
+            threat: 2
+            upgrades: [
+                "Crack Shot"
+                "Proton Rockets"
+                "Stealth Device"
+            ]
+        }
+        {
+            id: 57
+            faction: "Galactic Empire"
+            pilot: "Soontir Fel"
+            ship: "TIE Interceptor"
+            threat: 2
+            upgrades: [
+                "Outmaneuver"
+                "Afterburners"
+                "Stealth Device"
+            ]
+        }
+        {
+            id: 58
+            faction: "Galactic Empire"
+            pilot: "Alpha Squadron Pilot"
+            suffix: " x2"
+            linkedId: 58
+            ship: "TIE Interceptor"
+            threat: 3
+            upgrades: [
+                "Ablative Plating"
+            ]
+        }
+        {
+            id: 59
+            faction: "Galactic Empire"
+            pilot: "Turr Phennir"
+            ship: "TIE Interceptor"
+            threat: 2
+            upgrades: [
+                "Daredevil"
+                "Electronic Baffle"
+            ]
+        }
+        {
+            id: 60
+            faction: "Galactic Empire"
+            pilot: "Saber Squadron Ace"
+            ship: "TIE Interceptor"
+            threat: 2
+            upgrades: [
+                "Predator"
+                "Stealth Device"
+            ]
+        }
+        {
+            id: 61
+            faction: "Galactic Empire"
+            pilot: "Lieutenant Karsabi"
+            ship: "Alpha-Class Star Wing"
+            threat: 2
+            upgrades: [
+                "Outmaneuver"
+                "Heavy Laser Cannon"
+                "Advanced SLAM"
+                "Xg-1 Assault Configuration"
+            ]
+        }
+        {
+            id: 62
+            faction: "Galactic Empire"
+            pilot: "Nu Squadron Pilot"
+            ship: "Alpha-Class Star Wing"
+            threat: 2
+            upgrades: [
+                "Fire-Control System"
+                "Proton Torpedos"
+                "Advanced SLAM"
+                "Os-1 Arsenal Loadout"
+            ]
+        }
+        {
+            id: 63
+            faction: "Galactic Empire"
+            pilot: "Major Vynder"
+            ship: "Alpha-Class Star Wing"
+            threat: 2
+            upgrades: [
+                "Saturation Salvo"
+                "Barrage Rockets"
+                "Advanced SLAM"
+                "Os-1 Arsenal Loadout"
+            ]
+        }
+        {
+            id: 64
+            faction: "Galactic Empire"
+            pilot: "Rho Squadron Pilot"
+            ship: "Alpha-Class Star Wing"
+            threat: 2
+            upgrades: [
+                "Fire-Control System"
+                "Ion Cannon"
+                "Homing Missiles"
+                "Advanced SLAM"
+                "Xg-1 Assault Configuration"
+            ]
+        }
+        {
+            id: 65
+            faction: "Galactic Empire"
+            pilot: '"Deathrain"'
+            ship: "TIE Punisher"
+            threat: 2
+            upgrades: [
+                "Trajectory Simulator"
+                "Homing Missiles"
+                "Bomblet Generator"
+                "Ablative Plating"
+            ]
+        }
+        {
+            id: 66
+            skip: true
+            faction: "Galactic Empire"
+            pilot: '"Deathrain"'
+            ship: "TIE Punisher"
+            threat: 2
+            upgrades: [
+                "Trajectory Simulator"
+                "Homing Missiles"
+                "Bomblet Generator"
+                "Ablative Plating"
+            ]
+        }
+        {
+            id: 67
+            faction: "Galactic Empire"
+            pilot: "Cutlass Squadron Pilot"
+            ship: "TIE Punisher"
+            threat: 2
+            upgrades: [
+                "Trajectory Simulator"
+                "Ion Missiles"
+                "Skilled Bombardier"
+                "Proton Bombs"
+            ]
+        }
+        {
+            id: 68
+            faction: "Galactic Empire"
+            pilot: '"Redline"'
+            ship: "TIE Punisher"
+            threat: 2
+            upgrades: [
+                "Debris Gambit"
+                "Cluster Missiles"
+            ]
+        }
+        {
+            id: 69
+            faction: "Galactic Empire"
+            pilot: "Cutlass Squadron Pilot"
+            ship: "TIE Punisher"
+            threat: 2
+            upgrades: [
+                "Advanced Sensors"
+                "Proton Rockets"
+                "Connor Nets"
+            ]
+        }
+        {
+            id: 70
+            faction: "Galactic Empire"
+            pilot: "Captain Oicunn"
+            ship: "VT-49 Decimator"
+            threat: 4
+            upgrades: [
+                "Intimidation"
+                "Grand Moff Tarkin"
+                "Dauntless"
+            ]
+        }
+        {
+            id: 71
+            faction: "Galactic Empire"
+            pilot: "Rear Admiral Chiraneau"
+            ship: "VT-49 Decimator"
+            threat: 4
+            upgrades: [
+                "Swarm Tactics"
+                "Minister Tua"
+                "Tactical Officer"
+            ]
+        }
+        {
+            id: 72
+            faction: "Galactic Empire"
+            pilot: "Patrol Leader"
+            ship: "VT-49 Decimator"
+            threat: 4
+            upgrades: [
+                "Informant"
+                "Seventh Sister"
+                "Fifth Brother"
+            ]
+        }
+        {
+            id: 73
+            faction: "Galactic Empire"
+            pilot: '"Vizier"'
+            ship: "TIE Reaper"
+            threat: 2
+            upgrades: [
+                "Director Krennic"
+            ]
+        }
+        {
+            id: 74
+            faction: "Galactic Empire"
+            pilot: "Scarif Base Pilot"
+            ship: "TIE Reaper"
+            threat: 2
+            upgrades: [
+                "Death Troopers"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 75
+            faction: "Galactic Empire"
+            pilot: "Major Vermeil"
+            ship: "TIE Reaper"
+            threat: 2
+            upgrades: [
+                "Swarm Tactics"
+                "Tactical Officer"
+            ]
+        }
+        {
+            id: 76
+            faction: "Galactic Empire"
+            pilot: "Captain Feroph"
+            ship: "TIE Reaper"
+            threat: 2
+            upgrades: [
+                "Swarm Tactics"
+                "ISB Slicer"
+            ]
+        }
+        {
+            id: 77
+            faction: "Rebel Alliance"
+            pilot: "Luke Skywalker"
+            ship: "X-Wing"
+            threat: 3
+            upgrades: [
+                "Instinctive Aim"
+                "Proton Torpedoes"
+                "R2-D2"
+                "Servomotor S-Foils"
+            ]
+        }
+        {
+            id: 78
+            faction: "Rebel Alliance"
+            pilot: "Red Squadron Veteran"
+            ship: "X-Wing"
+            threat: 2
+            upgrades: [
+                "Predator"
+                "R5 Astromech"
+                "Servomotor S-Foils"
+            ]
+        }
+        {
+            id: 79
+            faction: "Rebel Alliance"
+            pilot: "Jek Porkins"
+            ship: "X-Wing"
+            threat: 3
+            upgrades: [
+                "Outmaneuver"
+                "R5-D8"
+                "Afterburners"
+                "Hull Upgrade"
+                "Servomotor S-Foils"
+            ]
+        }
+        {
+            id: 80
+            faction: "Rebel Alliance"
+            pilot: "Blue Squadron Escort"
+            ship: "X-Wing"
+            threat: 2
+            upgrades: [
+                "Proton Torpedoes"
+                "R3 Astromech"
+                "Servomotor S-Foils"
+            ]
+        }
+        {
+            id: 81
+            faction: "Rebel Alliance"
+            pilot: "Wedge Antilles"
+            ship: "X-Wing"
+            threat: 3
+            upgrades: [
+                "Outmaneuver"
+                "Proton Torpedoes"
+                "R4 Astromech"
+                "Shield Upgrade"
+                "Servomotor S-Foils"
+            ]
+        }
+        {
+            id: 82
+            faction: "Rebel Alliance"
+            pilot: "Biggs Darklighter"
+            ship: "X-Wing"
+            threat: 2
+            upgrades: [
+                "Selfless"
+                "Servomotor S-Foils"
+            ]
+        }
+        {
+            id: 83
+            faction: "Rebel Alliance"
+            pilot: "Thane Kyrell"
+            ship: "X-Wing"
+            threat: 3
+            upgrades: [
+                "Elusive"
+                "Ion Torpedoes"
+                "R2 Astromech"
+                "Afterburners"
+                "Hull Upgrade"
+                "Servomotor S-Foils"
+            ]
+        }
+        {
+            id: 84
+            faction: "Rebel Alliance"
+            pilot: "Garven Dreis (X-Wing)"
+            ship: "X-Wing"
+            threat: 2
+            upgrades: [
+                "Servomotor S-Foils"
+            ]
+        }
+        {
+            id: 85
+            faction: "Rebel Alliance"
+            pilot: "Norra Wexley (Y-Wing)"
+            ship: "Y-Wing"
+            threat: 3
+            upgrades: [
+                "Expert Handling"
+                "Ion Cannon Turret"
+                "Veterna Turret Gunner"
+                "R3 Astromech"
+            ]
+        }
+        {
+            id: 86
+            faction: "Rebel Alliance"
+            pilot: "Evaan Verlaine"
+            ship: "Y-Wing"
+            threat: 2
+            upgrades: [
+                "Expert Handling"
+                "Ion Cannon Turret"
+            ]
+        }
+        {
+            id: 87
+            faction: "Rebel Alliance"
+            pilot: "Gold Squadron Veteran"
+            ship: "Y-Wing"
+            threat: 2
+            upgrades: [
+                "Expert Handling"
+                "Proton Torpedoes"
+                "R3 Astromech"
+            ]
+        }
+        {
+            id: 88
+            faction: "Rebel Alliance"
+            pilot: "Horton Salm"
+            ship: "Y-Wing"
+            threat: 3
+            upgrades: [
+                "Outmaneuver"
+                "Ion Cannon Turret"
+                "Veteran Turret Gunner"
+                "R5 Astromech"
+            ]
+        }
+        {
+            id: 89
+            faction: "Rebel Alliance"
+            pilot: '"Dutch" Vander'
+            ship: "Y-Wing"
+            threat: 2
+            upgrades: [
+                "Proton Torpedoes"
+                "R3 Astromech"
+            ]
+        }
+        {
+            id: 90
+            faction: "Rebel Alliance"
+            pilot: "Gray Squadron Bomber"
+            ship: "Y-Wing"
+            threat: 2
+            upgrades: [
+                "Ion Cannon Turret"
+                "Proton Bomb"
+                "R5 Astromech"
+            ]
+        }
+        {
+            id: 91
+            faction: "Rebel Alliance"
+            pilot: "Esege Tuketu"
+            ship: "K-Wing"
+            threat: 3
+            upgrades: [
+                "Trajectory Simulator"
+                "Ion Missiles"
+                "Perceptive Copilot"
+                "Conner Nets"
+                "Proton Bombs"
+                "Advanced SLAM"
+            ]
+        }
+        {
+            id: 92
+            faction: "Rebel Alliance"
+            pilot: "Miranda Doni"
+            ship: "K-Wing"
+            threat: 2
+            upgrades: [
+                "Proton Bombs"
+                "Advanced SLAM"
+            ]
+        }
+        {
+            id: 93
+            faction: "Rebel Alliance"
+            pilot: "Warden Squadron Pilot"
+            ship: "K-Wing"
+            threat: 2
+            upgrades: [
+                "Barrage Rocktes"
+                "Bomblet Generator"
+            ]
+        }
+        {
+            id: 94
+            faction: "Rebel Alliance"
+            pilot: "Braylen Stramm"
+            ship: "B-Wing"
+            threat: 2
+            upgrades: [
+                "Trick Shot"
+                "Jamming Beam"
+            ]
+        }
+        {
+            id: 95
+            faction: "Rebel Alliance"
+            pilot: "Blade Squadron Veteran"
+            ship: "B-Wing"
+            threat: 2
+            upgrades: [
+                "Elusive"
+                "Tractor Beam"
+            ]
+        }
+        {
+            id: 96
+            faction: "Rebel Alliance"
+            pilot: "Ten Numb"
+            ship: "B-Wing"
+            threat: 3
+            upgrades: [
+                "Squad Leader"
+                "Advanced Sensors"
+                "Heavy Laser Cannon"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 97
+            faction: "Rebel Alliance"
+            pilot: "Blue Squadron Pilot"
+            ship: "B-Wing"
+            threat: 2
+            upgrades: [
+                "Advanced Sensors"
+            ]
+        }
+        {
+            id: 98
+            faction: "Rebel Alliance"
+            pilot: "Norra Wexley"
+            ship: "ARC-170"
+            threat: 3
+            upgrades: [
+                "Expert Handling"
+                "Seasoned Navigator"
+                "Veteran Tail Gunner"
+                "R3 Astromech"
+                "Ablative Plating"
+                "Hull Upgrade"
+            ]
+        }
+        {
+            id: 99
+            faction: "Rebel Alliance"
+            pilot: "Garven Dreis"
+            ship: "ARC-170"
+            threat: 3
+            upgrades: [
+                "Expert Handling"
+                "Proton Torpedoes"
+                "Perceptive Copilot"
+                "Veteran Tail Gunner"
+            ]
+        }
+        {
+            id: 100
+            faction: "Rebel Alliance"
+            pilot: "Shara Bey"
+            ship: "ARC-170"
+            threat: 3
+            upgrades: [
+                "Expert Handling"
+                "Proton Torpedoes"
+                "Perceptive Copilot"
+                "R3 Astromech"
+            ]
+        }
+        {
+            id: 101
+            faction: "Rebel Alliance"
+            pilot: "Ibtisam"
+            ship: "ARC-170"
+            threat: 2
+            upgrades: [
+                "Elusive"
+            ]
+        }
+        {
+            id: 102
+            faction: "Rebel Alliance"
+            pilot: "Wullffwarro"
+            ship: "Auzituck Gunship"
+            threat: 3
+            upgrades: [
+                "Selfless"
+                'GNK "Gonk" Droid'
+                "Novice Technician"
+                "Hull Upgrade"
+            ]
+        }
+        {
+            id: 103
+            faction: "Rebel Alliance"
+            pilot: "Lowhhrick"
+            ship: "Auzituck Gunship"
+            threat: 2
+        }
+        {
+            id: 104
+            faction: "Rebel Alliance"
+            pilot: "Kashyyyk Defender"
+            ship: "Auzituck Gunship"
+            threat: 2
+            upgrades: [
+                "Novice Technician"
+            ]
+        }
+        {
+            id: 105
+            skip: true
+        }
+        {
+            id: 106
+            faction: "Rebel Alliance"
+            pilot: "Corran Horn"
+            ship: "E-Wing"
+            threat: 4
+            upgrades: [
+                "Outmaneuver"
+                "Fire-Control System"
+                "Proton Torpedoes"
+                "R2 Astromech"
+                "Afterburners"
+            ]
+        }
+        {
+            id: 107
+            faction: "Rebel Alliance"
+            pilot: "Rogue Squadron Escort"
+            ship: "E-Wing"
+            threat: 3
+            upgrades: [
+                "Predator"
+                "Collision Detector"
+                "Proton Torpedoes"
+                "R3 Astromech"
+            ]
+        }
+        {
+            id: 108
+            faction: "Rebel Alliance"
+            pilot: "Gavin Darklighter"
+            ship: "E-Wing"
+            threat: 3
+            upgrades: [
+                "Crack Shot"
+                "Fire-Control System"
+                "Ion Torpedoes"
+                "R4 Astromech"
+            ]
+        }
+        {
+            id: 109
+            faction: "Rebel Alliance"
+            pilot: "Knave Squadron Escort"
+            ship: "E-Wing"
+            threat: 2
+        }
+        {
+            id: 110
+            faction: "Rebel Alliance"
+            pilot: "Jan Ors"
+            ship: "HWK-290"
+            threat: 3
+            upgrades: [
+                "Trick Shot"
+                "Perceptive Copilot"
+                "Seismic Charges"
+                "Cloaking Device"
+                "Engine Upgrade"
+                "Moldy Crow"
+            ]
+        }
+        {
+            id: 111
+            faction: "Rebel Alliance"
+            pilot: "Roark Garnet"
+            ship: "HWK-290"
+            threat: 2
+            upgrades: [
+                "Elusive"
+                "Seismic Charges"
+                "Hull Upgrade"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 112
+            faction: "Rebel Alliance"
+            pilot: "Kyle Katarn"
+            ship: "HWK-290"
+            threat: 2
+            upgrades: [
+                "Moldy Crow"
+            ]
+        }
+        {
+            id: 113
+            faction: "Rebel Alliance"
+            pilot: "Rebel Scout"
+            ship: "HWK-290"
+            threat: 2
+            upgrades: [
+                "Proton Bombs"
+                "Seismic Charges"
+                "Sabine Wren"
+                "Engine Upgrade"
+            ]
+        }
+        {
+            id: 114
+            faction: "Rebel Alliance"
+            pilot: "Arvel Crynyd"
+            ship: "A-Wing"
+            threat: 2
+            upgrades: [
+                "Intimidation"
+                "Proton Rockets"
+                "Hull Upgrade"
+            ]
+        }
+        {
+            id: 115
+            faction: "Rebel Alliance"
+            pilot: "Green Squadron Pilot"
+            ship: "A-Wing"
+            threat: 2
+            upgrades: [
+                "Daredevil"
+                "Concussion Missiles"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 116
+            faction: "Jake Farrell"
+            pilot: "Green Squadron Pilot"
+            ship: "A-Wing"
+            threat: 2
+            upgrades: [
+                "Outmaneuver"
+                "Cluster Missiles"
+            ]
+        }
+        {
+            id: 117
+            faction: "Rebel Alliance"
+            pilot: "Phoenix Squadron Pilot"
+            suffix: " x2"
+            linkedId: 117
+            ship: "A-Wing"
+            threat: 3
+            upgrades: [
+                "Proton Rockets"
+            ]
+        }
+        {
+            id: 118
+            faction: "Rebel Alliance"
+            pilot: "Fenn Rau (Sheathipede)"
+            ship: "Sheathipede-Class Shuttle"
+            threat: 3
+            upgrades: [
+                "Outmaneuver"
+                "Seasoned Navigator"
+                "R4 Astromech"
+                "Stealth Device"
+                "Phantom"
+            ]
+        }
+        {
+            id: 119
+            faction: "Rebel Alliance"
+            pilot: "Ezra Bridger (Sheathipede)"
+            ship: "Sheathipede-Class Shuttle"
+            threat: 2
+            upgrades: [
+                "Heightened Perception"
+                '"Chopper" (Astromech)'
+                "Afterburners"
+                "Phantom"
+            ]
+        }
+        {
+            id: 120
+            faction: "Rebel Alliance"
+            pilot: "Captain Rex"
+            ship: "TIE Fighter"
+            threat: 2
+            upgrades: [
+                "Elusive"
+                "Juke"
+                "Stealth Device"
+            ]
+        }
+        {
+            id: 121
+            faction: "Rebel Alliance"
+            pilot: "Sabine Wren (TIE Fighter)"
+            ship: "TIE Fighter"
+            threat: 2
+            upgrades: [
+                "Outmaneuver"
+                "Conner Nets"
+                "Hull Upgrade"
+            ]
+        }
+        {
+            id: 122
+            faction: "Rebel Alliance"
+            pilot: "Ezra Bridger (TIE Fighter)"
+            ship: "TIE Fighter"
+            threat: 2
+            upgrades: [
+                "Supernatural Reflexes"
+                '"Zeb" Orrelios'
+                "Hull Upgrade"
+            ]
+        }
+        {
+            id: 123
+            faction: "Rebel Alliance"
+            pilot: '"Zeb" Orrelios (TIE Fighter)'
+            ship: "TIE Fighter"
+            threat: 1
+        }
+        {
+            id: 124
+            faction: "Rebel Alliance"
+            pilot: "Cassian Andor"
+            ship: "U-Wing"
+            threat: 3
+            upgrades: [
+                "Fire-Control System"
+                "Jyn Erso"
+                "Baze Malbus"
+                "Pivot Wing"
+            ]
+        }
+        {
+            id: 125
+            faction: "Rebel Alliance"
+            pilot: "Bodhi Rook"
+            ship: "U-Wing"
+            threat: 2
+            upgrades: [
+                "Cassian Andor"
+                "Pivot Wing"
+            ]
+        }
+        {
+            id: 126
+            faction: "Rebel Alliance"
+            pilot: "Heff Tobber"
+            ship: "U-Wing"
+            threat: 3
+            upgrades: [
+                "Fire-Control System"
+                "Ion Cannon Turret"
+                "Bistan"
+                "Perceptive Copilot"
+                "Pivot Wing"
+            ]
+        }
+        {
+            id: 127
+            faction: "Rebel Alliance"
+            pilot: "Blue Squadron Scout"
+            ship: "U-Wing"
+            threat: 2
+            upgrades: [
+                "Advanced Sensors"
+                "Tactical Officer"
+                "Pivot Wing"
+            ]
+        }
+        {
+            id: 128
+            faction: "Rebel Alliance"
+            pilot: "Han Solo"
+            ship: "YT-1300"
+            threat: 4
+            upgrades: [
+                "Lone Wolf"
+                "Chewbacca"
+                "Millennium Falcon"
+            ]
+        }
+        {
+            id: 129
+            faction: "Rebel Alliance"
+            pilot: "Chewbacca"
+            ship: "YT-1300"
+            threat: 6
+            upgrades: [
+                "Predator"
+                "C-3PO"
+                "Leia Organa"
+                "R2-D2"
+                "Han Solo"
+                "Luke Skywalker"
+                "Engine Upgrade"
+                "Millennium Falcon"
+            ]
+        }
+        {
+            id: 130
+            faction: "Rebel Alliance"
+            pilot: "Lando Calrissian"
+            ship: "YT-1300"
+            threat: 5
+            upgrades: [
+                "Swarm Tactics"
+                "Concussion Missiles"
+                "Nien Nunb"
+                "Engine Upgrade"
+                "Millennium Falcon"
+            ]
+        }
+        {
+            id: 131
+            faction: "Rebel Alliance"
+            pilot: "Outer Rim Smuggler"
+            ship: "YT-1300"
+            threat: 4
+            upgrades: [
+                "Homing Missiles"
+                "Novice Technician"
+                "Veteran Turret Gunner"
+                "Feedback Array"
+                "Static Discharge Vanes"
+            ]
+        }
+        {
+            id: 132
+            faction: "Rebel Alliance"
+            pilot: "Airen Cracken"
+            ship: "Z-95 Headhunter"
+            threat: 2
+            upgrades: [
+                "Swarm Tactics"
+                "Cluster Missiles"
+                "Hull Upgrade"
+            ]
+        }
+        {
+            id: 133
+            faction: "Rebel Alliance"
+            pilot: "Bandit Squadron Pilot"
+            ship: "Z-95 Headhunter"
+            threat: 1
+        }
+        {
+            id: 134
+            faction: "Rebel Alliance"
+            pilot: "Lieutenant Blount"
+            ship: "Z-95 Headhunter"
+            threat: 2
+            upgrades: [
+                "Outmaneuver"
+                "Proton Rockets"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 135
+            faction: "Rebel Alliance"
+            pilot: "Tala Squadron Pilot"
+            ship: "Z-95 Headhunter"
+            threat: 1
+            upgrades: [
+                "Selfless"
+            ]
+        }
+        {
+            id: 136
+            faction: "Rebel Alliance"
+            pilot: "Hera Syndulla"
+            ship: "Attack Shuttle"
+            threat: 2
+            upgrades: [
+                "Elusive"
+                "Ion Cannon Turret"
+                "Phantom"
+            ]
+        }
+        {
+            id: 137
+            faction: "Rebel Alliance"
+            pilot: "Sabine Wren"
+            ship: "Attack Shuttle"
+            threat: 2
+            upgrades: [
+                "Outmaneuver"
+                "Dorsal Turret"
+                "Phantom"
+            ]
+        }
+        {
+            id: 138
+            faction: "Rebel Alliance"
+            pilot: "Dash Rendar"
+            ship: "YT-2400"
+            threat: 5
+            upgrades: [
+                "Expert Handling"
+                "Trick Shot"
+                "Perceptive Copilot"
+                "Rigged Cargo Chute"
+                "Outrider"
+            ]
+        }
+        {
+            id: 139
+            faction: "Rebel Alliance"
+            pilot: '"Leebo"'
+            ship: "YT-2400"
+            threat: 4
+            upgrades: [
+                "Outrider"
+                "Inertial Dampeners"
+            ]
+        }
+        {
+            id: 140
+            faction: "Rebel Alliance"
+            pilot: "Wild Space Fringer"
+            ship: "YT-2400"
+            threat: 4
+            upgrades: [
+                "Concussion Missiles"
+                "Veteran Turret Gunner"
+                "Contraband Cybernetics"
+            ]
+        }
+        {
+            id: 141
+            faction: "Rebel Alliance"
+            pilot: "Magva Yarro"
+            ship: "U-Wing"
+            threat: 3
+            upgrades: [
+                "Elusive"
+                "Saw Gerrera"
+                "Advanced Sensors"
+                "Shield Upgrade"
+                "Pivot Wing"
+            ]
+        }
+        {
+            id: 142
+            faction: "Rebel Alliance"
+            pilot: "Saw Gerrera"
+            ship: "U-Wing"
+            threat: 2
+            upgrades: [
+                "Magva Yarro"
+                "Pivot Wing"
+            ]
+        }
+        {
+            id: 143
+            faction: "Rebel Alliance"
+            pilot: "Benthic Two Tubes"
+            ship: "U-Wing"
+            threat: 2
+            upgrades: [
+                "Advanced Sensors"
+                "Pivot Wing"
+            ]
+        }
+        {
+            id: 144
+            faction: "Rebel Alliance"
+            pilot: "Partisan Renegade"
+            ship: "U-Wing"
+            threat: 2
+            upgrades: [
+                "Advanced Sensors"
+                "Deadman's Switch"
+                "Pivot Wing"
+            ]
+        }
+        {
+            id: 145
+            faction: "Rebel Alliance"
+            pilot: "Kullbee Sperado"
+            ship: "X-Wing"
+            threat: 3
+            upgrades: [
+                "Outmaneuver"
+                "R2 Astromech"
+                "Deadman's Switch"
+                "Afterburners"
+                "Hull Upgrade"
+                "Servomotor S-Foils"
+            ]
+        }
+        {
+            id: 146
+            faction: "Rebel Alliance"
+            pilot: "Edrio Two Tubes"
+            ship: "X-Wing"
+            threat: 2
+            upgrades: [
+                "Trick Shot"
+                "R4 Astromech"
+                "Deadman's Switch"
+                "Servomotor S-Foils"
+            ]
+        }
+        {
+            id: 147
+            faction: "Rebel Alliance"
+            pilot: "Leevan Tenza"
+            ship: "X-Wing"
+            threat: 3
+            upgrades: [
+                "Elusive"
+                "R2 Astromech"
+                "Deadman's Switch"
+                "Afterburners"
+                "Shield Upgrade"
+                "Servomotor S-Foils"
+            ]
+        }
+        {
+            id: 148
+            faction: "Rebel Alliance"
+            pilot: "Cavern Angels Zealot"
+            ship: "X-Wing"
+            threat: 2
+            upgrades: [
+                "R2 Astromech"
+                "Deadman's Switch"
+                "Servomotor S-Foils"
+            ]
+        }
+        {
+            id: 149
+            faction: "Rebel Alliance"
+            pilot: "Kanan Jarrus"
+            suffix: " + Phantom"
+            linkedId: 150
+            ship: "VCX-100"
+            threat: 6
+            upgrades: [
+                "Ion Cannon Turret"
+                "Hera Syndulla"
+                '"Chopper" (Crew)'
+                "Ezra Bridger"
+                "Ghost"
+            ]
+        }
+        {
+            id: 150
+            faction: "Rebel Alliance"
+            pilot: '"Zeb" Orrelios'
+            suffix: " + Ghost"
+            linkedId: 149
+            ship: "Attack Shuttle"
+            threat: 6
+            upgrades: [
+                "Phantom"
+            ]
+        }
+        {
+            id: 151
+            faction: "Rebel Alliance"
+            pilot: "Hera Syndulla (VCX-100)"
+            suffix: " + Phantom"
+            linkedId: 152
+            ship: "VCX-100"
+            threat: 6
+            upgrades: [
+                "Elusive"
+                "Dorsal Turret"
+                "Kanan Jarrus"
+                "Ghost"
+            ]
+        }
+        {
+            id: 152
+            faction: "Rebel Alliance"
+            pilot: "Ezra Bridger"
+            suffix: " + Ghost"
+            linkedId: 151
+            ship: "Attack Shuttle"
+            threat: 6
+            upgrades: [
+                "Supernatural Reflexes"
+                "Dorsal Turret"
+                "Phantom"
+            ]
+        }
+        {
+            id: 153
+            faction: "Rebel Alliance"
+            pilot: '"Chopper"'
+            suffix: " + Phantom"
+            linkedId: 154
+            ship: "VCX-100"
+            threat: 6
+            upgrades: [
+                "Ion Cannon Turret"
+                '"Zeb" Orrelios'
+                "Ghost"
+            ]
+        }
+        {
+            id: 154
+            faction: "Rebel Alliance"
+            pilot: "AP-5"
+            suffix: " + Ghost"
+            linkedId: 153
+            ship: "Sheathipede-Class Shuttle"
+            threat: 6
+            upgrades: [
+                "R4 Astromech"
+                "Phantom"
+            ]
+        }
+        {
+            id: 155
+            faction: "Rebel Alliance"
+            pilot: "Lothal Rebel"
+            suffix: " + Phantom"
+            linkedId: 156
+            ship: "VCX-100"
+            threat: 4
+            upgrades: [
+                "Dorsal Turret"
+                "Lando Calrissian"
+                "Ghost"
+            ]
+        }
+        {
+            id: 156
+            faction: "Rebel Alliance"
+            pilot: '"Zeb" Orrelios (Sheathipede)'
+            suffix: " + Ghost"
+            linkedId: 155
+            ship: "Sheathipede-Class Shuttle"
+            threat: 4
+            upgrades: [
+                "R5 Astromech"
+                "Phantom"
+            ]
+        }
+        {
+            id: 157
+            faction: "First Order"
+            pilot: '"Midnight"'
+            ship: "TIE/FO Fighter"
+            threat: 2
+            upgrades: [
+                "Afterburners"
+            ]
+        }
+        {
+            id: 158
+            faction: "First Order"
+            pilot: '"Static"'
+            ship: "TIE/FO Fighter"
+            threat: 2
+            upgrades: [
+                "Outmaneuver"
+            ]
+        }
+        {
+            id: 159
+            faction: "First Order"
+            pilot: "Omega Squadron Ace"
+            ship: "TIE/FO Fighter"
+            threat: 2
+            upgrades: [
+                "Elusive"
+                "Fanatical"
+                "Hull Upgrade"
+            ]
+        }
+        {
+            id: 160
+            faction: "First Order"
+            pilot: '"Scorch"'
+            ship: "TIE/FO Fighter"
+            threat: 2
+            upgrades: [
+                "Fanatical"
+                "Hull Upgrade"
+            ]
+        }
+        {
+            id: 161
+            faction: "First Order"
+            pilot: '"Longshot"'
+            ship: "TIE/FO Fighter"
+            threat: 2
+            upgrades: [
+                "Elusive"
+                "Predator"
+            ]
+        }
+        {
+            id: 162
+            faction: "First Order"
+            pilot: "Zeta Squadron Pilot"
+            ship: "TIE/FO Fighter"
+            threat: 2
+            upgrades: [
+                "Advanced Optics"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 163
+            faction: "First Order"
+            pilot: '"Muse"'
+            ship: "TIE/FO Fighter"
+            threat: 2
+            upgrades: [
+                "Squad Leader"
+                "Advanced Optics"
+            ]
+        }
+        {
+            id: 164
+            faction: "First Order"
+            pilot: '"Null"'
+            ship: "TIE/FO Fighter"
+            threat: 2
+            upgrades: [
+                "Swarm Tactics"
+                "Afterburners"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 165
+            faction: "First Order"
+            pilot: "Epsilon Squadron Cadet"
+            ship: "TIE/FO Fighter"
+            threat: 2
+            upgrades: [
+                "Targeting Synchronizer"
+                "Afterburners"
+            ]
+        }
+        {
+            id: 166
+            faction: "First Order"
+            pilot: "Commander Malarus"
+            ship: "TIE/FO Fighter"
+            threat: 2
+            upgrades: [
+                "Advanced Optics"
+            ]
+        }
+        {
+            id: 167
+            faction: "First Order"
+            pilot: "TN-3465"
+            ship: "TIE/FO Fighter"
+            threat: 2
+            upgrades: [
+                "Targeting Synchronizer"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 168
+            faction: "First Order"
+            pilot: "Lieutenant Rivas"
+            ship: "TIE/FO Fighter"
+            threat: 1
+            upgrades: [
+            ]
+        }
+        {
+            id: 169
+            faction: "First Order"
+            pilot: '"Quickdraw"'
+            ship: "TIE/SF Fighter"
+            threat: 3
+            upgrades: [
+                "Juke"
+                "Collision Detector"
+                "Hotshot Gunner"
+                "Afterburners"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 170
+            faction: "First Order"
+            pilot: "Zeta Squadron Survivor"
+            ship: "TIE/SF Fighter"
+            threat: 2
+            upgrades: [
+                "Pattern Analyzer"
+                "Ion Missiles"
+                "Special Forces Gunner"
+            ]
+        }
+        {
+            id: 171
+            faction: "First Order"
+            pilot: '"Backdraft"'
+            ship: "TIE/SF Fighter"
+            threat: 3
+            upgrades: [
+                "Pattern Analyzer"
+                "Collision Detector"
+                "Ion Missiles"
+                "Special Forces Gunner"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 172
+            faction: "First Order"
+            pilot: "Omega Squadron Expert"
+            ship: "TIE/SF Fighter"
+            threat: 2
+            upgrades: [
+                "Juke"
+                "Special Forces Gunner"
+            ]
+        }
+        {
+            id: 173
+            faction: "First Order"
+            pilot: "Kylo Ren"
+            ship: "TIE/VN Silencer"
+            threat: 4
+            upgrades: [
+                "Hate"
+                "Predictive Shot"
+                "Primed Thrusters"
+                "Advanced Proton Torpedoes"
+            ]
+        }
+        {
+            id: 174
+            faction: "First Order"
+            pilot: '"Recoil"'
+            ship: "TIE/VN Silencer"
+            threat: 3
+            upgrades: [
+                "Predator"
+                "Proton Torpedoes"
+            ]
+        }
+        {
+            id: 175
+            faction: "First Order"
+            pilot: "First Order Test Pilot"
+            ship: "TIE/VN Silencer"
+            threat: 3
+            upgrades: [
+                "Outmaneuver"
+                "Hull Upgrade"
+            ]
+        }
+        {
+            id: 176
+            faction: "First Order"
+            pilot: '"Blackout"'
+            ship: "TIE/VN Silencer"
+            threat: 3
+            upgrades: [
+                "Elusive"
+                "Afterburners"
+            ]
+        }
+        {
+            id: 177
+            faction: "First Order"
+            pilot: '"Avenger"'
+            ship: "TIE/VN Silencer"
+            threat: 3
+            upgrades: [
+                "Primed Thrusters"
+                "Advanced Proton Torpedoes"
+            ]
+        }
+        {
+            id: 178
+            faction: "First Order"
+            pilot: "Sienar-Jaemus Engineer"
+            ship: "TIE/VN Silencer"
+            threat: 2
+        }
+        {
+            id: 179
+            faction: "First Order"
+            pilot: "Lieutenant Tavson"
+            ship: "Upsilon-Class Command Shuttle"
+            threat: 4
+            upgrades: [
+                "Advanced Sensors"
+                "Ion Cannon"
+                "Kylo Ren"
+                "Supreme Leader Snoke"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 180
+            faction: "First Order"
+            pilot: "Lieutenant Dormitz"
+            ship: "Upsilon-Class Command Shuttle"
+            threat: 3
+            upgrades: [
+                "Biohexacrypt Codes"
+                "Hyperspace Tracking Data"
+                "Tractor Beam"
+            ]
+        }
+        {
+            id: 181
+            faction: "First Order"
+            pilot: "Starkiller Base Pilot"
+            ship: "Upsilon-Class Command Shuttle"
+            threat: 2
+        }
+        {
+            id: 182
+            faction: "First Order"
+            pilot: "Major Stridan"
+            ship: "Upsilon-Class Command Shuttle"
+            threat: 4
+            upgrades: [
+                "Biohexacrypt Codes"
+                "Pattern Analyzer"
+                "Tractor Beam"
+                "Captain Phasma"
+                "General Hux"
+            ]
+        }
+        {
+            id: 183
+            faction: "First Order"
+            pilot: "Captain Cardinal"
+            ship: "Upsilon-Class Command Shuttle"
+            threat: 3
+            upgrades: [
+                "Ion Cannon"
+                "Petty Officer Thanisson"
+            ]
+        }
+        {
+            id: 184
+            faction: "First Order"
+            pilot: "Petty Officer Thanisson"
+            ship: "Upsilon-Class Command Shuttle"
+            threat: 3
+            upgrades: [
+                "Captain Phasma"
+                "Tactical Scrambler"
+            ]
+        }
+        {
+            id: 185
+            faction: "Scum and Villainy"
+            pilot: "Boba Fett"
+            ship: "Firespray-31"
+            threat: 4
+            upgrades: [
+                "Lone Wolf"
+                "Perceptive Copilot"
+                "Inertial Dampeners"
+                "Seismic Charge"
+                "Slave I"
+            ]
+        }
+        {
+            id: 186
+            faction: "Scum and Villainy"
+            pilot: "Kath Scarlet"
+            ship: "Firespray-31"
+            threat: 3
+            upgrades: [
+                "Marauder"
+            ]
+        }
+        {
+            id: 187
+            faction: "Scum and Villainy"
+            pilot: "Krassis Trelix"
+            ship: "Firespray-31"
+            threat: 3
+            upgrades: [
+                "Concussion Missiles"
+            ]
+        }
+        {
+            id: 188
+            faction: "Scum and Villainy"
+            pilot: "Emon Azzameen"
+            ship: "Firespray-31"
+            threat: 4
+            upgrades: [
+                "Elusive"
+                "Perceptive Copilot"
+                "Inertial Dampeners"
+                "Proximity Mines"
+                "Seismic Charge"
+                "Andrasta"
+            ]
+        }
+        {
+            id: 189
+            faction: "Scum and Villainy"
+            pilot: "Koshka Frost"
+            ship: "Firespray-31"
+            threat: 3
+            upgrades: [
+                "Perceptive Copilot"
+            ]
+        }
+        {
+            id: 190
+            faction: "Scum and Villainy"
+            pilot: "Bounty Hunter"
+            ship: "Firespray-31"
+            threat: 3
+            upgrades: [
+                "Perceptive Copilot"
+                "Inertial Dampeners"
+                "Seismic Charge"
+            ]
+        }
+        {
+            id: 191
+            faction: "Scum and Villainy"
+            pilot: "Fenn Rau"
+            ship: "Fang Fighter"
+            threat: 3
+            upgrades: [
+                "Daredevil"
+                "Afterburners"
+                "Hull Upgrade"
+            ]
+        }
+        {
+            id: 192
+            faction: "Scum and Villainy"
+            pilot: "Kad Solus"
+            ship: "Fang Fighter"
+            threat: 2
+            upgrades: [
+                "Fearless"
+            ]
+        }
+        {
+            id: 193
+            faction: "Scum and Villainy"
+            pilot: "Zealous Recruit"
+            ship: "Fang Fighter"
+            threat: 2
+            upgrades: [
+                "Proton Torpedoes"
+            ]
+        }
+        {
+            id: 194
+            faction: "Scum and Villainy"
+            pilot: "Joy Rekkoff"
+            ship: "Fang Fighter"
+            threat: 3
+            upgrades: [
+                "Predator"
+                "Ion Torpedoes"
+                "Afterburners"
+                "Hull Upgrade"
+            ]
+        }
+        {
+            id: 195
+            faction: "Scum and Villainy"
+            pilot: "Old Teroch"
+            ship: "Fang Fighter"
+            threat: 2
+        }
+        {
+            id: 196
+            faction: "Scum and Villainy"
+            pilot: "Skull Squadron Pilot"
+            ship: "Fang Fighter"
+            threat: 2
+            upgrades: [
+                "Fearless"
+            ]
+        }
+        {
+            id: 197
+            faction: "Scum and Villainy"
+            pilot: "Ahhav"
+            ship: "Mining Guild TIE Fighter"
+            threat: 2
+            upgrades: [
+                "Elusive"
+                "Afterburners"
+                "Hull Upgrade"
+            ]
+        }
+        {
+            id: 198
+            faction: "Scum and Villainy"
+            pilot: "Mining Guild Surveyor"
+            ship: "Mining Guild TIE Fighter"
+            threat: 2
+            upgrades: [
+                "Swarm Tactics"
+                "Trick Shot"
+                "Shield Upgrade"
+                "Static Discharge Vanes"
+            ]
+        }
+        {
+            id: 199
+            faction: "Scum and Villainy"
+            pilot: "Overseer Yushyn"
+            ship: "Mining Guild TIE Fighter"
+            threat: 1
+        }
+        {
+            id: 200
+            faction: "Scum and Villainy"
+            pilot: "Captain Seevor"
+            ship: "Mining Guild TIE Fighter"
+            threat: 2
+            upgrades: [
+                "Outmaneuver"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 201
+            faction: "Scum and Villainy"
+            pilot: "Foreman Proach"
+            ship: "Mining Guild TIE Fighter"
+            threat: 2
+            upgrades: [
+                "Predator"
+                "Swarm Tactics"
+                "Hull Upgrade"
+            ]
+        }
+        {
+            id: 202
+            faction: "Scum and Villainy"
+            pilot: "Mining Guild Sentry"
+            ship: "Mining Guild TIE Fighter"
+            threat: 1
+        }
+        {
+            id: 203
+            faction: "Scum and Villainy"
+            pilot: "Ketsu Onyo"
+            ship: "Lancer-Class Pursuit Craft"
+            threat: 4
+            upgrades: [
+                "Outmaneuver"
+                "Rigged Cargo Chute"
+                "Shield Upgrade"
+                "Shadow Caster"
+            ]
+        }
+        {
+            id: 204
+            faction: "Scum and Villainy"
+            pilot: "Sabine Wren (Scum)"
+            ship: "Lancer-Class Pursuit Craft"
+            threat: 3
+            upgrades: [
+                "Fearless"
+                "Ketsu Onyo"
+                "Shadow Caster"
+            ]
+        }
+        {
+            id: 205
+            faction: "Scum and Villainy"
+            pilot: "Asajj Ventress"
+            ship: "Lancer-Class Pursuit Craft"
+            threat: 4
+            upgrades: [
+                "Sense"
+                "Veteran Turret Gunner"
+                "Deadman's Switch"
+                "Inertial Dampeners"
+            ]
+        }
+        {
+            id: 206
+            faction: "Scum and Villainy"
+            pilot: "Shadowport Hunter"
+            ship: "Lancer-Class Pursuit Craft"
+            threat: 3
+            upgrades: [
+                "Maul"
+                "Contraband Cybernetics"
+            ]
+        }
+        {
+            id: 207
+            faction: "Scum and Villainy"
+            pilot: "Talonbane Cobra"
+            ship: "Kihraxz Fighter"
+            threat: 3
+            upgrades: [
+                "Outmaneuver"
+                "Cluster Missiles"
+                "Inertial Dampeners"
+                "Afterburners"
+                "Electronic Baffle"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 208
+            faction: "Scum and Villainy"
+            pilot: "Viktor Hel"
+            ship: "Kihraxz Fighter"
+            threat: 2
+            upgrades: [
+                "Crack Shot"
+                "Stealth Device"
+            ]
+        }
+        {
+            id: 209
+            faction: "Scum and Villainy"
+            pilot: "Graz"
+            ship: "Kihraxz Fighter"
+            threat: 3
+            upgrades: [
+                "Outmaneuver"
+                "Concussion Missiles"
+                "Contraband Cybernetics"
+                "Afterburners"
+            ]
+        }
+        {
+            id: 210
+            faction: "Scum and Villainy"
+            pilot: "Black Sun Ace"
+            ship: "Kihraxz Fighter"
+            threat: 2
+            upgrades: [
+                "Predator"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 211
+            faction: "Scum and Villainy"
+            pilot: "Captain Jostero"
+            ship: "Kihraxz Fighter"
+            threat: 3
+            upgrades: [
+                "Ion Missiles"
+                "Munitions Failsafe"
+            ]
+        }
+        {
+            id: 212
+            faction: "Scum and Villainy"
+            pilot: "Cartel Marauder"
+            ship: "Kihraxz Fighter"
+            threat: 2
+            upgrades: [
+                "Concussion Missiles"
+                "Hull Upgrade"
+                "Munitions Failsafe"
+            ]
+        }
+        {
+            id: 213
+            faction: "Scum and Villainy"
+            pilot: "Kavil"
+            ship: "Y-Wing"
+            threat: 3
+            upgrades: [
+                "Expert Handling"
+                "Dorsal Turret"
+                '"Genius"'
+                "Proton Bombs"
+                "Afterburners"
+            ]
+        }
+        {
+            id: 214
+            faction: "Scum and Villainy"
+            pilot: "Hired Gun"
+            ship: "Y-Wing"
+            threat: 2
+            upgrades: [
+                "Crack Shot"
+                "Ion Cannon Turret"
+                "Veteran Turret Gunner"
+                "R3 Astromech"
+                "Conner Nets"
+            ]
+        }
+        {
+            id: 215
+            faction: "Scum and Villainy"
+            pilot: "Drea Renthal"
+            ship: "Y-Wing"
+            threat: 2
+            upgrades: [
+                "Expert Handling"
+                "Ion Cannon Turret"
+                "Hotshot Gunner"
+            ]
+        }
+        {
+            id: 216
+            faction: "Scum and Villainy"
+            pilot: "Crymorah Goon"
+            ship: "Y-Wing"
+            threat: 2
+            upgrades: [
+                "Dorsal Turret"
+                "Ion Torpedoes"
+                "R3 Astromech"
+                "Inertial Dampeners"
+                "Proximity Mines"
+            ]
+        }
+        {
+            id: 217
+            faction: "Scum and Villainy"
+            pilot: "Dace Bonearm"
+            ship: "HWK-290"
+            threat: 2
+            upgrades: [
+                "Feedback Array"
+                "Conner Nets"
+                "Static Discharge Vanes"
+            ]
+        }
+        {
+            id: 218
+            faction: "Scum and Villainy"
+            pilot: "Palob Godalhi"
+            ship: "HWK-290"
+            threat: 2
+            upgrades: [
+                "Debris Gambit"
+                "Juke"
+                "Contraband Cybernetics"
+                "Stealth Device"
+            ]
+        }
+        {
+            id: 219
+            faction: "Scum and Villainy"
+            pilot: "Torkil Mux"
+            ship: "HWK-290"
+            threat: 2
+            upgrades: [
+                "Cloaking Device"
+                "Proximity Mines"
+            ]
+        }
+        {
+            id: 220
+            faction: "Scum and Villainy"
+            pilot: "Spice Runner"
+            suffix: " (x2)"
+            ship: "HWK-290"
+            threat: 3
+            linkedId: 220
+            upgrades: [
+                "Deadman's Switch"
+                "Proton Bombs"
+                "Electronic Baffle"
+            ]
+        }
+        {
+            id: 221
+            faction: "Scum and Villainy"
+            pilot: "Constable Zuvio"
+            ship: "Quadjumper"
+            threat: 2
+            upgrades: [
+                "Outmaneuver"
+                "Rigged Cargo Chute"
+                "Conner Nets"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 222
+            faction: "Scum and Villainy"
+            pilot: "Jakku Gunrunner"
+            suffix: " (x2)"
+            linkedId: 222
+            ship: "Quadjumper"
+            threat: 3
+            upgrades: [
+                "Novice Technician"
+                "Proximity Mines"
+                "Electronic Baffle"
+            ]
+        }
+        {
+            id: 223
+            faction: "Scum and Villainy"
+            pilot: "Sarco Plank"
+            ship: "Quadjumper"
+            threat: 2
+            upgrades: [
+                "Unkar Plutt"
+                "Feedback Array"
+                "Seismic Charges"
+                "Hull Upgrade"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 224
+            faction: "Scum and Villainy"
+            pilot: "Unkar Plutt"
+            ship: "Quadjumper"
+            threat: 2
+            upgrades: [
+                "Novice Technician"
+                "Contraband Cybernetics"
+                "Proximity Mines"
+                "Afterburners"
+            ]
+        }
+        {
+            id: 225
+            faction: "Scum and Villainy"
+            pilot: "Prince Xizor"
+            ship: "StarViper"
+            threat: 3
+            upgrades: [
+                "Predator"
+                "Fire-Control System"
+                "Shield Upgrade"
+                "Virago"
+            ]
+        }
+        {
+            id: 226
+            faction: "Scum and Villainy"
+            pilot: "Black Sun Enforcer"
+            ship: "StarViper"
+            threat: 2
+            upgrades: [
+                "Collision Detector"
+            ]
+        }
+        {
+            id: 227
+            faction: "Scum and Villainy"
+            pilot: "Guri"
+            ship: "StarViper"
+            threat: 3
+            upgrades: [
+                "Daredevil"
+                "Advanced Sensors"
+                "Advanced Proton Torpedoes"
+            ]
+        }
+        {
+            id: 228
+            faction: "Scum and Villainy"
+            pilot: "Dalan Oberos (StarViper)"
+            ship: "StarViper"
+            threat: 3
+            upgrades: [
+                "Outmaneuver"
+                "Fire-Control System"
+                "Proton Torpedoes"
+                "Contraband Cybernetics"
+            ]
+        }
+        {
+            id: 229
+            faction: "Scum and Villainy"
+            pilot: "Black Sun Assassin"
+            ship: "StarViper"
+            threat: 2
+            upgrades: [
+                "Fearless"
+            ]
+        }
+        {
+            id: 230
+            faction: "Scum and Villainy"
+            pilot: "Serissu"
+            ship: "M3-A Interceptor"
+            threat: 2
+            upgrades: [
+                "Stealth Device"
+            ]
+        }
+        {
+            id: 231
+            faction: "Scum and Villainy"
+            pilot: "Genesis Red"
+            ship: "M3-A Interceptor"
+            threat: 2
+            upgrades: [
+                "Juke"
+                "Concussion Missiles"
+                "Munitions Failsafe"
+            ]
+        }
+        {
+            id: 232
+            faction: "Scum and Villainy"
+            pilot: "Quinn Jast"
+            ship: "M3-A Interceptor"
+            threat: 2
+            upgrades: [
+                "Crack Shot"
+                "Advanced Proton Torpedoes"
+                "Afterburners"
+            ]
+        }
+        {
+            id: 233
+            faction: "Scum and Villainy"
+            pilot: "Laetin A'shera"
+            ship: "M3-A Interceptor"
+            threat: 2
+            upgrades: [
+                "Juke"
+                "Cluster Missiles"
+                "Munitions Failsafe"
+                "Stealth Device"
+            ]
+        }
+        {
+            id: 234
+            faction: "Scum and Villainy"
+            pilot: "Inaldra"
+            ship: "M3-A Interceptor"
+            threat: 2
+            upgrades: [
+                "Ion Cannon"
+                "Hull Upgrade"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 235
+            faction: "Scum and Villainy"
+            pilot: "Tansarii Point Veteran"
+            suffix: " (x2)"
+            linkedId: 235
+            ship: "M3-A Interceptor"
+            threat: 3
+            upgrades: [
+                "Crack Shot"
+                "Heavy Laser Cannon"
+            ]
+        }
+        {
+            id: 236
+            faction: "Scum and Villainy"
+            pilot: "Sunny Bounder"
+            ship: "M3-A Interceptor"
+            threat: 2
+            upgrades: [
+                "Predator"
+                "Cluster Missiles"
+                "Afterburners"
+            ]
+        }
+        {
+            id: 237
+            faction: "Scum and Villainy"
+            pilot: "Cartel Spacer"
+            suffix: " (x2)"
+            linkedId: 237
+            ship: "M3-A Interceptor"
+            threat: 3
+            upgrades: [
+                "Ion Torpedoes"
+                "Munitions Failsafe"
+            ]
+        }
+        {
+            id: 238
+            faction: "Scum and Villainy"
+            pilot: "Tel Trevura"
+            ship: "JumpMaster 5000"
+            threat: 3
+            upgrades: [
+                "Expert Handling"
+                'GNK "Gonk" Droid'
+                "Proton Torpedoes"
+                "Deadman's Switch"
+            ]
+        }
+        {
+            id: 239
+            faction: "Scum and Villainy"
+            pilot: "Contracted Scout"
+            ship: "JumpMaster 5000"
+            threat: 2
+            upgrades: [
+                "Ion Torpedoes"
+                "Inertial Dampeners"
+            ]
+        }
+        {
+            id: 240
+            faction: "Scum and Villainy"
+            pilot: "Dengar"
+            ship: "JumpMaster 5000"
+            threat: 3
+            upgrades: [
+                "Expert Handling"
+                "Proton Torpedoes"
+                "R4 Astromech"
+                "Contraband Cybernetics"
+                "Punishing One"
+            ]
+        }
+        {
+            id: 241
+            faction: "Scum and Villainy"
+            pilot: "Manaroo"
+            ship: "JumpMaster 5000"
+            threat: 3
+            upgrades: [
+                "Intimidation"
+                "Perceptive Copilot"
+                "Proton Torpedoes"
+                "Feedback Array"
+                "Static Discharge Vanes"
+            ]
+        }
+        {
+            id: 242
+            faction: "Scum and Villainy"
+            pilot: "N'dru Suhlak"
+            ship: "Z-95 Headhunter"
+            threat: 2
+            upgrades: [
+                "Lone Wolf"
+                "Homing Missiles"
+                "Cloaking Device"
+                "Hull Upgrade"
+            ]
+        }
+        {
+            id: 243
+            faction: "Scum and Villainy"
+            pilot: "Black Sun Soldier"
+            suffix: " (x2)"
+            linkedId: 243
+            ship: "Z-95 Headhunter"
+            threat: 3
+            upgrades: [
+                "Expert Handling"
+                "Concussion Missiles"
+                "Deadman's Switch"
+                "Hull Upgrade"
+            ]
+        }
+        {
+            id: 244
+            faction: "Scum and Villainy"
+            pilot: "Kaa'to Leeachos"
+            ship: "Z-95 Headhunter"
+            threat: 2
+            upgrades: [
+                "Expert Handling"
+                "Concussion Missiles"
+                "Contraband Cybernetics"
+                "Afterburners"
+            ]
+        }
+        {
+            id: 245
+            faction: "Scum and Villainy"
+            pilot: "Binayre Pirate"
+            ship: "Z-95 Headhunter"
+            threat: 1
+        }
+        {
+            id: 246
+            faction: "Scum and Villainy"
+            pilot: "4-LOM"
+            ship: "G-1A Starfighter"
+            threat: 3
+            upgrades: [
+                "Elusive"
+                "Advanced Sensors"
+                "0-0-0"
+                "Zuckus"
+                "BT-1"
+                "Mist Hunter"
+            ]
+        }
+        {
+            id: 247
+            faction: "Scum and Villainy"
+            pilot: "Zuckuss"
+            ship: "G-1A Starfighter"
+            threat: 2
+            upgrades: [
+                "Lone Wolf"
+                "Tractor Beam"
+                "4-LOM"
+                "Mist Hunter"
+            ]
+        }
+        {
+            id: 248
+            faction: "Scum and Villainy"
+            pilot: "Gand Findsman"
+            ship: "G-1A Starfighter"
+            threat: 2
+            upgrades: [
+                "Fire-Control System"
+                "Freelancer Slicer"
+                "Deadman's Switch"
+                "Electronic Baffle"
+            ]
+        }
+        {
+            id: 249
+            faction: "Scum and Villainy"
+            pilot: "Moralo Eval"
+            ship: "YV-666"
+            threat: 4
+            upgrades: [
+                "Outmaneuver"
+                "Cluster Missiles"
+                "Latts Razzi"
+                "Dengar"
+                "Contraband Cybernetics"
+            ]
+        }
+        {
+            id: 250
+            faction: "Scum and Villainy"
+            pilot: "Latts Razzi"
+            ship: "YV-666"
+            threat: 3
+            upgrades: [
+                "Boba Fett"
+                "Bossk"
+                "Dengar"
+                "Feedback Array"
+                "Static Discharge Vanes"
+            ]
+        }
+        {
+            id: 251
+            faction: "Scum and Villainy"
+            pilot: "Trandoshan Slaver"
+            ship: "YV-666"
+            threat: 3
+            upgrades: [
+                "Hotshot Gunner"
+                "Jabba the Hutt"
+                "Contraband Cybernetics"
+                "Rigged Cargo Chute"
+            ]
+        }
+        {
+            id: 252
+            faction: "Scum and Villainy"
+            pilot: "Bossk"
+            suffix: " + Nashtah Pup"
+            linkedId: 253
+            ship: "YV-666"
+            threat: 3
+            upgrades: [
+                "Marksmanship"
+                "Greedo"
+                "Hound's Tooth"
+            ]
+        }
+        {
+            id: 253
+            faction: "Scum and Villainy"
+            pilot: "Nashtah Pup"
+            suffix: " + Bossk"
+            linkedId: 252
+            ship: "Z-95 Headhunter"
+            threat: 3
+        }
+        {
+            id: 254
+            faction: "Scum and Villainy"
+            pilot: "Trandoshan Slaver"
+            suffix: " + Nashtah Pup"
+            linkedId: 255
+            ship: "YV-666"
+            threat: 3
+            upgrades: [
+                "Deadman's Switch"
+                "Hound's Tooth"
+            ]
+        }
+        {
+            id: 255
+            faction: "Scum and Villainy"
+            pilot: "Nashtah Pup"
+            suffix: " + Trandoshan Slaver"
+            linkedId: 254
+            ship: "Z-95 Headhunter"
+            threat: 3
+            upgrades: [
+                "Proton Rockets"
+            ]
+        }
+        {
+            id: 256
+            faction: "Scum and Villainy"
+            pilot: "Torani Kulda"
+            ship: "M12-L Kimogila Fighter"
+            threat: 3
+            upgrades: [
+                "Saturation Salvo"
+                "Proton Torpedoes"
+                "Cluster Missiles"
+                "R4 Astromech"
+                "Inertial Dampeners"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 257
+            faction: "Scum and Villainy"
+            pilot: "Dalan Oberos"
+            ship: "M12-L Kimogila Fighter"
+            threat: 2
+            upgrades: [
+                "Expert Handling"
+                "R5-TK"
+                "Inertial Dampeners"
+            ]
+        }
+        {
+            id: 258
+            faction: "Scum and Villainy"
+            pilot: "Cartel Executioner"
+            ship: "M12-L Kimogila Fighter"
+            threat: 2
+            upgrades: [
+                "Crack Shot"
+                "R5-P8"
+                "Contraband Cybernetics"
+            ]
+        }
+        {
+            id: 259
+            skip: true
+            faction: "Scum and Villainy"
+            pilot: "Dalan Oberos"
+            ship: "M12-L Kimogila Fighter"
+            threat: 2
+            upgrades: [
+                "Expert Handling"
+                "R5-TK"
+                "Inertial Dampeners"
+            ]
+        }
+        {
+            id: 260
+            faction: "Scum and Villainy"
+            pilot: "Captain Nym"
+            ship: "Scurrg H-6 Bomber"
+            threat: 3
+            upgrades: [
+                "Squad Leader"
+                "Trajectory Simulator"
+                "R4 Astromech"
+                "Bomblet Generator"
+                "Havoc"
+            ]
+        }
+        {
+            id: 261
+            faction: "Scum and Villainy"
+            pilot: "Sol Sixxa"
+            ship: "Scurrg H-6 Bomber"
+            threat: 3
+            upgrades: [
+                "Ion Cannon Turret"
+                "Skilled Bombardier"
+                "Conner Nets"
+                "Proximity Mines"
+            ]
+        }
+        {
+            id: 262
+            faction: "Scum and Villainy"
+            pilot: "Lok Revenant"
+            ship: "Scurrg H-6 Bomber"
+            threat: 2
+            upgrades: [
+                "Dorsal Turret"
+                "Bomblet Generator"
+            ]
+        }
+        {
+            id: 263
+            faction: "Scum and Villainy"
+            pilot: "IG-88A"
+            suffix: " + IG-88D"
+            linkedId: 264
+            ship: "Aggressor"
+            threat: 6
+            upgrades: [
+                "Advanced Sensors"
+                "IG-2000"
+            ]
+        }
+        {
+            id: 264
+            faction: "Scum and Villainy"
+            pilot: "IG-88D"
+            suffix: " + IG-88A"
+            linkedId: 263
+            ship: "Aggressor"
+            threat: 6
+            upgrades: [
+                "Advanced Sensors"
+                "IG-2000"
+            ]
+        }
+        {
+            id: 265
+            faction: "Scum and Villainy"
+            pilot: "IG-88B"
+            suffix: " + IG-88C"
+            linkedId: 266
+            ship: "Aggressor"
+            threat: 6
+            upgrades: [
+                "Fire-Control System"
+                "Ion Cannon"
+                "IG-2000"
+            ]
+        }
+        {
+            id: 266
+            faction: "Scum and Villainy"
+            pilot: "IG-88C"
+            suffix: " + IG-88B"
+            linkedId: 265
+            ship: "Aggressor"
+            threat: 6
+            upgrades: [
+                "Fire-Control System"
+                "Ion Cannon"
+                "IG-2000"
+            ]
+        }
+        {
+            id: 267
+            faction: "Resistance"
+            pilot: "L'ulo L'ampar"
+            ship: "RZ-2 A-Wing"
+            threat: 2
+            upgrades: [
+                "Primed Thrusters"
+                "Homing Missiles"
+            ]
+        }
+        {
+            id: 268
+            faction: "Resistance"
+            pilot: "Greer Sonnel"
+            ship: "RZ-2 A-Wing"
+            threat: 2
+            upgrades: [
+                "Elusive"
+                "Afterburners"
+            ]
+        }
+        {
+            id: 269
+            faction: "Resistance"
+            pilot: "Green Squadron Expert"
+            ship: "RZ-2 A-Wing"
+            threat: 2
+            upgrades: [
+                "Heroic"
+                "Primed Thursters"
+                "Hull Upgrade"
+            ]
+        }
+        {
+            id: 270
+            faction: "Resistance"
+            pilot: "Tallissan Lintra"
+            ship: "RZ-2 A-Wing"
+            threat: 2
+            upgrades: [
+                "Predator"
+                "Ferrosphere Paint"
+            ]
+        }
+        {
+            id: 271
+            faction: "Resistance"
+            pilot: "Zari Bangel"
+            ship: "RZ-2 A-Wing"
+            threat: 2
+            upgrades: [
+                "Outmaneuver"
+                "Proton Rockets"
+            ]
+        }
+        {
+            id: 272
+            faction: "Resistance"
+            pilot: "Blue Squadron Recruit"
+            ship: "RZ-2 A-Wing"
+            threat: 2
+            upgrades: [
+                "Primed Thrusters"
+                "Homing Missiles"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 273
+            faction: "Resistance"
+            pilot: "Poe Dameron"
+            ship: "T-70 X-Wing"
+            threat: 4
+            upgrades: [
+                "Proton Torpedoes"
+                "BB-8"
+                "Black One"
+                "Integrated S-Foils"
+                "Afterburners"
+            ]
+        }
+        {
+            id: 274
+            faction: "Resistance"
+            pilot: "Jessika Pava"
+            ship: "T-70 X-Wing"
+            threat: 3
+            upgrades: [
+                "R5 Astromech"
+                "Integrated S-Foils"
+                "Hull Upgrade"
+            ]
+        }
+        {
+            id: 275
+            faction: "Resistance"
+            pilot: "Black Squadron Ace (T-70)"
+            ship: "T-70 X-Wing"
+            threat: 3
+            upgrades: [
+                "Proton Torpedoes"
+                "M9-G8"
+                "Integrated S-Foils"
+            ]
+        }
+        {
+            id: 276
+            faction: "Resistance"
+            pilot: "Ello Asty"
+            ship: "T-70 X-Wing"
+            threat: 3
+            upgrades: [
+                "Elusive"
+                "Integrated S-Foils"
+                "Afterburners"
+            ]
+        }
+        {
+            id: 277
+            faction: "Resistance"
+            pilot: "Joph Seastriker"
+            ship: "T-70 X-Wing"
+            threat: 3
+            upgrades: [
+                "R2 Astromech"
+                "Integrated S-Foils"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 278
+            faction: "Resistance"
+            pilot: "Jaycris Tubbs"
+            ship: "T-70 X-Wing"
+            threat: 2
+        }
+        {
+            id: 279
+            faction: "Resistance"
+            pilot: "Nien Nunb"
+            ship: "T-70 X-Wing"
+            threat: 3
+            upgrades: [
+                "Elusive"
+                "Integrated S-Foils"
+                "Afterburners"
+            ]
+        }
+        {
+            id: 280
+            faction: "Resistance"
+            pilot: "Lieutenant Bastian"
+            ship: "T-70 X-Wing"
+            threat: 3
+            upgrades: [
+                "Targeting Synchronizer"
+                "Proton Torpedoes"
+                "R3 Astromech"
+                "Integrated S-Foils"
+            ]
+        }
+        {
+            id: 281
+            faction: "Resistance"
+            pilot: "Red Squadron Expert"
+            ship: "T-70 X-Wing"
+            threat: 2
+        }
+        {
+            id: 282
+            faction: "Resistance"
+            pilot: "Temmin Wexley"
+            ship: "T-70 X-Wing"
+            threat: 3
+            upgrades: [
+                "Outmaneuver"
+                "Proton Torpedoes"
+                "Integrated S-Foils"
+            ]
+        }
+        {
+            id: 283
+            faction: "Resistance"
+            pilot: "Kare Kun"
+            ship: "T-70 X-Wing"
+            threat: 3
+            upgrades: [
+                "Predator"
+                "Integrated S-Foils"
+                "Afterburners"
+            ]
+        }
+        {
+            id: 284
+            faction: "Resistance"
+            pilot: "Blue Squadron Rookie"
+            ship: "T-70 X-Wing"
+            threat: 2
+            upgrades: [
+                "BB Astromech"
+            ]
+        }
+        {
+            id: 285
+            faction: "Resistance"
+            pilot: "Finch Dallow"
+            ship: "MG-100 StarFortress"
+            threat: 4
+            upgrades: [
+                "Advanced Optics"
+                "Paige Tico"
+                "Proton Bombs"
+                "Ablative Plating"
+                "Hull Upgrade"
+            ]
+        }
+        {
+            id: 286
+            faction: "Resistance"
+            pilot: "Cat"
+            ship: "MG-100 StarFortress"
+            threat: 3
+            upgrades: [
+                "Skilled Bombardier"
+                "Conner Nets"
+                "Electronic Baffle"
+            ]
+        }
+        {
+            id: 287
+            faction: "Resistance"
+            pilot: "Cobalt Squadron Bomber"
+            ship: "MG-100 StarFortress"
+            threat: 3
+            upgrades: [
+                "Trajectory Simulator"
+                "Proton Bombs"
+                "Ablative Plating"
+            ]
+        }
+        {
+            id: 288
+            faction: "Resistance"
+            pilot: "Edon Kappehl"
+            ship: "MG-100 StarFortress"
+            threat: 4
+            upgrades: [
+                "Pattern Analyzer"
+                "Seasoned Navigator"
+                "Skilled Bombardier"
+                "Conner Nets"
+                "Proton Bombs"
+            ]
+        }
+        {
+            id: 289
+            faction: "Resistance"
+            pilot: "Vennie"
+            ship: "MG-100 StarFortress"
+            threat: 4
+            upgrades: [
+                "Advanced Optics"
+                "Rose Tico"
+                "Finn"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 290
+            faction: "Resistance"
+            pilot: "Ben Teene"
+            ship: "MG-100 StarFortress"
+            threat: 3
+            upgrades: [
+                "Conner Nets"
+                "Proton Bombs"
+            ]
+        }
+        {
+            id: 291
+            faction: "Resistance"
+            pilot: "Han Solo (Resistance)"
+            ship: "Scavenged YT-1300"
+            threat: 3
+            upgrades: [
+                "Chewbacca"
+            ]
+        }
+        {
+            id: 292
+            faction: "Resistance"
+            pilot: "Rey"
+            ship: "Scavenged YT-1300"
+            threat: 5
+            upgrades: [
+                "Finn"
+                "BB-8"
+                "Inertial Dampeners"
+                "Engine Upgrade"
+                "Rey's Millennium Falcon"
+            ]
+        }
+        {
+            id: 293
+            faction: "Resistance"
+            pilot: "Chewbacca (Resistance)"
+            ship: "Scavenged YT-1300"
+            threat: 4
+            upgrades: [
+                "Rey"
+                "Engine Upgrade"
+                "Rey's Millennium Falcon"
+            ]
+        }
+        {
+            id: 294
+            faction: "Resistance"
+            pilot: "Resistance Sympathizer"
+            ship: "Scavenged YT-1300"
+            threat: 4
+            upgrades: [
+                "Debris Gambit"
+                "C-3PO"
+                "Chewbacca"
+                "Han Solo"
+            ]
+        }
+        {
+            id: 295
+            faction: "Rebel Alliance"
+            pilot: "Thane Kyrell"
+            ship: "X-Wing"
+            threat: 2
+            upgrades: [
+                "Stealth Device"
+                "Outmaneuver"
+            ]
+        }
+        {
+            id: 296
+            faction: "Galactic Empire"
+            pilot: "Iden Versio"
+            ship: "TIE Fighter"
+            threat: 2
+            upgrades: [
+                "Proton Torpedoes"
+                "Lone Wolf"
+            ]
+        }
+        {
+            id: 297
+            faction: "Scum and Villainy"
+            pilot: "Skull Squadron Pilot"
+            ship: "Fang Fighter"
+            threat: 3
+            upgrades: [
+                "Marksmanship"
+                "Advanced Proton Torpedoes"
+                "Afterburners"
+            ]
+        }
+        {
+            id: 298
+            faction: "Scum and Villainy"
+            pilot: "Foreman Proach"
+            ship: "Mining Guild TIE Fighter"
+            threat: 2
+            upgrades: [
+                "Fearless"
+                "Crack Shot"
+            ]
+        }
+        {
+            id: 299
+            faction: "First Order"
+            pilot: '"Blackout"'
+            ship: "TIE/VN Silencer"
+            threat: 3
+            upgrades: [
+                "Trick Shot"
+            ]
+        }
+        {
+            id: 300
+            faction: "Resistance"
+            pilot: "Greer Sonnel"
+            ship: "RZ-2 A-Wing"
+            threat: 2
+            upgrades: [
+                "Marksmanship"
+                "Primed Thrusters"
+            ]
+        }
+        {
+            id: 301
+            faction: "Scum and Villainy"
+            pilot: "Han Solo (Scum)"
+            ship: "Customized YT-1300"
+            linkedId: 302
+            suffix: " + Escape craft"
+            threat: 5
+            upgrades: [
+                "Elusive"
+                "Chewbacca"
+                "Lando's Millennium Falcon"
+                "Agile Gunner"
+                "Tactical Scrambler"
+                "Rigged Cargo Chute"
+            ]
+        }
+        {
+            id: 302
+            faction: "Scum and Villainy"
+            pilot: "Outer Rim Pioneer"
+            ship: "Escape Craft"
+            linkedId: 301
+            suffix: " + Han Solo"
+            threat: 5
+            upgrades: [
+                "Tobias Beckett"
+            ]
+        }
+        {
+            id: 303
+            faction: "Scum and Villainy"
+            pilot: "Lando Calrissian (Scum)"
+            ship: "Customized YT-1300"
+            linkedId: 304
+            suffix: " + L3-37"
+            threat: 4
+            upgrades: [
+                "Han Solo (Scum)"
+                "Qi'ra"
+                "Lando's Millennium Falcon"
+            ]
+        }
+        {
+            id: 304
+            faction: "Scum and Villainy"
+            pilot: "L3-37 (Escape Craft)"
+            ship: "Escape Craft"
+            linkedId: 303
+            suffix: " + Lando Calrissian"
+            threat: 4
+            upgrades: [
+            ]
+        }
+        {
+            id: 305
+            faction: "Scum and Villainy"
+            pilot: "L3-37"
+            ship: "Customized YT-1300"
+            linkedId: 306
+            suffix: " + Lando Calrissian"
+            threat: 5
+            upgrades: [
+                "Han Solo (Scum)"
+                "Qi'ra"
+                "Hull Upgrade"
+                "Outmaneuver"
+            ]
+        }
+        {
+            id: 306
+            faction: "Scum and Villainy"
+            pilot: "Lando Calrissian (Scum) (Escape Craft)"
+            ship: "Escape Craft"
+            linkedId: 305
+            suffix: " + L3-37"
+            threat: 5
+            upgrades: [
+                "Elusive"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 307
+            faction: "Scum and Villainy"
+            pilot: "Freighter Captain"
+            ship: "Customized YT-1300"
+            linkedId: 308
+            suffix: " + Autopilot drone"
+            threat: 3
+            upgrades: [
+                "Lando's Millennium Falcon"
+            ]
+        }
+        {
+            id: 308
+            faction: "Scum and Villainy"
+            pilot: "Autopilot Drone"
+            ship: "Escape Craft"
+            linkedId: 307
+            suffix: " + YT-1300"
+            threat: 3
+            upgrades: [
+                "Afterburners"
+            ]
+        }
+        {
+            id: 309
+            faction: "Galactic Republic"
+            pilot: "Obi-Wan Kenobi"
+            ship: "Delta-7 Aethersprite"
+            threat: 3
+            upgrades: [
+                "Predictive Shot"
+                "R4-P17"
+                "Spare Parts Canisters"
+                "Calibrated Laser Targeting"
+            ]
+        }
+        {
+            id: 310
+            faction: "Galactic Republic"
+            pilot: "Saesee Tiin"
+            ship: "Delta-7 Aethersprite"
+            threat: 3
+            upgrades: [
+                "Supernatural Reflexes"
+                "R4-P Astromech"
+                "Delta-7B"
+            ]
+        }
+        {
+            id: 311
+            faction: "Galactic Republic"
+            pilot: "Mace Windu"
+            ship: "Delta-7 Aethersprite"
+            threat: 4
+            upgrades: [
+                "Supernatural Reflexes"
+                "R2 Astromech"
+                "Delta-7B"
+                "Afterburners"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 312
+            faction: "Galactic Republic"
+            pilot: "Plo Koon"
+            ship: "Delta-7 Aethersprite"
+            threat: 3
+            upgrades: [
+                "Battle Meditation"
+                "Sense"
+                "R4-P Astromech"
+                "Shield Upgrade"
+            ]
+        }
+        {
+            id: 313
+            faction: "Galactic Republic"
+            pilot: "Jedi Knight"
+            ship: "Delta-7 Aethersprite"
+            threat: 2
+            upgrades: [
+                "Delta-7B"
+            ]
+        }
+        {
+            id: 314
+            faction: "Galactic Republic"
+            pilot: '"Tucker"'
+            ship: "V-19 Torrent"
+            threat: 2
+            upgrades: [
+                "Concussion Missiles"
+                "Munitions Failsafe"
+            ]
+        }
+        {
+            id: 315
+            faction: "Galactic Republic"
+            pilot: "Gold Squadron Trooper"
+            ship: "V-19 Torrent"
+            threat: 2
+            upgrades: [
+                "Cluster Missiles"
+                "Afterburners"
+            ]
+        }
+        {
+            id: 316
+            faction: "Galactic Republic"
+            pilot: '"Swoop"'
+            ship: "V-19 Torrent"
+            threat: 2
+            upgrades: [
+                "Composure"
+                "Synchronized Console"
+                "Proton Rockets"
+            ]
+        }
+        {
+            id: 317
+            faction: "Galactic Republic"
+            pilot: "Blue Squadron Protector"
+            ship: "V-19 Torrent"
+            threat: 2
+            upgrades: [
+                "Dedicated"
+                "Synchronized Console"
+            ]
+        }
+        {
+            id: 318
+            faction: "Galactic Republic"
+            pilot: '"Odd Ball"'
+            ship: "V-19 Torrent"
+            threat: 3
+            upgrades: [
+                "Saturation Salvo"
+                "Cluster Missiles"
+                "Afterburners"
+                "Munitions Failsafe"
+            ]
+        }
+        {
+            id: 319
+            faction: "Galactic Republic"
+            pilot: '"Kickback"'
+            ship: "V-19 Torrent"
+            threat: 2
+            upgrades: [
+                "Crack Shot"
+                "Synchronized Console"
+            ]
+        }
+        {
+            id: 320
+            faction: "Galactic Republic"
+            pilot: '"Axe"'
+            ship: "V-19 Torrent"
+            threat: 2
+            upgrades: [
+                "Juke"
+                "Homing Missiles"
+            ]
+        }
     ]
 
 
@@ -10120,6 +14805,10 @@ exportObj.setupCommonCardData = (basic_cards) ->
     for condition_data, i in basic_cards.conditionsById
         if condition_data.id != i
             throw new Error("ID mismatch: condition at index #{i} has ID #{condition_data.id}")
+    for quickbuild_data, i in basic_cards.quickbuildsById
+        if quickbuild_data.id != i
+            throw new Error("ID mismatch: quickbuild  at index #{i} has ID #{quickbuild_data.id}")
+
 
     exportObj.pilots = {}
     # Assuming a given pilot is unique by name...
@@ -10144,6 +14833,19 @@ exportObj.setupCommonCardData = (basic_cards) ->
             condition_data.sources = []
             condition_data.canonical_name = condition_data.name.canonicalize() unless condition_data.canonical_name?
             exportObj.conditions[condition_data.name] = condition_data
+
+    # there is no exportObj.quickbuilds generated from basic_cards.quickbuildsById, as reference by pilot name might be ambigous (e.g. there are multiple Black Sq. Aces having different upgrades)
+
+    exportObj.quickbuildsById = {}
+    quickbuild_count = 0
+    for quickbuild_data in basic_cards.quickbuildsById
+        unless quickbuild_data.skip? 
+            quickbuild_count += 1
+            # Sometimes there is something to be appended to the pilot name for displaying, e.g. (x2) for two TIEs at the cost of 3 threat points. If nothing specified set as empty string. 
+            quickbuild_data.suffix = "" unless quickbuild_data.suffix? 
+            exportObj.quickbuildsById[quickbuild_data.id] = quickbuild_data
+    if Object.keys(exportObj.quickbuildsById).length != quickbuild_count
+        throw new Error("At least one quickbuild shares an ID with another")
 
     for ship_name, ship_data of basic_cards.ships
         ship_data.canonical_name ?= ship_data.name.canonicalize()
@@ -10294,6 +14996,7 @@ exportObj.fixIcons = (data) ->
             .replace(/%CREW%/g, '<i class="xwing-miniatures-font xwing-miniatures-font-crew"></i>')
             .replace(/%DUALCARD%/g, '<span class="card-restriction">Dual card.</span>')
             .replace(/%ELITE%/g, '<i class="xwing-miniatures-font xwing-miniatures-font-elite"></i>')
+            .replace(/%TACTICALRELAY%/g, '<i class="xwing-miniatures-font xwing-miniatures-font-tacticalrelay"></i>')
             .replace(/%EVADE%/g, '<i class="xwing-miniatures-font xwing-miniatures-font-evade"></i>')
             .replace(/%FOCUS%/g, '<i class="xwing-miniatures-font xwing-miniatures-font-focus"></i>')
             .replace(/%HARDPOINT%/g, '<i class="xwing-miniatures-font xwing-miniatures-font-hardpoint"></i>')
@@ -10346,18 +15049,23 @@ exportObj.randomizer = (faction_name, points) ->
 exportObj.hyperspaceShipInclusions = [
     {name: 'X-Wing', faction: 'Rebel Alliance'},
     {name: 'YT-1300', faction: 'Rebel Alliance'},
+    {name: 'B-Wing', faction: 'Rebel Alliance'},
+    {name: 'A-Wing', faction: 'Rebel Alliance'},
     {name: 'Y-Wing', faction: 'Rebel Alliance'},
     {name: 'U-Wing', faction: 'Rebel Alliance'},
     {name: 'TIE Advanced', faction: 'Galactic Empire'},
+    {name: 'TIE Interceptor', faction: 'Galactic Empire'},
+    {name: 'TIE Bomber', faction: 'Galactic Empire'},
     {name: 'TIE Fighter', faction: 'Galactic Empire'},
     {name: 'TIE Reaper', faction: 'Galactic Empire'},
     {name: 'TIE Striker', faction: 'Galactic Empire'},
     {name: 'Firespray-31', faction: 'Scum and Villainy'},
+    {name: 'Z-95 Headhunter', faction: 'Scum and Villainy'},
+    {name: 'StarViper', faction: 'Scum and Villainy'},
     {name: 'Escape Craft', faction: 'Scum and Villainy'},
     {name: 'Mining Guild TIE Fighter', faction: 'Scum and Villainy'},
     {name: 'Fang Fighter', faction: 'Scum and Villainy'},
     {name: 'Customized YT-1300', faction: 'Scum and Villainy'},
-    {name: 'TIE Fighter', faction: 'Scum and Villainy'},
     {name: 'Scavenged YT-1300', faction: 'Resistance'},
     {name: 'T-70 X-Wing', faction: 'Resistance'},
     {name: 'RZ-2 A-Wing', faction: 'Resistance'},
@@ -10365,15 +15073,18 @@ exportObj.hyperspaceShipInclusions = [
     {name: 'TIE/FO Fighter', faction: 'First Order'},
     {name: 'TIE/VN Silencer', faction: 'First Order'},
     {name: 'TIE/SF Fighter', faction: 'First Order'},
-    {name: 'Upsilon-Class Command Shuttle', faction: 'First Order'}
+    {name: 'Upsilon-Class Command Shuttle', faction: 'First Order'},
+    {name: 'Delta-7 Aethersprite', faction: 'Galactic Republic'},
+    {name: 'ARC-170', faction: 'Galactic Republic'},
+    {name: 'V-19 Torrent', faction: 'Galactic Republic'},
+    {name: 'Vulture-class Droid Fighter', faction: 'Separatist Alliance'},
+    {name: 'Sith Infiltrator', faction: 'Separatist Alliance'},
+    {name: 'Belbullab-22 Starfighter', faction: 'Separatist Alliance'}
 ]
 
 # Used to exclude pilots from included ships
 exportObj.hyperspacePilotExclusions = [
-    'Bodhi Rook',
-    'Cassian Andor',
-    'Heff Tobber',
-    'Blue Squadron Scout'
+    'Nashtah Pup'
 ]
 
 # Upgrades in that are not in Hyperspace
@@ -10381,8 +15092,6 @@ exportObj.hyperspacePilotExclusions = [
 exportObj.hyperspaceUpgradeExclusions = [
     # Generic
     'Ion Cannon',
-    'Jamming Beam',
-    'Tractor Beam',
     'Freelance Slicer',
     'GNK "Gonk" Droid',
     'Novice Technician',
@@ -10390,7 +15099,6 @@ exportObj.hyperspaceUpgradeExclusions = [
     'Cloaking Device',
     'Contraband Cybernetics',
     'Feedback Array',
-    'Barrage Rockets',
     'Ablative Plating',
     'Advanced SLAM',
     'Electronic Baffle',
@@ -10404,8 +15112,6 @@ exportObj.hyperspaceUpgradeExclusions = [
     '"Chopper" (Astromech)',
     '"Zeb" Orrelios'
     '"Chopper" (Crew)',
-    'Baze Malbus',
-    'C-3PO',
     'Cassian Andor',
     'Hera Syndulla',
     'Jyn Erso',
@@ -10417,8 +15123,6 @@ exportObj.hyperspaceUpgradeExclusions = [
     # Galactic Empire
     'Admiral Sloane'
     'Agent Kallus'
-    'Ciena Ree',
-    'Darth Vader',
     'Grand Inquisitor',
     'Grand Moff Tarkin',
     'Minister Tua',
@@ -10444,11 +15148,9 @@ exportObj.hyperspaceUpgradeExclusions = [
     'Jabba the Hutt',
     'Bossk',
     'BT-1',
-    'Dengar',
     'Greedo'
 
     # FO
-    'Biohexacrypt Codes'
 ]
 
 # Ships/Pilots excluded unless in the included list (with further excluded pilots list for included ships, i.e u-wing)
@@ -10530,6 +15232,7 @@ exportObj.translations.Deutsch =
     byCSSSelector:
         # Warnings
         '.unreleased-content-used .translated': 'Diese Staffel verwendet nicht veröffentlicheten Inhalt!'
+        '.loading-failed-container .translated': 'Du scheinst einem defekten Link gefolgt zu sein. Es konnte kein Squad geladen werden!'
         '.collection-invalid .translated': 'Du kannst diese Staffel nicht mit deiner Sammlung aufstellen!'
         # Type selector
         '.game-type-selector option[value="standard"]': 'Standard'
@@ -10729,7 +15432,7 @@ exportObj.cardLoaders.Deutsch = () ->
         "Ben Teene":
            display_name: """Ben Teene"""
            text: """Nachdem du einen Angriff durchgeführt hast, falls der Verteidiger in deinem %SINGLETURRETARC% ist, ordne dem Verteidiger den Zustand <strong>Aus der Fassung</strong> zu."""
-        "Benthic Two-Tubes":
+        "Benthic Two Tubes":
            display_name: """Benthic Two Tubes"""
            text: """Nachdem du eine %FOCUS%-Aktion durchgeführt hast, darfst du 1 deiner Fokusmarker auf ein befreundetes Schiff in Reichweite 1-2 transferieren."""
         "Biggs Darklighter":
@@ -10904,7 +15607,7 @@ exportObj.cardLoaders.Deutsch = () ->
         "Edon Kappehl":
            display_name: """Edon Kappehl"""
            text: """Nachdem du ein blaues oder weißes Manöver vollständig ausgeführt hast, falls du in dieser Runde noch kein Gerät abgeworfen oder gestartet hast, darfst du 1 Gerät abwerfen."""
-        "Edrio Two-Tubes":
+        "Edrio Two Tubes":
            display_name: """Edrio Two Tubes"""
            text: """Bevor du aktiviert wirst, falls du fokussiert bist, darfst du eine Aktion durchführen."""
         "Ello Asty":
@@ -12216,6 +16919,7 @@ exportObj.translations.English =
         "Jam": '<i class="xwing-miniatures-font xwing-miniatures-font-jam"></i>'
         "Calculate": '<i class="xwing-miniatures-font xwing-miniatures-font-calculate"></i>'
         "Coordinate": '<i class="xwing-miniatures-font xwing-miniatures-font-coordinate"></i>'
+        "F-Coordinate": '<i class="xwing-miniatures-font force xwing-miniatures-font-coordinate"></i>'
         "Cloak": '<i class="xwing-miniatures-font xwing-miniatures-font-cloak"></i>'
         "Slam": '<i class="xwing-miniatures-font xwing-miniatures-font-slam"></i>'
         "R> Barrel Roll": '<i class="xwing-miniatures-font xwing-miniatures-font-linked red"></i> <i class="xwing-miniatures-font red xwing-miniatures-font-barrelroll"></i>'
@@ -12245,6 +16949,8 @@ exportObj.translations.English =
         "Tech": '<i class="xwing-miniatures-font xwing-miniatures-font-tech"></i>'
         "Title": '<i class="xwing-miniatures-font xwing-miniatures-font-title"></i>'
         "Hardpoint": '<i class="xwing-miniatures-font xwing-miniatures-font-hardpoint"></i>'
+        "Tactical Relay": '<i class="xwing-miniatures-font xwing-miniatures-font-tacticalrelay"></i>'
+
     slot:
         "Astromech": "Astromech"
         "Force": "Force"
@@ -12264,6 +16970,8 @@ exportObj.translations.English =
         "Device": "Device"
         "Tech": "Tech"
         "Title": "Title"
+        "Tactical Relay": "Tactical Relay"
+    
     sources: # needed?
         "Second Edition Core Set": "Second Edition Core Set"
         "Rebel Alliance Conversion Kit": "Rebel Alliance Conversion Kit"
@@ -12293,6 +17001,7 @@ exportObj.translations.English =
     byCSSSelector:
         # Warnings
         '.unreleased-content-used .translated': 'This squad uses unreleased content!'
+        '.loading-failed-container .translated': 'It appears that you followed a broken link. No squad could be loaded!'
         '.collection-invalid .translated': 'You cannot field this list with your collection!'
         # Type selector
         '.game-type-selector option[value="standard"]': 'Extended'
@@ -12467,7 +17176,7 @@ exportObj.cardLoaders.English = () ->
         "Ben Teene":
            display_name: """Ben Teene"""
            text: """After you perform an attack, if the defender is in your %SINGLETURRETARC%, assign the <strong>Rattled</strong> condition to the defender."""
-        "Benthic Two-Tubes":
+        "Benthic Two Tubes":
            display_name: """Benthic Two Tubes"""
            text: """After you perform a %FOCUS% action, you may transfer 1 of your focus tokens to a friendly ship at range 1-2."""
         "Biggs Darklighter":
@@ -12511,7 +17220,7 @@ exportObj.cardLoaders.English = () ->
            text: """<i class = flavor_text>Due to its heavy weapons array and resilient shielding, the B-wing has solidified itself as the Rebel Alliance’s most innovative assault fighter.</i>"""
         "Blue Squadron Recruit":
            display_name: """Blue Squadron Recruit"""
-           text: """<i class = flavor_text>Young beings across the galaxy have grown up on tales of heroism in the Galactic Civil War, and many learned to fly in the same cockpits from which their parents fought the Empire.</i>%LINEBREAK%<strong>Refined Gyrostabilizers:</strong> You can rotate your %SINGLETURRETARC% indicator only to your %FRONTARC% or %REARARC%. After you perform an action, you may perform a red %BOOST% or red <rotate> action."""
+           text: """<i class = flavor_text>Young beings across the galaxy have grown up on tales of heroism in the Galactic Civil War, and many learned to fly in the same cockpits from which their parents fought the Empire.</i>%LINEBREAK%<strong>Refined Gyrostabilizers:</strong> You can rotate your %SINGLETURRETARC% indicator only to your %FRONTARC% or %REARARC%. After you perform an action, you may perform a red %BOOST% or red %ROTATEARC% action."""
         "Blue Squadron Rookie":
            display_name: """Blue Squadron Rookie"""
            text: """<i class = flavor_text>The Incom-FreiTek T-70 X-Wing was designed to improve upon the tactical flexibility of the venerable T-65. The starfighter’s advanced droid socket is compatible with a wide array of astromechs, and its modular weapons pods allow ground crews to tailor its payload for specific missions.</i>%LINEBREAK%<strong>Weapon Hardpoint:</strong> You can equip 1&nbsp;%CANNON%, %TORPEDO%, or %MISSILE% upgrade."""
@@ -12644,7 +17353,7 @@ exportObj.cardLoaders.English = () ->
         "Edon Kappehl":
            display_name: """Edon Kappehl"""
            text: """After you fully execute a blue or white maneuver, if you have not dropped or launched a device this round, you may drop 1 device."""
-        "Edrio Two-Tubes":
+        "Edrio Two Tubes":
            display_name: """Edrio Two Tubes"""
            text: """Before you activate, if you are focused, you may perform an action."""
         "Ello Asty":
@@ -12724,13 +17433,13 @@ exportObj.cardLoaders.English = () ->
            text: """While you defend, if you are behind the attacker, roll 1 additional defense die.%LINEBREAK%While you perform an attack, if you are behind the defender, roll 1 additional attack die."""
         "Green Squadron Expert":
            display_name: """Green Squadron Expert"""
-           text: """<i class = flavor_text>Years of field-expedient modifications were standardized in the RZ-2 design, but daring pilots see the ship’s improved reliability as a challenge to further push the limits of its performance.</i>%LINEBREAK%<strong>Refined Gyrostabilizers:</strong> You can rotate your %SINGLETURRETARC% indicator only to your %FRONTARC% or %REARARC%. After you perform an action, you may perform a red %BOOST% or red <rotate> action."""
+           text: """<i class = flavor_text>Years of field-expedient modifications were standardized in the RZ-2 design, but daring pilots see the ship’s improved reliability as a challenge to further push the limits of its performance.</i>%LINEBREAK%<strong>Refined Gyrostabilizers:</strong> You can rotate your %SINGLETURRETARC% indicator only to your %FRONTARC% or %REARARC%. After you perform an action, you may perform a red %BOOST% or red %ROTATEARC% action."""
         "Green Squadron Pilot":
            display_name: """Green Squadron Pilot"""
            text: """<i class = flavor_text>Due to its sensitive controls and high maneuverability, only the most talented pilots belong in an A-wing cockpit.</i>%LINEBREAK%<strong>Vectored Thrusters:</strong> After you perform an action, you may perform a red %BOOST% action."""
         "Greer Sonnel":
            display_name: """Greer Sonnel"""
-           text: """After you fully execute a maneuver, you may rotate your %SINGLETURRETARC%.%LINEBREAK%<strong>Refined Gyrostabilizers:</strong> You can rotate your %SINGLETURRETARC% indicator only to your %FRONTARC% or %REARARC%. After you perform an action, you may perform a red %BOOST% or red <rotate> action."""
+           text: """After you fully execute a maneuver, you may rotate your %SINGLETURRETARC%.%LINEBREAK%<strong>Refined Gyrostabilizers:</strong> You can rotate your %SINGLETURRETARC% indicator only to your %FRONTARC% or %REARARC%. After you perform an action, you may perform a red %BOOST% or red %ROTATEARC% action."""
         "Guri":
            display_name: """Guri"""
            text: """At the start of the Engagement Phase, if there is at least 1 enemy ship at range 0-1, you may gain 1 focus token.%LINEBREAK% <strong>Microthrusters:</strong> While you perform a barrel roll, you <b>must</b> use the %BANKLEFT% or %BANKRIGHT% template instead of the %STRAIGHT% template."""
@@ -12914,7 +17623,7 @@ exportObj.cardLoaders.English = () ->
            text: """After you become the defender (before dice are rolled), you may recover 1&nbsp;%FORCE%."""
         "L'ulo L'ampar":
            display_name: """L’ulo L’ampar"""
-           text: """While you defend or perform a primary attack, if you are stressed, you <b>must</b> roll 1 fewer defense die or 1 additional attack die.%LINEBREAK%<strong>Refined Gyrostabilizers:</strong> You can rotate your %SINGLETURRETARC% indicator only to your %FRONTARC% or %REARARC%. After you perform an action, you may perform a red %BOOST% or red <rotate> action."""
+           text: """While you defend or perform a primary attack, if you are stressed, you <b>must</b> roll 1 fewer defense die or 1 additional attack die.%LINEBREAK%<strong>Refined Gyrostabilizers:</strong> You can rotate your %SINGLETURRETARC% indicator only to your %FRONTARC% or %REARARC%. After you perform an action, you may perform a red %BOOST% or red %ROTATEARC% action."""
         "Maarek Stele":
            display_name: """Maarek Stele"""
            text: """While you perform an attack, if the defender would be dealt a faceup damage card, instead draw 3 damage cards, choose 1, and discard the rest.%LINEBREAK%<strong>Advanced Targeting Computer:</strong> While you perform a primary attack against a defender you have locked, roll 1 additional attack die and change 1&nbsp;%HIT% result to a %CRIT% result. """
@@ -13127,7 +17836,7 @@ exportObj.cardLoaders.English = () ->
            text: """<i class = flavor_text>The AF4 series is the latest in a long line of Headhunter designs. Cheap and relatively durable, it is a favorite among independent outfits like the Rebellion.</i>"""
         "Tallissan Lintra":
            display_name: """Tallissan Lintra"""
-           text: """While an enemy ship in your %BULLSEYEARC% performs an attack, you may spend 1&nbsp;%CHARGE%.  If you do, the defender rolls 1 additional die.%LINEBREAK%<strong>Refined Gyrostabilizers:</strong> You can rotate your %SINGLETURRETARC% indicator only to your %FRONTARC% or %REARARC%. After you perform an action, you may perform a red %BOOST% or red <rotate> action."""
+           text: """While an enemy ship in your %BULLSEYEARC% performs an attack, you may spend 1&nbsp;%CHARGE%.  If you do, the defender rolls 1 additional die.%LINEBREAK%<strong>Refined Gyrostabilizers:</strong> You can rotate your %SINGLETURRETARC% indicator only to your %FRONTARC% or %REARARC%. After you perform an action, you may perform a red %BOOST% or red %ROTATEARC% action."""
         "Talonbane Cobra":
            display_name: """Talonbane Cobra"""
            text: """While you defend at attack range 3 or perform an attack at attack range 1, roll 1 additional die."""
@@ -13193,7 +17902,7 @@ exportObj.cardLoaders.English = () ->
            text: """While you perform a primary attack, if you are damaged, you may roll 1 additional attack die."""
         "Zari Bangel":
            display_name: """Zari Bangel"""
-           text: """You do not skip your Perform Action step after you partially execute a maneuver.%LINEBREAK%<strong>Refined Gyrostabilizers:</strong> You can rotate your %SINGLETURRETARC% indicator only to your %FRONTARC% or %REARARC%. After you perform an action, you may perform a red %BOOST% or red <rotate> action."""
+           text: """You do not skip your Perform Action step after you partially execute a maneuver.%LINEBREAK%<strong>Refined Gyrostabilizers:</strong> You can rotate your %SINGLETURRETARC% indicator only to your %FRONTARC% or %REARARC%. After you perform an action, you may perform a red %BOOST% or red %ROTATEARC% action."""
         "Zealous Recruit":
            display_name: """Zealous Recruit"""
            text: """<i class = flavor_text>Mandalorian Fang fighter pilots must master the Concordia Faceoff maneuver, leveraging their ships’ narrow attack profile to execute deadly head-on charges.</i> %LINEBREAK% <strong>Concordia Faceoff:</strong> While you defend, if the attack range is 1 and you are in the attacker’s %FRONTARC%, change 1 result to an %EVADE% result."""
@@ -13307,8 +18016,9 @@ exportObj.cardLoaders.English = () ->
            text: """While you defend, %CRIT% results are neutralized before %HIT% results."""
 
 
-
-        "General Grevious":
+        "Darth Maul":
+           text: """After you perform an attack, you may spend 2 %FORCE% to perform a bonus primary attack against a different target. If your attack missed, you may perform that bonus primary attack against the same target instead."""
+        "General Grievous":
            text: """ While you perform a primary attack, if you are not in the defender's firing arc, you may reroll up to 2 attack dice. """
         "Wat Tambor":
            text: """ While you perform a primary attack, you may reroll 1 attack die for each calculating friendly ship at range 1 of the defender. """
@@ -13320,10 +18030,51 @@ exportObj.cardLoaders.English = () ->
            text: """ After an enemy ship in your %BULLSEYEARC% at range 0-2 declares another friendly ship as the defender, you may perform a %CALCULATE% or %LOCK% action. %LINEBREAK% NETWORKED CALCULATIONS: While you defend or perform an attack, you may spend 1 calculate token from a friendly ship at range 0-1 to change 1 %FOCUS% result to an %EVADE% or %HIT% result. """
         "DFS-081":
            text: """ While a friendly ship at range 0-1 defends, it may spend 1 calculate token to change all %CRIT% results to %HIT% results. %LINEBREAK% NETWORKED CALCULATIONS: While you defend or perform an attack, you may spend 1 calculate token from a friendly ship at range 0-1 to change 1 %FOCUS% result to an %EVADE% or %HIT% result. """
-            
-
-
-
+        "Obi-Wan Kenobi":
+           text: """After a friendly ship at range 0-2 spends a focus token, you may spend 1 %FORCE%. If you do, that ship gains 1 focus token. %LINEBREAK% FINE-TUNED CONTROLS: After you fully execute a maneuver, you may spend 1 %FORCE% to perform a %BOOST% or %BARRELROLL% action. """ 
+        "Jedi Knight":
+           text: """FINE-TUNED CONTROLS: After you fully execute a maneuver, you may spend 1 %FORCE% to perform a %BOOST% or %BARRELROLL% action. """ 
+        "Ahsoka Tano":
+           text: """ After you fully execute a maneuver, you may choose a friendly ship at range 0-1 and spend 1 %FORCE%. That ship may perform an action, even if it is stressed. %LINEBREAK% FINE-TUNED CONTROLS: After you fully execute a maneuver, you may spend 1 %FORCE% to perform a %BOOST% or %BARRELROLL% action. """ 
+        "Anakin Skywalker":
+           text: """After you fully execute a maneuver, if there is an enemy ship in your %FRONTARC% at range 0-1 or in your %BULLSEYEARC%, you may spend 1 %FORCE% to remove 1 stress token. %LINEBREAK% FINE-TUNED CONTROLS: After you fully execute a maneuver, you may spend 1 %FORCE% to perform a %BOOST% or %BARRELROLL% action. """ 
+        "Barriss Offee":
+           text: """ While a friendly ship at range 0-2 performs an attack, if the defender is in its %BULLSEYEARC%, you may spend 1 %FORCE% to change 1 %FOCUS% result to a %HIT% result or 1 %HIT% result to a %CRIT% result. %LINEBREAK% FINE-TUNED CONTROLS: After you fully execute a maneuver, you may spend 1 %FORCE% to perform a %BOOST% or %BARRELROLL% action. """ 
+        "Luminara Unduli":
+           text: """ While a friendly ship at range 0-2 defends, if it is not in the attacker's %BULLSEYEARC%, you may spend 1 %FORCE%. If you do, change 1 %CRIT% result to a %HIT% result or 1 %HIT% result to a %FOCUS% result. %LINEBREAK% FINE-TUNED CONTROLS: After you fully execute a maneuver, you may spend 1 %FORCE% to perform a %BOOST% or %BARRELROLL% action. """ 
+        "Plo Koon":
+           text: """At the start of the Engagement Phase, you may spend 1 %FORCE% and choose another friendly ship at range 0-2. If you do, you may transfer 1 green token to it or transfer one orange token from it to yourself. %LINEBREAK% FINE-TUNED CONTROLS: After you fully execute a maneuver, you may spend 1 %FORCE% to perform a %BOOST% or %BARRELROLL% action. """
+        "Saesee Tiin":
+           text: """After a friendly ship at range 0-2 reveals its dial, you may spend 1 %FORCE%. If you do, set it's dial to another maneuver of the same speed and difficulty. %LINEBREAK% FINE-TUNED CONTROLS: After you fully execute a maneuver, you may spend 1 %FORCE% to perform a %BOOST% or %BARRELROLL% action. """
+        "Mace Windu":
+           text: """After you fully execute a red maneuver, recover 1 %FORCE%. %LINEBREAK% FINE-TUNED CONTROLS: After you fully execute a maneuver, you may spend 1 %FORCE% to perform a %BOOST% or %BARRELROLL% action. """
+        '"Kickback"':
+           text: """After you perform a %BARRELROLL% action, you may perform a red %LOCK% action. """
+        '"Odd Ball"':
+           text: """After you fully execute a red maneuver or perform a red action, if there is an enemy ship in your %BULLSEYEARC%, you may acquire a lock on that ship. """
+        '"Sinker"':
+           text: """While a friendly ship at range 1-2 in your %LEFTARC% or %RIGHTARC% performs a primary attack, it may reroll 1 attack die. """
+        '"Swoop"':
+           text: """After a friendly small or medium ship fully executes a speed 3-4 maneuver, if it is at range 0-1, it may perform a red %BOOST% action."""
+        '"Axe"':
+           text: """After you defend or perform an attack, you may choose a friendly ship at range 1-2 in your %LEFTARC% or %RIGHTARC%. If you do, transfer 1 green token to that ship."""
+        '"Tucker"':
+           text: """After a friedly ship at range 1-2 performs an attack against an enemy ship in your %FRONTARC%, you may perform a %FOCUS% action."""
+        "Bombardment Drone":
+           text: """If you would drop a device, you may launch that device instead, using the same template. %LINEBREAK% NETWORKED CALCULATIONS: While you defend or perform an attack, you may spend 1 calculate token from a friendly ship at range 0-1 to change 1 %FOCUS% result to an %EVADE% or %HIT% result."""
+        "Count Dooku":
+           text: """After you defend, if the attacker is in your firing arc, you may spend 1 %FORCE% to remove 1 of your blue or red tokens.%LINEBREAK% After you perform an attack that hits, you may spend 1 %FORCE% to perform an action."""
+        "O-66":
+           text: """After you defend, you may spend 1 calculate token to perform an action."""
+        "DFS-311":
+           text: """ At the start of the Engagement Phase, you may transfer 1 of your calculate tokens to another friendly ship at range 0-3. %LINEBREAK% NETWORKED CALCULATIONS: While you defend or perform an attack, you may spend 1 calculate token from a friendly ship at range 0-1 to change 1 %FOCUS% result to an %EVADE% or %HIT% result. """
+        '"Odd Ball" (ARC-170)':
+           text: """After you fully execute a red maneuver or perform a red action, if there is an enemy ship in your %BULLSEYEARC%, you may acquire a lock on that ship. """
+        '"Jag"':
+           text: """After a friendly ship at range 1-2 in your %LEFTARC% or %RIGHTARC% defends, you may acquire a lock on the attacker. """
+        '"Wolffe"':
+           text: """While you perform a primary %FRONTARC% attack, you may spend 1 %CHARGE% to reroll 1 attack die. %LINEBREAK% While you perform a primary %REARARC% attack, you may recover 1 %CHARGE% to roll 1 additional attack die. """
+        
 
     upgrade_translations =
         "0-0-0":
@@ -13667,7 +18418,7 @@ exportObj.cardLoaders.English = () ->
            text: """<i>Scum only</i>%LINEBREAK%At the start of the End Phase, you may choose 1 enemy ship at range 0-2 in your firing arc. If you do, that ship does not remove its tractor tokens."""
         "L3-37":
            display_name: """L3-37"""
-           text: """<i>Scum only</i>%LINEBREAK%<strong>Setup:</strong> Equip this side faceup.%LINEBREAK%While you defend, you may flip this card. If you do, the attacker must reroll all attack dice.%LINEBREAK%<strong>L3-37’s Programming</strong>If you are not shielded, decrease the difficulty of your bank (%BANKLEFT% and %BANKRIGHT%) maneuvers."""
+           text: """<i>Scum only</i>%LINEBREAK%<strong>Setup:</strong> Equip this side faceup.%LINEBREAK%While you defend, you may flip this card. If you do, the attacker must reroll all attack dice.%LINEBREAK%<strong>L3-37’s Programming:</strong> If you are not shielded, decrease the difficulty of your bank (%BANKLEFT% and %BANKRIGHT%) maneuvers."""
         "Kylo Ren":
            display_name: """Kylo Ren"""
            text: """<i>First Order only</i>%LINEBREAK%<strong>Action:</strong> Choose 1 enemy ship at range 1-3. If you do, spend 1&nbsp;%FORCE% to assign the <strong>I’ll Show You the Dark Side</strong> condition to that ship."""
@@ -13802,7 +18553,7 @@ exportObj.cardLoaders.English = () ->
            text: """<i>Resistance only</i>%LINEBREAK%While you defend or perform an attack, if the enemy ship is in your %SINGLETURRETARC%, you may spend 1&nbsp;%FORCE% to change 1 of your blank results to a %EVADE% or %HIT% result."""
         "Rey's Millennium Falcon":
            display_name: """Rey’s Millennium Falcon"""
-           text: """<i>Resistance only</i>%LINEBREAK%If you have 2 or fewer stress tokens, you can execute red Segnor’s Loop [%SLOOPLEFT% or %SLOOPRIGHT%] maneuvers and perform %BOOST% and&nbsp;<rotate> actions even while stressed."""
+           text: """<i>Resistance only</i>%LINEBREAK%If you have 2 or fewer stress tokens, you can execute red Segnor’s Loop [%SLOOPLEFT% or %SLOOPRIGHT%] maneuvers and perform %BOOST% and&nbsp;%ROTATEARC% actions even while stressed."""
         "Rigged Cargo Chute":
            display_name: """Rigged Cargo Chute"""
            text: """<i>large ship or medium ship only</i>%LINEBREAK%<strong>Action:</strong> Spend 1&nbsp;%CHARGE%. Drop 1 loose cargo using the [1&nbsp;%STRAIGHT%] template."""
@@ -13834,7 +18585,7 @@ exportObj.cardLoaders.English = () ->
            display_name: """Sense"""
            text: """During the System Phase, you may choose 1 ship at range 0-1 and look at its dial. If you spend 1&nbsp;%FORCE%, you may choose a ship at range 0-3 instead."""
         "Servomotor S-Foils":
-           display_name: """Servomotor S-foils"""
+           display_name: """Servomotor S-Foils"""
            text: """<strong>Closed: </strong><i>Adds %BOOST% ,  %FOCUS%&nbsp;<i class="xwing-miniatures-font xwing-miniatures-font-linked"></i>&nbsp;<r>%BOOST%</r></i>%LINEBREAK% While you perform a primary attack, roll 1 fewer attack die.%LINEBREAK%Before you activate, you may flip this card.%LINEBREAK%<strong>Open:</strong> Before you activate, you may flip this card."""
         "Seventh Sister":
            display_name: """Seventh Sister"""
@@ -13935,9 +18686,49 @@ exportObj.cardLoaders.English = () ->
         "Impervium Plating":
            text: """ Before you would be dealt a faceup Ship damage card, you may spend 1 %CHARGE% to discard it instead. """
         "Grappling Struts":
-           text: """<strong>Closed: </strong> Setup: Equip this side faceup. %LINEBREAK% While you execute a manuever, if you overlap an asteroid or debris cloud and there are 1 or fewer other friendly ships at range 0 of that obstacle, you may flip this card. %LINEBREAK% <b>Open:</b> You ignore obstacles at range 0 and while you move through them. After you reveal your dial, if you reveal a maneuver other than a [2 %STRAIGHT%] and are at range 0 of an asteroid or debris cloud, skip your Execute Maneuver step and remove 1 stress token; if you revealed a right or left maneuver, rotate your ship 90º in that direction. After you execute a maneuver, flip this card."""
+           text: """<strong>Closed: </strong> Setup: Equip this side faceup. %LINEBREAK% While you execute a manuever, if you overlap an asteroid or debris cloud and there are 1 or fewer other friendly ships at range 0 of that obstacle, you may flip this card. %LINEBREAK% <strong>Open:</strong> You ignore obstacles at range 0 and while you move through them. After you reveal your dial, if you reveal a maneuver other than a [2 %STRAIGHT%] and are at range 0 of an asteroid or debris cloud, skip your Execute Maneuver step and remove 1 stress token; if you revealed a right or left maneuver, rotate your ship 90º in that direction. After you execute a maneuver, flip this card. """
         "Energy-Shell Charges":
-           text: """ <strong>Attack (%CALCULATE%):</strong> Spend 1 %CHARGE%. While you perform this attack, you may spend 1 calculate token to change 1 %FOCUS% result to a %CRIT% result. %LINEBREAK% <strong>Action:</strong> Reload this card."""
+           text: """ <strong>Attack (%CALCULATE%):</strong> Spend 1 %CHARGE%. While you perform this attack, you may spend 1 calculate token to change 1 %FOCUS% result to a %CRIT% result. %LINEBREAK% <strong>Action:</strong> Reload this card. """
+        "Dedicated":
+           text: """ While another friendly ship in your %LEFTARC% or %RIGHTARC% at range 0-2 defends, if it is limited or has the Dedicated upgrade and you are not strained, you may gain 1 strain token. If you do, the defender rerolls 1 of their blank results. """
+        "Synchronized Console":
+           text: """ After you perform an attack, you may choose a friendly ship at range 1 or a friendly ship with the Synchronized Console upgrade at range 1-3 and spend a lock you have on the defender. If you do, the friendly ship you chose may acquire a lock on the defender. """
+        "Battle Meditation":
+           text: """ You cannot coordinate limited ships. %LINEBREAK% While you perform a purple %COORDINATE% action, you may coordinate 1 additional friendly non-limited ship of the same type. Both ships must perform the same action."""
+        "R4-P Astromech":
+           text: """ Before you execute a basic maneuver, you may spend 1 %CHARGE%. If you do, while you execute that maneuver, reduce its difficulty. """
+        "R4-P17":
+           text: """ After you fully execute a red maneuver, you may spend 1 %CHARGE% to perform an action, even while stressed. """
+        "Spare Parts Canisters":
+           text: """ Action: Spend 1 %CHARGE% to recover 1 charge on one of your equipped %ASTROMECH% upgrades. %LINEBREAK% Action: Spend 1 %CHARGE% to drop 1 spare parts, then break all locks assigned to you. """
+        "Scimitar":
+           text: """Setup: After the Place Forces step, you may cloak. %LINEBREAK% After you decloak, you may choose an enemy ship in your %BULLSEYEARC%. If you do, it gains 1 jam token."""
+        "Chancellor Palpatine":
+           text: """<strong>Setup:</strong> Equip this side faceup.%LINEBREAK% After you defend, if the attacker is at range 0-2, you may spend 1 %FORCE%. If you do, the attacker gains 1 stress token. %LINEBREAK% During the End Phase, you may flip this card. %LINEBREAK% <strong>Darth Sidious:</strong> After you perform a purple %COORDINATE% action, the ship you coordinated gains 1 stress token. Then, it gains 1 focus token or recovers 1 %FORCE%."""
+        "Count Dooku":
+           text: """Before a ship at range 0-2 rolls attack or defense dice, if all of your %FORCE% are active, you may spend 1 %FORCE% and name a result. If the roll does not contain the named result, the ship must change 1 die to that result."""
+        "General Grievous":
+           text: """While you defend, after the Neutralize Results step, if there are 2 or more %HIT%/%CRIT% results, you may spend 1 %CHARGE% to cancel 1 %HIT% or %CRIT% result. %LINEBREAK% After a friendly ship is destroyed, recover 1 %CHARGE%."""
+        "K2-B4":
+           text: """While a friendly ship at range 0-3 defends, it may spend 1 calculate token. If it does, add 1 %EVADE% result unless the attacker chooses to gain 1 strain token."""
+        "DRK-1 Probe Droids":
+           text: """During the End Phase, you may spend 1 %CHARGE% to drop or launch 1 DRK-1 probe droid using a speed 3 template. %LINEBREAK% This card's %CHARGE% cannot be recovered."""
+        "Kraken":
+           text: """During the End Phase, you may choose up to 3 friendly ships at range 0-3. If you do, each of these ships does not remove 1 calculate token."""
+        "TV-94":
+           text: """While a friendly ship at range 0-3 performs a primary attack against a defender in its %BULLSEYEARC%, if there are 2 or fewer attack dice, it may spend 1 calculate token to add 1 %HIT% result."""
+        "Discord Missiles":
+           text: """At the start of the Engagement Phase, you may spend 1 calculate token and 1 %CHARGE% to launch 1 buzz droid swarm using the [3 %BANKLEFT%], [3 %STRAIGHT%], or [3 %BANKRIGHT%] template. %LINEBREAK% This card's %CHARGE% cannot be recovered."""
+        "Clone Commander Cody":
+           text: """ After you perform an attack that missed, if 1 or more %HIT%/%CRIT% results were neutralized, the defender gains 1 strain token. """
+        "Seventh Fleet Gunner":
+           text: """ While another friendly ship performs a primary attack, if the defender is in your firing arc, you may spend 1 %CHARGE%. If you do, the attacker rolls 1 additional die, to a maximum of 4. During the System Phase, you may gain 1 disarm token to recover 1 %CHARGE%. """
+        "R4-P44":
+           text: """ After you fully execute a red maeuver, if there is an enemy ship in your %BULLSEYEARC%, gain 1 calculate token. """
+        "Treacherous":
+           text: """ While you defend, you may choose a ship obstructing the attack and spend 1 %CHARGE%. If you do, cancel 1 %HIT% or %CRIT% result, and the ship you chose gains 1 strain token. %LINEBREAK% After a ship at range 0-3 is destroyed, recover 1 %CHARGE%. """
+        "Soulless One":
+           text: """ While you defend, if the attacker is outside your firing arc, you may reroll 1 defense die. """
             
         
     condition_translations =
@@ -13965,6 +18756,10 @@ exportObj.cardLoaders.English = () ->
            text: '''(Mine Token) - After a ship overlaps or moves through this device, it detonates. When this device detonates, the ship suffers 1 %HIT% damage and gains 3 ion tokens.'''
         'Proximity Mine':
            text: '''(Mine Token) - After a ship overlaps or moves through this device, it detonates. When this device detonates, that ship rolls 2 attack dice. That ship then suffers 1 %HIT% plus 1 %HIT%/%CRIT% damage for each matching result.%LINEBREAK%<i>Errata (since rules reference 1.0.2): Add: "1 %HIT% plus"</i>'''
+        'DRK-1 Probe Droid':
+           text: '''INIT: 0 %LINEBREAK% AGILITY: 3 %LINEBREAK% HULL: 1 %LINEBREAK% (Remote) - While a friendly ship locks an object or jams an enemy ship, it may measure range from you. %LINEBREAK% After an enemy ship overlaps you, that ship rolls 1 attack die. On a %FOCUS% result, you suffer 1 %HIT% damage. %LINEBREAK% System Phase: At your initiative, you may relocate using a [2 %BANKLEFT%], [2 %STRAIGHT%] or [2 %BANKRIGHT%] template.'''
+        'Buzz Droid Swarm':
+           text: '''INIT: 0 %LINEBREAK% AGILITY: 3 %LINEBREAK% HULL: 1 %LINEBREAK% (Remote) - After an enemy ship moves through or overlaps you, relocate to its front or rear guides (you are at range 0 of this ship). You cannot overlap an object this way. If you cannot be placed at either set of guides, you and that ship each suffere 1 %HIT% damage. %LINEBREAK% Engagement Phase: At your initiative, each enemy ship at range 0 suffers 1 %CRIT% damage.'''
             
     exportObj.setupTranslationCardData pilot_translations, upgrade_translations, condition_translations
 
@@ -14403,7 +19198,7 @@ exportObj.cardLoaders['Español'] = () ->
         "Autopilot Drone":
            display_name: """Dron autopilotado"""
            text: """<i class = flavor_text>A veces, las advertencias del fabricante están hechas para ser ignoradas.</i>%LINEBREAK%<strong>Células de energía manipuladas:</strong>  Durante la fase de Sistemas, si no estás acoplado, pierdes 1 %CHARGE%. Al final de la fase de Activación, si tienes 0 %CHARGE%, eres destruido. Antes de ser retirado de la zona de juego, toda nave que tengas a alcance 0-1 sufre 1 de daño %CRIT%."""
-        "Benthic Two-Tubes":
+        "Benthic Two Tubes":
            display_name: """Benthic Dos Tubos"""
            text: """Después de que realices una acción %FOCUS%, puedes transferir 1 de tus fichas de Concentración a una nave aliada que tengas a alcance 1-2."""
         "Biggs Darklighter":
@@ -14487,7 +19282,7 @@ exportObj.cardLoaders['Español'] = () ->
         "Drea Renthal":
            display_name: """Drea Renthal"""
            text: """Mientras una nave aliada que no sea limitada efectúa un ataque, si el defensor está situado en tu arco de fuego, el atacante puede volver a tirar 1 dado de ataque."""
-        "Edrio Two-Tubes":
+        "Edrio Two Tubes":
            display_name: """Edrio Dos Tubos"""
            text: """Antes de que te actives, si estás concentrado, puedes realizar una acción."""
         "Emon Azzameen":
@@ -15817,7 +20612,7 @@ exportObj.cardLoaders['Français'] = () ->
         "Autopilot Drone":
            display_name: """Drone Automatique"""
            text: """<i class = flavor_text>Il est parfois utile d'ignorer les avertissements de sécurité préconisés par les fabricants…</i>%LINEBREAK%Cellules Énergétiques Bidouillées&nbsp;: pendant la phase de système, si vous n'êtes pas arrimé, perdez 1 &nbsp;%CHARGE%. À la fin de la phase d'activation, vous êtes détruit si vous avez 0 %CHARGE%. Avant de retirer votre figurine, chaque vaisseau à porté 0-1 subit 1 dégât %CRIT%."""
-        "Benthic Two-Tubes":
+        "Benthic Two Tubes":
            display_name: """Benthic Deux-Tubes"""
            text: """Après avoir effectué une action %FOCUS%, vous pouvez transférer 1 de vos marqueurs de concentration à un vaisseau allié à portée 1-2."""
         "Biggs Darklighter":
@@ -15901,7 +20696,7 @@ exportObj.cardLoaders['Français'] = () ->
         "Drea Renthal":
            display_name: """Drea Renthal"""
            text: """Tant qu'un vaisseau allié non-limité effectue une attaque, si le défenseur est dans votre arc de tir, l'attaquant peut relancer 1 dé d'attaque."""
-        "Edrio Two-Tubes":
+        "Edrio Two Tubes":
            display_name: """Edrio Deux-Tubes"""
            text: """Avant votre activation, si vous êtes concentré, vous pouvez effectuer une action."""
         "Emon Azzameen":
@@ -17214,7 +22009,7 @@ exportObj.cardLoaders.Magyar = () ->
         "Autopilot Drone":
            display_name: """Autopilot Drone"""
            text: """<strong>Rigged Energy Cells:</strong> A Rendszer fázis alatt, ha nem vagy dokkolva, elvesztesz 1&nbsp;%CHARGE% jelzőt. Az aktivációs fázis végén, ha már nincs %CHARGE% jelződ, megsemmisülsz. Mielőtt levennéd a hajód minden 0-1-es távolságban lévő hajó elszenved 1&nbsp;%CRIT% sérülést."""
-        "Benthic Two-Tubes":
+        "Benthic Two Tubes":
            display_name: """Benthic Two Tubes"""
            text: """Miután végrehajtottál egy %FOCUS% akciót, átrakhatod 1 fókusz jelződ egy baráti hajóra 1-2-es távolságban."""
         "Biggs Darklighter":
@@ -17298,7 +22093,7 @@ exportObj.cardLoaders.Magyar = () ->
         "Drea Renthal":
            display_name: """Drea Renthal"""
            text: """Amikor egy baráti nem-limitált hajó végrehajt egy támadást, ha a védekező benne van a tűzívedben, a támadó újradobhatja 1 támadókockáját."""
-        "Edrio Two-Tubes":
+        "Edrio Two Tubes":
            display_name: """Edrio Two Tubes"""
            text: """Mielőtt aktiválódnál és van fókuszod, végrehajthatsz egy akciót."""
         "Emon Azzameen":
@@ -17767,7 +22562,7 @@ exportObj.cardLoaders.Magyar = () ->
         "Captain Cardinal":
            text: """Amikor egy baráti hajó 1-2-es távolságban, a tiédnél alacsonyabb kezdeményezéssel védekezik vagy támadást hajt végre, ha van legalább 1&nbsp;%CHARGE% jelződ, az a hajó újradobhat 1&nbsp;%FOCUS% eredményét. Miután egy ellenséges hajó 0-3-as távolságban megsemmisül, elvesztesz 1&nbsp;%CHARGE% jelzőt.%LINEBREAK%<strong>Linked battery:</strong> Amikor végrehajtasz egy %CANNON% támadást, dobj 1-gyel több támadókockával."""
         '"Avenger"':
-           text: """Miután egy ellenséges hajó 0-3-as távolságban megsemmisül After another friendly ship is destroyed, you may perform an action, even while stressed. %LINEBREAK%<strong>Autothrusters:</strong> Miután végrehajtasz egy akciót, végrehajthatsz egy piros %BARRELROLL% vagy piros %BOOST% akciót."""
+           text: """Miután egy ellenséges hajó 0-3-as távolságban megsemmisül végrehajthatsz egy akciót, akkor is ha stresszes vagy. %LINEBREAK%<strong>Autothrusters:</strong> Miután végrehajtasz egy akciót, végrehajthatsz egy piros %BARRELROLL% vagy piros %BOOST% akciót."""
         '"Recoil"':
            text: """Amikor stresszes vagy kezelheted úgy a %FRONTARC% tűzívedben 0-1-es távolságban lévő ellenséges hajókat, mintha a %BULLSEYEARC% tűzívedben lennének.%LINEBREAK%<strong>Autothrusters:</strong> Miután végrehajtasz egy akciót, végrehajthatsz egy piros %BARRELROLL% vagy piros %BOOST% akciót."""
         "Omega Squadron Expert":
@@ -17808,7 +22603,36 @@ exportObj.cardLoaders.Magyar = () ->
            text: """Mielőtt sorra kerülsz az Ütközet fázisban, választhasz 1 ellenséges hajót a %BULLSEYEARC% tűzívedben 1-2-es távolságban és kapsz 1 'inaktív fegyverzet' jelzőt. Ha így teszel, az a hajó kap 1 vonósugár jelzőt.%LINEBREAK%<strong>Notched Stabilizers:</strong> Amikor mozogsz, hagyd figyelmen kívül az aszteroidákat."""
         "Overseer Yushyn":
            text: """Mielőtt egy baráti hajó 1-es távolságban kapna 1 'inaktív fegyverzet' jelzőt, ha az a hajó nem stresszes, elkölthetsz 1&nbsp;%CHARGE% jelzőt. Ha így teszel, az a hajó 1 stressz jelzőt kap helyette.%LINEBREAK%<strong>Notched Stabilizers:</strong> Amikor mozogsz, hagyd figyelmen kívül az aszteroidákat."""
-            
+        "General Grievous":
+           text: """Amikor elsődleges támadást hajtasz végre, ha nem vagy a védekező tűzívében, újradobhatod akár 2 támadókockádat is."""
+        "Wat Tambor":
+           text: """Amikor elsődleges támadást hajtasz végre, újradobhatsz 1 támadókockát minden kalkuláció tokennel rendelkező baráti hajó után ami a védekezőtől 1-es távolságban van."""
+        "Captain Sear":
+           text: """Amikor egy baráti hajó 0-3-as távolságban végrehajt egy elsődleges támadást, ha a védekező benne van annak %BULLSEYEARC% tűzívében, az 'Eredmények semlegesítése' lépés előtt a baráti hajó elkölthet 1&nbsp;%CALCULATE% jelzőt, hogy semlegesítsen 1&nbsp;%EVADE% eredményt."""
+        "Precise Hunter":
+           text: """Amikor támadást hajtasz végre, ha a védekező benne van a %BULLSEYEARC% tűzívedben, újradobhatsz 1 üres eredményt.%LINEBREAK% NETWORKED CALCULATIONS: Amikor védekezel vagy támadást hajtasz végre, elkölthetsz 1&nbsp;%CALCULATE% jelzőt egy 0-1-es távolságban lévő baráti hajóról, hogy megváltoztass 1&nbsp;%FOCUS% eredményt %EVADE% vagy %HIT% eredményre."""
+        "Hadr Chall Prototype":
+           text: """Miután egy ellenséges hajó a %BULLSEYEARC% tűzívedben 0-2-es távolságban védekezőnek jelöl egy másik baráti hajót, végrehajthatsz egy %CALCULATE% vagy %LOCK% akciót.%LINEBREAK% NETWORKED CALCULATIONS: Amikor védekezel vagy támadást hajtasz végre, elkölthetsz 1&nbsp;%CALCULATE% jelzőt egy 0-1-es távolságban lévő baráti hajóról, hogy megváltoztass 1&nbsp;%FOCUS% eredményt %EVADE% vagy %HIT% eredményre."""
+        "DFS-081":
+           text: """Amikor egy baráti hajó 0-1 távolságban védekezik, elkölthet 1&nbsp;%CALCULATE% jelzőt, hogy az összes %CRIT% eredményt %HIT% eredményre változtassa.%LINEBREAK% NETWORKED CALCULATIONS: Amikor védekezel vagy támadást hajtasz végre, elkölthetsz 1&nbsp;%CALCULATE% jelzőt egy 0-1-es távolságban lévő baráti hajóról, hogy megváltoztass 1&nbsp;%FOCUS% eredményt %EVADE% vagy %HIT% eredményre."""
+        "Obi-Wan Kenobi":
+           text: """Miután egy baráti hajó 0-2-es távolságban elkölt egy %FOCUS% jelzőt, elkölthetsz 1&nbsp;%FORCE% jelzőt. Ha így teszel, az a hajó kap 1&nbsp;%FOCUS% jelzőt.%LINEBREAK% FINE-TUNED CONTROLS: Miután teljesen végrehajtottál egy manővert, elkölthetsz 1&nbsp;%FORCE% jelzőt, hogy végrehajts egy %BOOST% vagy %BARRELROLL% akciót.""" 
+        "Plo Koon":
+           text: """Az Ütközet fázis elején elkölthetsz 1&nbsp;%FORCE% jelzőt, hogy válassz egy másik baráti hajót 0-2-es távolságban. Ha így teszel, átadhatsz 1 zöld jelzőt neki vagy átvehetsz egy narancs jelzőt magadra.%LINEBREAK% FINE-TUNED CONTROLS: Miután teljesen végrehajtottál egy manővert, elkölthetsz 1&nbsp;%FORCE% jelzőt, hogy végrehajts egy %BOOST% vagy %BARRELROLL% akciót."""
+        "Saesee Tiin":
+           text: """Miután egy baráti hajó 0-2-es távolságban felfedi a tárcsáját elkölthetsz 1&nbsp;%FORCE% jelzőt. Ha így teszel, állítsd át a tárcsáját egy másik hasonló sebességű és nehézségű manőverre.%LINEBREAK% FINE-TUNED CONTROLS: Miután teljesen végrehajtottál egy manővert, elkölthetsz 1&nbsp;%FORCE% jelzőt, hogy végrehajts egy %BOOST% vagy %BARRELROLL% akciót."""
+        "Mace Windu":
+           text: """Miután teljesen végrehajtottál egy piros manővert, tölts vissza 1&nbsp;%FORCE% jelzőt.%LINEBREAK% FINE-TUNED CONTROLS: Miután teljesen végrehajtottál egy manővert, elkölthetsz 1&nbsp;%FORCE% jelzőt, hogy végrehajts egy %BOOST% vagy %BARRELROLL% akciót."""
+        '"Kickback"':
+           text: """Miután végrehajtasz egy %BARRELROLL% akciót, végrehajthatsz egy piros %LOCK% akciót."""
+        '"Odd Ball"':
+           text: """Miután teljesen végrehajtottál egy piros manővert, ha van egy ellenséges hajó a %BULLSEYEARC% tűzívedben, feltehetsz egy bemérőt arra a hajóra."""
+        '"Swoop"':
+           text: """Miután egy baráti kis vagy közepes hajó teljesen végrehajt egy 3-4 sebességű manővert, ha az 0-1-es távolságban van tőled, végrehajthat egy piros %BOOST% akciót."""
+        '"Axe"':
+           text: """Miután védekezel vagy támadást hajtasz végre, választhatsz egy baráti hajót 1-2-es távolságban a %LEFTARC% vagy %RIGHTARC% tűzívedben. Ha így teszel add át 1 zöld jelződet annak a hajónak."""
+        '"Tucker"':
+           text: """Miután egy baráti hajó 1-2-es távolságban végrehajt egy támadást egy ellenséges hajó ellen a %FRONTARC% tűzívedben, végrehajthatsz egy %FOCUS% akciót."""
             
 
     upgrade_translations =
@@ -18096,7 +22920,7 @@ exportObj.cardLoaders.Magyar = () ->
            text: """<i>csak Lázadók</i>%LINEBREAK%Ha egy baráti hajó 0-3 távolságban fókusz jelzőt kapna, helyette kaphat 1 kitérés jelzőt."""
         "Kanan Jarrus":
            display_name: """Kanan Jarrus"""
-           text: """<i>csak Lázadók</i>%LINEBREAK%Miután egy baráti hajó 0-2-es távolságban teljesen végrehajt egy manővert, elkölthetsz 1&nbsp;%FORCE% jelzőt, hogy levegyél róla 1 stressz jelzőt."""
+           text: """<i>csak Lázadók</i>%LINEBREAK%Miután egy baráti hajó 0-2-es távolságban teljesen végrehajt egy fehér manővert, elkölthetsz 1&nbsp;%FORCE% jelzőt, hogy levegyél róla 1 stressz jelzőt."""
         "Ketsu Onyo":
            display_name: """Ketsu Onyo"""
            text: """<i>csak Söpredék</i>%LINEBREAK%A Vége fázis elején, kiválaszthatsz 1 ellenséges hajót 0-2-es távolságban a tűzívedben. Ha így teszel, aza a hajó nem veheti le a vonósugár jelzőit."""
@@ -18234,7 +23058,7 @@ exportObj.cardLoaders.Magyar = () ->
            text: """A Rendszer fázis alatt kiválaszthatsz 1 hajót 0-1-es távolságban és megnézheted a tárcsáját. Ha elköltesz 1&nbsp;%FORCE% jelzőt választhatsz 0-3-as távolságból hajót."""
         "Servomotor S-Foils":
            display_name: """Servomotor S-foils"""
-           text: """<strong>Closed: </strong><i>Adds %BOOST% ,  %FOCUS%&nbsp;<i class="xwing-miniatures-font xwing-miniatures-font-linked"></i>&nbsp;<r>%BOOST%</r></i>%LINEBREAK% While you perform a primary attack, roll 1 fewer attack die.%LINEBREAK%Before you activate, you may flip this card.%LINEBREAK%<strong>Open:</strong> Before you activate, you may flip this card."""
+           text: """<strong>Csukva: </strong><i>Kapott akciók: %BOOST% , %FOCUS%&nbsp;<i class="xwing-miniatures-font xwing-miniatures-font-linked"></i>&nbsp;<r>%BOOST%</r></i>%LINEBREAK% Amikor végrehajtasz egy elsődleges támadást, 1-gyel kevesebb támadókockával dobj.%LINEBREAK%Mielőtt aktiválódsz, megfordíthatod ezt a kártyát.%LINEBREAK%<strong>Nyitva:</strong> Mielőtt aktiválódsz, megfordíthatod ezt a kártyát."""
         "Seventh Sister":
            display_name: """Seventh Sister"""
            text: """<i>csak Birodalom</i>%LINEBREAK%Ha egy ellenséges hajó 0-1-es távolságra egy stressz jelzőt kapna, elkölthetsz 1&nbsp;%FORCE% jelzőt, hogy 1 zavarás vagy vonósugár jelzőt kapjon helyette."""
@@ -18314,7 +23138,7 @@ exportObj.cardLoaders.Magyar = () ->
         "Black One":
            text: """<i>Kapott akció: %SLAM%</i> %LINEBREAK% Miután végrehajtasz egy %SLAM% akciót, elvesztesz 1&nbsp;%CHARGE% jelzőt. Ezután kaphatsz 1 ion jelzőt, hogy levedd az inaktív fegyverzet jelzőt. Ha a %CHARGE% nem aktív, nem hajthatsz végre %SLAM% akciót."""
         "Heroic":
-           text: """Amikor védekezel vagy támadást hajtasz végre, ha 2 vagy több csak üres eredményed van, újradobhatsz akárhány kockát."""
+           text: """<i>csak Ellenállás</i><br>Amikor védekezel vagy támadást hajtasz végre, ha 2 vagy több csak üres eredményed van, újradobhatsz akárhány kockát."""
         "Rose Tico":
            text: """Amikor védekezel vagy támadást hajtasz végre, elkölthetsz egy dobás eredményed, hogy bemérőt rakj az ellenséges hajóra."""
         "Finn":
@@ -18381,7 +23205,13 @@ exportObj.cardLoaders.Magyar = () ->
            text: """Mielőtt aktiválódsz vagy rád kerül a sor az Ütközet fázisban, elkölthetsz 1&nbsp;%CHARGE% jelzőt, hogy figyelmen kívül hagyd az akadályokat annak a fázisnak a végéig."""
         "Pattern Analyzer":
            text: """Amikor teljesen végrehajtasz egy piros manővert, a <strong>Nehézség ellenőrzése</strong> lépés előtt végrehjathatsz 1 akciót."""
-          
+        "Impervium Plating":
+           text: """Mielőtt egy felfordított <b>Ship</b> sérüléskártyát kapnál, elkölthetsz 1&nbsp;%CHARGE% jelzőt, hogy eldobd."""
+        "Grappling Struts":
+           text: """<strong>Csukva: </strong> Felhelyezés: ezzel az oldalával helyezd fel. %LINEBREAK% Amikor végrehajtasz egy manővert, ha átfedésbe kerülsz egy aszteroidával vagy űrszeméttel és 1 vagy kevesebb másik baráti hajó van 0-ás távolságra attól az akadálytól, megfordíthatod ezt a kártyát. 
+		   %LINEBREAK% <b>Nyitva:</b> Hagyd figyelment kívül a 0-ás távolságnban lévő akadályokat amíg átmozogsz rajtuk. Miután felfeded a tárcsádat, ha más manővert fedtél fel mint [2 %STRAIGHT%] és 0-ás távolságra vagy egy aszteroidától vagy űrszeméttől, ugord át a 'Manőver végrehajtása' lépést és vegyél le 1 stresst jelzőt; ha jobb vagy bal manővert fedtél fel, forgasd a hajódat 90 fokkal abba az irányba. Miután végrehajtottál egy manővert fordítsd át ezt a kártyát."""
+        "Energy-Shell Charges":
+           text: """ <strong>Támadás (%CALCULATE%):</strong> Költs el 1&nbsp;%CHARGE% jelzőt. Amikor végrehajtasz egy támadást, elkölthetsz 1&nbsp;%CALCULATE% jelzőt, hogy megváltoztass 1&nbsp;%FOCUS% eredményt %CRIT% eredményre.%LINEBREAK% <strong>Akció:</strong> Töltsd újra ezt a kártyát."""
         
     condition_translations =
         'Suppressive Fire':
@@ -18463,7 +23293,7 @@ exportObj.cardLoaders.Italiano = () ->
         "Ben Teene":
            display_name: """Ben Teene"""
            text: """Dopo che hai effettuato un attacco, se il difensore è nel tuo %SINGLETURRETARC%, assegna la condizione <strong>Sconquassato</strong> al difensore."""
-        "Benthic Two-Tubes":
+        "Benthic Two Tubes":
            display_name: """Benthic Due Tubi"""
            text: """Dopo che hai effettuato un’azione %FOCUS%, puoi trasferire 1 tuo segnalino concentrazione a una nave amica a gittata 1-2."""
         "Biggs Darklighter":
@@ -18504,7 +23334,7 @@ exportObj.cardLoaders.Italiano = () ->
            text: """<i class = flavor_text>Grazie al suo arsenale di armi pesanti e alla sua resistente schermatura, l’Ala-B si è consolidato come il caccia d’assalto più innovativo dell’Alleanza Ribelle.</i>"""
         "Blue Squadron Recruit":
            display_name: """Recluta della Squadriglia Blu"""
-           text: """<i class = flavor_text>I giovani di tutta la galassia sono cresciuti ascoltando le storie degli atti eroici della Guerra Civile Galattica e molti di loro hanno imparato a volare negli stessi abitacoli in cui i loro genitori combatterono contro l’Impero.</i>%LINEBREAK%<strong>Girostabilizzatori Affinati:</strong> Puoi ruotare il tuo segnalatore %SINGLETURRETARC% solo sui tuoi %FRONTARC% o %REARARC%. Dopo che hai effettuato un’azione, puoi effettuare 1 azione %BOOST% o <rotate> rossa."""
+           text: """<i class = flavor_text>I giovani di tutta la galassia sono cresciuti ascoltando le storie degli atti eroici della Guerra Civile Galattica e molti di loro hanno imparato a volare negli stessi abitacoli in cui i loro genitori combatterono contro l’Impero.</i>%LINEBREAK%<strong>Girostabilizzatori Affinati:</strong> Puoi ruotare il tuo segnalatore %SINGLETURRETARC% solo sui tuoi %FRONTARC% o %REARARC%. Dopo che hai effettuato un’azione, puoi effettuare 1 azione %BOOST% o %ROTATEARC% rossa."""
         "Blue Squadron Rookie":
            display_name: """Matricola della Squadriglia Blu"""
            text: """<i class = flavor_text>L’Ala-X T-70 della Incom-FreiTek fu progettato per migliorare la flessibilità tattica del vetusto T-65. L’innesto avanzato per droidi di cui è dotato lo rende compatibile con una vasta gamma di droidi astromeccanici e i suoi blocchi di armi modulari permettono al pilota di adattare l’arsenale ai bisogni di ogni specifica missione.</i>%LINEBREAK%<strong>Innesto Armato:</strong> Puoi dotarti di 1 miglioria&nbsp;%CANNON%, %TORPEDO% o %MISSILE%."""
@@ -18637,7 +23467,7 @@ exportObj.cardLoaders.Italiano = () ->
         "Edon Kappehl":
            display_name: """Edon Kappehl"""
            text: """Dopo che hai eseguito completamente una manovra blu o bianca, se non hai sganciato o lanciato un congegno in questo round, puoi sganciare 1 congegno."""
-        "Edrio Two-Tubes":
+        "Edrio Two Tubes":
            display_name: """Edrio Due Tubi"""
            text: """Prima di attivarti, se sei concentrato,puoi effettuare 1 azione."""
         "Ello Asty":
@@ -18717,13 +23547,13 @@ exportObj.cardLoaders.Italiano = () ->
            text: """Mentre difendi, se sei dietro l’attaccante, tira 1 dado di difesa aggiuntivo.%LINEBREAK%Mentre effettui un attacco, se sei dietro il difensore, tira 1 dado di attacco aggiuntivo."""
         "Green Squadron Expert":
            display_name: """Esperto della Squadriglia Verde"""
-           text: """<i class = flavor_text>Il frutto di anni di modifiche e collaudi sul campo si è concretizzato nel modello RZ-2, ma i piloti più temerari vedono nella maggiore affidabilità della nave una sfida a spingere le sue prestazioni verso nuovi limiti.</i>%LINEBREAK%<strong>Girostabilizzatori Affinati:</strong> Puoi ruotare il tuo segnalatore %SINGLETURRETARC% solo sui tuoi %FRONTARC% o %REARARC%. Dopo che hai effettuato un’azione, puoi effettuare 1 azione %BOOST% o <rotate> rossa."""
+           text: """<i class = flavor_text>Il frutto di anni di modifiche e collaudi sul campo si è concretizzato nel modello RZ-2, ma i piloti più temerari vedono nella maggiore affidabilità della nave una sfida a spingere le sue prestazioni verso nuovi limiti.</i>%LINEBREAK%<strong>Girostabilizzatori Affinati:</strong> Puoi ruotare il tuo segnalatore %SINGLETURRETARC% solo sui tuoi %FRONTARC% o %REARARC%. Dopo che hai effettuato un’azione, puoi effettuare 1 azione %BOOST% o %ROTATEARC% rossa."""
         "Green Squadron Pilot":
            display_name: """Pilota della Squadriglia Verde"""
            text: """<i class = flavor_text>Grazie ai suoi comandi sensibili e alla sua alta manovrabilità, l’abitacolo di un Ala-A era un luogo riservato soltanto ai piloti più dotati.</i>%LINEBREAK%<strong>Propulsori Vettoriali:</strong> Dopo che hai effettuato un’azione, puoi effettuare 1 azione %BOOST% rossa."""
         "Greer Sonnel":
            display_name: """Greer Sonnel"""
-           text: """Dopo che hai eseguito completamente una manovra, puoi ruotare il tuo segnalatore %SINGLETURRETARC%.%LINEBREAK%<strong>Girostabilizzatori Affinati:</strong> Puoi ruotare il tuo segnalatore %SINGLETURRETARC% solo sui tuoi %FRONTARC% o %REARARC%. Dopo che hai effettuato un’azione, puoi effettuare 1 azione %BOOST% o <rotate> rossa."""
+           text: """Dopo che hai eseguito completamente una manovra, puoi ruotare il tuo segnalatore %SINGLETURRETARC%.%LINEBREAK%<strong>Girostabilizzatori Affinati:</strong> Puoi ruotare il tuo segnalatore %SINGLETURRETARC% solo sui tuoi %FRONTARC% o %REARARC%. Dopo che hai effettuato un’azione, puoi effettuare 1 azione %BOOST% o %ROTATEARC% rossa."""
         "Guri":
            display_name: """Guri"""
            text: """All’inizio della Fase di Ingaggio, se ci sono navi nemiche a gittata 0-1, puoi ottenere 1 segnalino concentrazione.%LINEBREAK%<strong>Micropropulsori:</strong> Mentre effettui un avvitamento, devi usare il modello %BANKLEFT% o %BANKRIGHT% invece del modello %STRAIGHT%."""
@@ -18906,7 +23736,7 @@ exportObj.cardLoaders.Italiano = () ->
            text: """Dopo che sei diventato il difensore (prima che i dadi siano tirati), puoi recuperare 1&nbsp;%FORCE%."""
         "L'ulo L'ampar":
            display_name: """L’ulo L’ampar"""
-           text: """Mentre difendi o effettui un attacco primario, se sei in tensione, <b>devi </b>tirare 1 dado di difesa in meno o 1 dado di attacco aggiuntivo.%LINEBREAK%<strong>Girostabilizzatori Affinati:</strong> Puoi ruotare il tuo segnalatore %SINGLETURRETARC% solo sui tuoi %FRONTARC% o %REARARC%. Dopo che hai effettuato un’azione, puoi effettuare 1 azione %BOOST% o <rotate> rossa."""
+           text: """Mentre difendi o effettui un attacco primario, se sei in tensione, <b>devi </b>tirare 1 dado di difesa in meno o 1 dado di attacco aggiuntivo.%LINEBREAK%<strong>Girostabilizzatori Affinati:</strong> Puoi ruotare il tuo segnalatore %SINGLETURRETARC% solo sui tuoi %FRONTARC% o %REARARC%. Dopo che hai effettuato un’azione, puoi effettuare 1 azione %BOOST% o %ROTATEARC% rossa."""
         "Maarek Stele":
            display_name: """Maarek Stele"""
            text: """Mentre effettui un attacco, se al difensore sta per essere inflitta una carta danno a faccia in su, pesca invece 3 carte danno, scegline 1 e scarta le altre.%LINEBREAK%<strong>Computer d’Attacco Avanzato:</strong> Mentre effettui un attacco primario contro un difensore che hai acquisito come bersaglio, tira 1 dado di attacco aggiuntivo e cambia 1 risultato %HIT% in 1 risultato %CRIT%."""
@@ -19119,7 +23949,7 @@ exportObj.cardLoaders.Italiano = () ->
            text: """<i class = flavor_text>La serie AF4 è l’ultima di una lunga linea di modelli Headhunter. Questo caccia economico e relativamente resistente è uno dei veicoli preferiti dalle organizzazioni indipendenti come la Ribellione.</i>"""
         "Tallissan Lintra":
            display_name: """Tallissan Lintra"""
-           text: """Mentre una nave nemica nel tuo %BULLSEYEARC% effettua un attacco, puoi spendere 1 %CHARGE%. Se lo fai, il difensore tira 1 dado aggiuntivo.%LINEBREAK%<strong>Girostabilizzatori Affinati:</strong> Puoi ruotare il tuo segnalatore %SINGLETURRETARC% solo sui tuoi %FRONTARC% o %REARARC%. Dopo che hai effettuato un’azione, puoi effettuare 1 azione %BOOST% o <rotate> rossa."""
+           text: """Mentre una nave nemica nel tuo %BULLSEYEARC% effettua un attacco, puoi spendere 1 %CHARGE%. Se lo fai, il difensore tira 1 dado aggiuntivo.%LINEBREAK%<strong>Girostabilizzatori Affinati:</strong> Puoi ruotare il tuo segnalatore %SINGLETURRETARC% solo sui tuoi %FRONTARC% o %REARARC%. Dopo che hai effettuato un’azione, puoi effettuare 1 azione %BOOST% o %ROTATEARC% rossa."""
         "Talonbane Cobra":
            display_name: """Talonbane Cobra"""
            text: """Mentre difendi a gittata di attacco 3 o effettui un attacco a gittata di attacco 1, tira 1 dado aggiuntivo."""
@@ -19185,7 +24015,7 @@ exportObj.cardLoaders.Italiano = () ->
            text: """Mentre effettui un attacco primario, se sei danneggiato, puoi tirare 1 dado di attacco aggiuntivo."""
         "Zari Bangel":
            display_name: """Zari Bangel"""
-           text: """Dopo che hai eseguito parzialmente una manovra, non saltare il tuo passo “Effettuare l’Azione”.%LINEBREAK%<strong>Girostabilizzatori Affinati:</strong> Puoi ruotare il tuo segnalatore %SINGLETURRETARC% solo sui tuoi %FRONTARC% o %REARARC%. Dopo che hai effettuato un’azione, puoi effettuare 1 azione %BOOST% o <rotate> rossa."""
+           text: """Dopo che hai eseguito parzialmente una manovra, non saltare il tuo passo “Effettuare l’Azione”.%LINEBREAK%<strong>Girostabilizzatori Affinati:</strong> Puoi ruotare il tuo segnalatore %SINGLETURRETARC% solo sui tuoi %FRONTARC% o %REARARC%. Dopo che hai effettuato un’azione, puoi effettuare 1 azione %BOOST% o %ROTATEARC% rossa."""
         "Zealous Recruit":
            display_name: """Recluta Zelante"""
            text: """<i class = flavor_text>I piloti dei Caccia Fang mandaloriani devono imparare a padroneggiare la Carica Frontale di Concordia, una manovra che sfrutta l’esile profilo di attacco delle loro navi per lanciarsi in una micidiale carica frontale.</i>%LINEBREAK%<strong>Carica Frontale di Concordia:</strong> Mentre difendi, se la gittata di attacco è 1 e sei nel %FRONTARC% dell’attaccante, cambia 1 risultato in 1 risultato %EVADE%."""
@@ -19777,7 +24607,7 @@ exportObj.cardLoaders.Italiano = () ->
            text: """<i>CHANGE MECHANGE ME</i>%LINEBREAK%Mentre difendi o effettui un attacco, se la nave nemica è nel tuo %SINGLETURRETARC%, puoi spendere 1 %FORCE% per cambiare 1 tuo risultato vuoto in 1 risultato %EVADE% o %HIT%."""
         "Rey's Millennium Falcon":
            display_name: """Millennium Falcon di Rey"""
-           text: """<i>CHANGE MECHANGE ME</i>%LINEBREAK%Se possiedi 2 o meno segnalini tensione, puoi eseguire le manovre loop di Segnor [%SLOOPLEFT% o %SLOOPRIGHT%] rosse ed effettuare le azioni %BOOST% e&nbsp;<rotate> anche mentre sei in tensione."""
+           text: """<i>CHANGE MECHANGE ME</i>%LINEBREAK%Se possiedi 2 o meno segnalini tensione, puoi eseguire le manovre loop di Segnor [%SLOOPLEFT% o %SLOOPRIGHT%] rosse ed effettuare le azioni %BOOST% e&nbsp;%ROTATEARC% anche mentre sei in tensione."""
         "Rigged Cargo Chute":
            display_name: """Rampa di Carico Attrezzata"""
            text: """<i>CHANGE MECHANGE ME CHANGE ME CHANGE ME</i>%LINEBREAK%<strong>Azione:</strong> Spendi 1 %CHARGE%. Sgancia 1 carico sparso usando il modello [1&nbsp;%STRAIGHT%]."""
@@ -19948,7 +24778,7 @@ exportObj.cardLoaders.Português = () ->
         "Ben Teene":
            display_name: """Ben Teene"""
            text: """After you perform an attack, if the defender is in your %SINGLETURRETARC%, assign the <strong>Rattled</strong> condition to the defender."""
-        "Benthic Two-Tubes":
+        "Benthic Two Tubes":
            display_name: """Benthic Two Tubes"""
            text: """Após realizar uma ação %FOCUS%, você pode transferir 1 de suas fichas de foco para uma nave amiga em alcance 1-2."""
         "Biggs Darklighter":
@@ -20122,7 +24952,7 @@ exportObj.cardLoaders.Português = () ->
         "Edon Kappehl":
            display_name: """Edon Kappehl"""
            text: """After you fully execute a blue or white maneuver, if you have not dropped or launched a device this round, you may drop 1 device."""
-        "Edrio Two-Tubes":
+        "Edrio Two Tubes":
            display_name: """Edrio Two Tubes"""
            text: """Antes de ativar, se estiver focado, você pode realizar uma ação."""
         "Ello Asty":
@@ -21582,7 +26412,7 @@ exportObj.manifestByExpansion =
             count: 1
         }
         {
-            name: 'Benthic Two-Tubes'
+            name: 'Benthic Two Tubes'
             type: 'pilot'
             count: 1
         }
@@ -21602,7 +26432,7 @@ exportObj.manifestByExpansion =
             count: 1
         }
         {
-            name: 'Edrio Two-Tubes'
+            name: 'Edrio Two Tubes'
             type: 'pilot'
             count: 1
         }
@@ -25887,16 +30717,680 @@ exportObj.manifestByExpansion =
         }
     ]
 
+    'Servants of Strife Squadron Pack': [
+        {
+            name: 'Belbullab-22 Starfighter'
+            type: 'ship'
+            count: 1
+        }
+        {
+            name: 'Vulture-class Droid Fighter'
+            type: 'ship'
+            count: 2
+        }
+        {
+            name: 'General Grievous'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: 'Captain Sear'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: 'Wat Tambor'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: 'Feethan Ottraw Autopilot'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: 'Trade Federation Drone'
+            type: 'pilot'
+            count: 2
+        }
+        {
+            name: 'Separatist Drone'
+            type: 'pilot'
+            count: 2
+        }
+        {
+            name: 'DFS-081'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: 'Precise Hunter'
+            type: 'pilot'
+            count: 2
+        }
+        {
+            name: 'Hadr Chall Prototype'
+            type: 'pilot'
+            count: 2
+        }
+        {
+            name: 'Treacherous'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Soulless One'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Grappling Struts'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Impervium Plating'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'TV-94'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Kraken'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Composure'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Crack Shot'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Juke'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Trick Shot'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Marksmanship'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Swarm Tactics'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Cluster Missiles'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Proton Rockets'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Energy-Shell Charges'
+            type: 'upgrade'
+            count: 1
+        }
+    ]
+
+    'Sith Infiltrator Expansion Pack': [
+        {
+            name: 'Sith Infiltrator'
+            type: 'ship'
+            count: 1
+        }
+        {
+            name: 'Dark Courier'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: 'O-66'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: 'Count Dooku'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: 'Darth Maul'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: 'Brilliant Evasion'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Hate'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Adv. Proton Torpedoes'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Heavy Laser Cannon'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Count Dooku'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'General Grievous'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'K2-B4'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'DRK-1 Probe Droids'
+            type: 'upgrade'
+            count: 1
+        }
+    ]
+
+    'Vulture-class Droid Fighter Expansion': [
+        {
+            name: 'Vulture-class Droid Fighter'
+            type: 'ship'
+            count: 1
+        }
+        {
+            name: 'Hadr Chall Prototype'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: 'Separatist Drone'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: 'Precise Hunter'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: 'DFS-311'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: 'Trade Federation Drone'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: 'Grappling Struts'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Energy-Shell Charges'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Discord Missiles'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Munitions Failsafe'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Concussion Missiles'
+            type: 'upgrade'
+            count: 1
+        }
+    ]
+
+    'Guardians of the Republic Squadron Pack': [
+        {
+            name: 'Delta-7 Aethersprite'
+            type: 'ship'
+            count: 1
+        }
+        {
+            name: 'V-19 Torrent'
+            type: 'ship'
+            count: 2
+        }
+        {
+            name: 'Obi-Wan Kenobi'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: 'Plo Koon'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: 'Mace Windu'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: 'Saesee Tiin'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: 'Jedi Knight'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: '"Odd Ball"'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: '"Kickback"'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: '"Swoop"'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: '"Axe"'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: '"Tucker"'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: 'Blue Squadron Protector'
+            type: 'pilot'
+            count: 2
+        }
+        {
+            name: 'Gold Squadron Trooper'
+            type: 'pilot'
+            count: 2
+        }
+        {
+            name: 'R4 Astromech'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'R4-P Astromech'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'R5 Astromech'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'R4-P17'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Delta-7B'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Calibrated Laser Targeting'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Brilliant Evasion'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Battle Meditation'
+            type: 'upgrade'
+            count: 1
+        }
+    ]
+
+    'ARC-170 Starfighter Expansion': [
+        {
+            name: 'ARC-170'
+            type: 'ship'
+            count: 1
+        }
+        {
+            name: '"Wolffe"'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: '"Sinker"'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: '"Odd Ball" (ARC-170)'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: '"Jag"'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: 'Squad Seven Veteran'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: '104th Battalion Pilot'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: 'Dedicated'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'R4-P44'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Chancellor Palpatine'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Clone Commander Cody'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Proton Torpedoes'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Seventh Fleet Gunner'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Synchronized Console'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Expert Handling'
+            type: 'upgrade'
+            count: 1
+        }
+    ]
+
+    'Delta-7 Aethersprite Expansion': [
+        {
+            name: 'Delta-7 Aethersprite'
+            type: 'ship'
+            count: 1
+        }
+        {
+            name: 'Anakin Skywalker'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: 'Ahsoka Tano'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: 'Barriss Offee'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: 'Luminara Unduli'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: 'Jedi Knight'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: 'Delta-7B'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Calibrated Laser Targeting'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'R4-P Astromech'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'R3 Astromech'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Brilliant Evasion'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Battle Meditation'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Composure'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Dedicated'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Expert Handling'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Juke'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Saturation Salvo'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Swarm Tactics'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Cluster Missiles'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Concussion Missiles'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Spare Parts Canisters'
+            type: 'upgrade'
+            count: 1
+        }
+    ]
+
+    'Z-95-AF4 Headhunter Expansion Pack': [
+        {
+            name: 'Z-95 Headhunter'
+            type: 'ship'
+            count: 1
+        }
+        {
+            name: "N'dru Suhlak"
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: "Kaa'to Leeachos"
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: 'Black Sun Soldier'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: 'Binayre Pirate'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: 'Crack Shot'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Concussion Missiles'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Cluster Missiles'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: "Deadman's Switch"
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Munitions Failsafe'
+            type: 'upgrade'
+            count: 1
+        }
+    ]
+
+    'TIE/sk Striker Expansion Pack': [
+        {
+            name: 'TIE Striker'
+            type: 'ship'
+            count: 1
+        }
+        {
+            name: '"Countdown"'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: '"Pure Sabacc"'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: '"Duchess"'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: 'Black Squadron Scout'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: 'Planetary Sentinel'
+            type: 'pilot'
+            count: 1
+        }
+        {
+            name: 'Proton Bombs'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Conner Nets'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Skilled Bombardier'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Trick Shot'
+            type: 'upgrade'
+            count: 1
+        }
+        {
+            name: 'Intimidation'
+            type: 'upgrade'
+            count: 1
+        }
+    ]
+
     'Loose Ships': [
         {
             name: 'A-Wing'
             type: 'ship'
             count: 3
-        }
-        {
-            name: 'ARC-170'
-            type: 'ship'
-            count: 2
         }
         {
             name: 'Auzituck Gunship'
@@ -25944,34 +31438,9 @@ exportObj.manifestByExpansion =
             count: 2
         }
         {
-            name: 'TIE Fighter'
-            type: 'ship'
-            count: 2
-        }
-        {
-            name: 'U-Wing'
-            type: 'ship'
-            count: 2
-        }
-        {
-            name: 'X-Wing'
-            type: 'ship'
-            count: 2
-        }
-        {
-            name: 'Y-Wing'
-            type: 'ship'
-            count: 2
-        }
-        {
             name: 'YT-2400'
             type: 'ship'
             count: 2
-        }
-        {
-            name: 'Z-95 Headhunter'
-            type: 'ship'
-            count: 4
         }
         {
             name: 'Alpha-Class Star Wing'
@@ -25985,11 +31454,6 @@ exportObj.manifestByExpansion =
         }
         {
             name: 'Lambda-Class Shuttle'
-            type: 'ship'
-            count: 2
-        }
-        {
-            name: 'TIE Advanced'
             type: 'ship'
             count: 2
         }
@@ -26009,11 +31473,6 @@ exportObj.manifestByExpansion =
             count: 2
         }
         {
-            name: 'TIE Fighter'
-            type: 'ship'
-            count: 4
-        }
-        {
             name: 'TIE Interceptor'
             type: 'ship'
             count: 3
@@ -26027,11 +31486,6 @@ exportObj.manifestByExpansion =
             name: 'TIE Punisher'
             type: 'ship'
             count: 2
-        }
-        {
-            name: 'TIE Striker'
-            type: 'ship'
-            count: 3
         }
         {
             name: 'VT-49 Decimator'
@@ -26074,11 +31528,6 @@ exportObj.manifestByExpansion =
             count: 2
         }
         {
-            name: 'Fang Fighter'
-            type: 'ship'
-            count: 3
-        }
-        {
             name: 'JumpMaster 5000'
             type: 'ship'
             count: 2
@@ -26099,42 +31548,17 @@ exportObj.manifestByExpansion =
             count: 2
         }
         {
-            name: 'Firespray-31'
-            type: 'ship'
-            count: 2
-        }
-        {
             name: 'StarViper'
             type: 'ship'
             count: 2
         }
         {
-            name: 'Y-Wing'
-            type: 'ship'
-            count: 2
-        }
-        {
-            name: 'Z-95 Headhunter'
-            type: 'ship'
-            count: 4
-        }
-        {
-            name: 'T-70 X-Wing'
-            type: 'ship'
-            count: 3
-        }
-        {
             name: 'MG-100 StarFortress'
             type: 'ship'
             count: 3
         }
         {
             name: 'TIE/SF Fighter'
-            type: 'ship'
-            count: 3
-        }
-        {
-            name: 'TIE/FO Fighter'
             type: 'ship'
             count: 3
         }
@@ -26150,108 +31574,6 @@ exportObj.manifestByExpansion =
         }
         {
             name: 'Scavenged YT-1300'
-            type: 'ship'
-            count: 3
-        }
-    ]        
-    'Hyperspace': [
-        {
-            name: 'YT-1300'
-            type: 'ship'
-            count: 1
-        }
-        {
-            name: 'U-Wing'
-            type: 'ship'
-            count: 1
-        }
-        {
-            name: 'X-Wing'
-            type: 'ship'
-            count: 2
-        }
-        {
-            name: 'Y-Wing'
-            type: 'ship'
-            count: 2
-        }
-        {
-            name: 'TIE Advanced'
-            type: 'ship'
-            count: 2
-        }
-        {
-            name: 'TIE Fighter'
-            type: 'ship'
-            count: 1
-        }
-        {
-            name: 'TIE Striker'
-            type: 'ship'
-            count: 1
-        }
-        {
-            name: 'TIE Reaper'
-            type: 'ship'
-            count: 1
-        }
-        {
-            name: 'Fang Fighter'
-            type: 'ship'
-            count: 3
-        }
-        {
-            name: 'Firespray-31'
-            type: 'ship'
-            count: 2
-        }
-        {
-            name: 'Customized YT-1300'
-            type: 'ship'
-            count: 1
-        }
-        {
-            name: 'Escape Craft'
-            type: 'ship'
-            count: 1
-        }
-        {
-            name: 'T-70 X-Wing'
-            type: 'ship'
-            count: 3
-        }
-        {
-            name: 'MG-100 StarFortress'
-            type: 'ship'
-            count: 3
-        }
-        {
-            name: 'RZ-2 A-Wing'
-            type: 'ship'
-            count: 1
-        }
-        {
-            name: 'Scavenged YT-1300'
-            type: 'ship'
-            count: 3
-        }
-        {
-            name: 'TIE/SF Fighter'
-            type: 'ship'
-            count: 3
-        }
-        {
-            name: 'TIE/FO Fighter'
-            type: 'ship'
-            count: 3
-        }
-        {
-            name: 'Upsilon-Class Command Shuttle'
-            type: 'ship'
-            count: 3
-        }
-        {
-            name: 'TIE/VN Silencer'
             type: 'ship'
             count: 3
         }
@@ -26356,16 +31678,9 @@ class exportObj.Collection
             </div>
         """
 
-                
-    fixName: (name) ->
-        # Special case handling for Heavy Scyk :(
-        if name.indexOf('"Heavy Scyk" Interceptor') == 0
-            '"Heavy Scyk" Interceptor'
-        else
-            name
 
     check: (where, type, name) ->
-        (((where[type] ? {})[@fixName name] ? []).length ? 0) != 0
+        (((where[type] ? {})[name] ? []).length ? 0) != 0
 
     checkShelf: (type, name) ->
         @check @shelf, type, name
@@ -26374,7 +31689,6 @@ class exportObj.Collection
         @check @table, type, name
 
     use: (type, name) ->
-        name = @fixName name
         try
             card = @shelf[type][name].pop()
         catch e
@@ -26387,7 +31701,6 @@ class exportObj.Collection
             false
 
     release: (type, name) ->
-        name = @fixName name
         try
             card = @table[type][name].pop()
         catch e
@@ -26808,6 +32121,8 @@ class exportObj.SquadBuilder
                 []
             Upgrade:
                 []
+            Slot:
+                []
         @suppress_automatic_new_ship = false
         @tooltip_currently_displaying = null
         @randomizer_options =
@@ -26816,8 +32131,9 @@ class exportObj.SquadBuilder
             bid_goal: 5
             ships_or_upgrades: 3
         @total_points = 0
-        @isCustom = false
-        @isHyperspace = false
+        # a squad given in the link is loaded on construction of that builder. It will set all gamemodes of already existing builders accordingly, but we did not exists back than. So we copy over the gamemode
+        @isHyperspace = exportObj.builders[0]?.isHyperspace ? false
+        @isQuickbuild = exportObj.builders[0]?.isQuickbuild ? false
         @maxSmallShipsOfOneType = null
         @maxLargeShipsOfOneType = null
 
@@ -26830,6 +32146,7 @@ class exportObj.SquadBuilder
         @current_obstacles = []
 
         @setupUI()
+        @game_type_selector.val (exportObj.builders[0] ? @).game_type_selector.val()
         @setupEventHandlers()
 
         window.setInterval @updatePermaLink, 250
@@ -26840,6 +32157,7 @@ class exportObj.SquadBuilder
             @resetCurrentSquad(true)
             @loadFromSerialized $.getParameterByName('d')
         else
+            @
             @resetCurrentSquad()
             @addShip()
 
@@ -26873,6 +32191,7 @@ class exportObj.SquadBuilder
             if squad_name == default_squad_name
                 @current_squad.name = 'Unsaved Squadron'
             @current_squad.dirty = true
+
         @container.trigger 'xwing-backend:squadNameChanged'
         @container.trigger 'xwing-backend:squadDirtinessChanged'
 
@@ -26905,14 +32224,15 @@ class exportObj.SquadBuilder
                     </div>
                 </div>
                 <div class="span4 points-display-container">
-                    Points: <span class="total-points">0</span> / <input type="number" class="desired-points" value="100">
+                    Points: <span class="total-points">0</span> / <input type="number" class="desired-points" value="200">
                     <select class="game-type-selector">
                         <option value="standard">Extended</option>
                         <option value="hyperspace">Hyperspace</option>
-                        <option value="custom">Custom</option>
+                        <option value="quickbuild">Quickbuild</option>
                     </select>
                     <span class="points-remaining-container">(<span class="points-remaining"></span>&nbsp;left)</span>
                     <span class="content-warning unreleased-content-used hidden"><br /><i class="fa fa-exclamation-circle"></i>&nbsp;<span class="translated"></span></span>
+                    <span class="content-warning loading-failed-container hidden"><br /><i class="fa fa-exclamation-circle"></i>&nbsp;<span class="translated"></span></span>
                     <span class="content-warning collection-invalid hidden"><br /><i class="fa fa-exclamation-circle"></i>&nbsp;<span class="translated"></span></span>
                 </div>
                 <div class="span5 pull-right button-container">
@@ -26983,6 +32303,10 @@ class exportObj.SquadBuilder
             <div class="modal-body">
                 <div class="fancy-list hidden-phone"></div>
                 <div class="simple-list"></div>
+                <div class="simplecopy-list">
+                    <p>Copy the below and paste it elsewhere.</p>
+                    <textarea></textarea><button class="btn btn-copy">Copy</button>
+                </div>
                 <div class="reddit-list">
                     <p>Copy the below and paste it into your reddit post.</p>
                     <textarea></textarea><button class="btn btn-copy">Copy</button>
@@ -27001,7 +32325,7 @@ class exportObj.SquadBuilder
             </div>
             <div class="modal-footer hidden-print">
                 <label class="vertical-space-checkbox hidden-phone">
-                    Add space for damage/upgrade cards when printing <input type="checkbox" class="toggle-vertical-space" />
+                    Add Space for Cards<input type="checkbox" class="toggle-vertical-space" />
                 </label>
                 <label class="maneuver-print-checkbox hidden-phone">
                     Include Maneuvers Chart <input type="checkbox" class="toggle-maneuver-print" checked="checked" />
@@ -27010,20 +32334,21 @@ class exportObj.SquadBuilder
                     Expand Shield and Hull <input type="checkbox" class="toggle-expanded-shield-hull-print" />
                 </label>
                 <label class="color-print-checkbox hidden-phone">
-                    Print color <input type="checkbox" class="toggle-color-print" checked="checked" />
+                    Print Color <input type="checkbox" class="toggle-color-print" checked="checked" />
                 </label>
                 <label class="color-skip-text-checkbox hidden-phone">
-                    Skip texts <input type="checkbox" class="toggle-skip-text-print" />
+                    Skip Card Text <input type="checkbox" class="toggle-skip-text-print" />
                 </label>
                 <label class="qrcode-checkbox hidden-phone">
                     Include QR codes <input type="checkbox" class="toggle-juggler-qrcode" checked="checked" />
                 </label>
                 <label class="obstacles-checkbox hidden-phone">
-                    Include obstacle/damage deck choices <input type="checkbox" class="toggle-obstacles" />
+                    Include Obstacle Choices <input type="checkbox" class="toggle-obstacles" />
                 </label>
                 <div class="btn-group list-display-mode">
                     <button class="btn select-simple-view">Simple</button>
                     <button class="btn select-fancy-view hidden-phone">Fancy</button>
+                    <button class="btn select-simplecopy-view">Text</button>
                     <button class="btn select-reddit-view">Reddit</button>
                     <button class="btn select-tts-view">TTS</button>
                     <button class="btn select-bbcode-view">BBCode</button>
@@ -27039,6 +32364,9 @@ class exportObj.SquadBuilder
         @reddit_container = $ @list_modal.find('div.modal-body .reddit-list')
         @reddit_textarea = $ @reddit_container.find('textarea')
         @reddit_textarea.attr 'readonly', 'readonly'
+        @simplecopy_container = $ @list_modal.find('div.modal-body .simplecopy-list')
+        @simplecopy_textarea = $ @simplecopy_container.find('textarea')
+        @simplecopy_textarea.attr 'readonly', 'readonly'
         @tts_container = $ @list_modal.find('div.modal-body .tts-list')
         @tts_textarea = $ @tts_container.find('textarea')
         @tts_textarea.attr 'readonly', 'readonly'
@@ -27076,6 +32404,7 @@ class exportObj.SquadBuilder
                 @list_display_mode = 'simple'
                 @simple_container.show()
                 @fancy_container.hide()
+                @simplecopy_container.hide()
                 @reddit_container.hide()
                 @tts_container.hide()
                 @bbcode_container.hide()
@@ -27098,6 +32427,7 @@ class exportObj.SquadBuilder
                 @list_display_mode = 'fancy'
                 @fancy_container.show()
                 @simple_container.hide()
+                @simplecopy_container.hide()
                 @reddit_container.hide()
                 @tts_container.hide()
                 @bbcode_container.hide()
@@ -27119,6 +32449,7 @@ class exportObj.SquadBuilder
                 @select_reddit_view_button.addClass 'btn-inverse'
                 @list_display_mode = 'reddit'
                 @reddit_container.show()
+                @simplecopy_container.hide()
                 @bbcode_container.hide()
                 @tts_container.hide()
                 @htmlview_container.hide()
@@ -27135,6 +32466,32 @@ class exportObj.SquadBuilder
                 @toggle_obstacle_container.hide()
                 @btn_print_list.disabled = true;
 
+        @select_simplecopy_view_button = $ @list_modal.find('.select-simplecopy-view')
+        @select_simplecopy_view_button.click (e) =>
+            @select_simplecopy_view_button.blur()
+            unless @list_display_mode == 'simplecopy'
+                @list_modal.find('.list-display-mode .btn').removeClass 'btn-inverse'
+                @select_simplecopy_view_button.addClass 'btn-inverse'
+                @list_display_mode = 'simplecopy'
+                @reddit_container.hide()
+                @simplecopy_container.show()
+                @bbcode_container.hide()
+                @tts_container.hide()
+                @htmlview_container.hide()
+                @simple_container.hide()
+                @fancy_container.hide()
+                @simplecopy_textarea.select()
+                @simplecopy_textarea.focus()
+                @toggle_vertical_space_container.hide()
+                @toggle_color_print_container.hide()
+                @toggle_color_skip_text.hide()
+                @toggle_maneuver_dial_container.hide()
+                @toggle_expanded_shield_hull_container.hide()
+                @toggle_qrcode_container.hide()
+                @toggle_obstacle_container.hide()
+                @btn_print_list.disabled = true;
+                
+                
         @select_tts_view_button = $ @list_modal.find('.select-tts-view')
         @select_tts_view_button.click (e) =>
             @select_tts_view_button.blur()
@@ -27146,6 +32503,7 @@ class exportObj.SquadBuilder
                 @bbcode_container.hide()
                 @htmlview_container.hide()
                 @simple_container.hide()
+                @simplecopy_container.hide()
                 @reddit_container.hide()
                 @fancy_container.hide()
                 @tts_textarea.select()
@@ -27167,6 +32525,7 @@ class exportObj.SquadBuilder
                 @select_bbcode_view_button.addClass 'btn-inverse'
                 @list_display_mode = 'bbcode'
                 @bbcode_container.show()
+                @simplecopy_container.hide()
                 @reddit_container.hide()
                 @tts_container.hide()
                 @htmlview_container.hide()
@@ -27191,6 +32550,7 @@ class exportObj.SquadBuilder
                 @select_html_view_button.addClass 'btn-inverse'
                 @list_display_mode = 'html'
                 @reddit_container.hide()
+                @simplecopy_container.hide()
                 @tts_container.hide()
                 @bbcode_container.hide()
                 @htmlview_container.show()
@@ -27231,14 +32591,15 @@ class exportObj.SquadBuilder
         @total_points_span = $ @points_container.find('.total-points')
         @game_type_selector = $ @status_container.find('.game-type-selector')
         @game_type_selector.change (e) =>
-            @onGameTypeChanged @game_type_selector.val()
+            $(window).trigger 'xwing:gameTypeChanged', @game_type_selector.val()
+            # @onGameTypeChanged @game_type_selector.val()
         @desired_points_input = $ @points_container.find('.desired-points')
         @desired_points_input.change (e) =>
-            @game_type_selector.val 'custom'
-            @onGameTypeChanged 'custom'
+            @onPointsUpdated $.noop
         @points_remaining_span = $ @points_container.find('.points-remaining')
         @points_remaining_container = $ @points_container.find('.points-remaining-container')
         @unreleased_content_used_container = $ @points_container.find('.unreleased-content-used')
+        @loading_failed_container = $ @points_container.find('.loading-failed-container')
         @collection_invalid_container = $ @points_container.find('.collection-invalid')
         @view_list_button = $ @status_container.find('div.button-container button.view-as-text')
         @randomize_button = $ @status_container.find('div.button-container button.randomize')
@@ -27443,6 +32804,9 @@ class exportObj.SquadBuilder
                         <option class="core2asteroid3-select" value="core2asteroid3">Force Awakens Asteroid 3</option>
                         <option class="core2asteroid4-select" value="core2asteroid4">Force Awakens Asteroid 4</option>
                         <option class="core2asteroid5-select" value="core2asteroid5">Force Awakens Asteroid 5</option>
+                        <option class="gascloud1-select" value="gascloud1">Gas Cloud 1</option>
+                        <option class="gascloud2-select" value="gascloud2">Gas Cloud 2</option>
+                        <option class="gascloud3-select" value="gascloud3">Gas Cloud 3</option>
                     </select>
                 </div>
                 <div class="obstacle-image-container" style="display:none;">
@@ -27546,6 +32910,7 @@ class exportObj.SquadBuilder
                 <span class="info-sources"></span>
                 <br />
                 <span class="info-collection"></span>
+                <span class="info-solitary"><br />Solitary</span>
                 <table>
                     <tbody>
                         <tr class="info-ship">
@@ -27660,8 +33025,9 @@ class exportObj.SquadBuilder
                 @onPointsUpdated () =>
                     @isUpdatingPoints = false
                     cb()
-        .on 'xwing-backend:squadLoadRequested', (e, squad) =>
+        .on 'xwing-backend:squadLoadRequested', (e, squad, cb=$.noop) =>
             @onSquadLoadRequested squad
+            cb()
         .on 'xwing-backend:squadDirtinessChanged', (e) =>
             @onSquadDirtinessChanged()
         .on 'xwing-backend:squadNameChanged', (e) =>
@@ -27698,7 +33064,6 @@ class exportObj.SquadBuilder
 
         $(window).on 'xwing-backend:authenticationChanged', (e) =>
             @resetCurrentSquad()
-
         .on 'xwing-collection:created', (e, collection) =>
             # console.log "#{@faction}: collection was created"
             @collection = collection
@@ -27718,6 +33083,8 @@ class exportObj.SquadBuilder
             if faction == @faction
                 @tab.tab('show')
                 cb this
+        .on 'xwing:gameTypeChanged', (e, gameType, cb=$.noop) =>
+            @onGameTypeChanged gameType, cb
 
         @obstacles_select.change (e) =>
             if @obstacles_select.val().length > 3
@@ -27755,9 +33122,8 @@ class exportObj.SquadBuilder
                     if @list_modal.find('.toggle-skip-text-print').prop('checked')
                         for text in @printable_container.find('.upgrade-text, .fancy-pilot-text')
                             text.hidden = true
-                    if not @list_modal.find('.toggle-maneuver-print').prop('checked')
-                        for dial in @printable_container.find('.fancy-dial')
-                            dial.hidden = true
+                    if @list_modal.find('.toggle-maneuver-print').prop('checked')
+                        @printable_container.find('.printable-body').append @getSquadDialsAsHTML()
                     expanded_hull_and_shield = @list_modal.find('.toggle-expanded-shield-hull-print').prop('checked')
                     for container in @printable_container.find('.expanded-hull-or-shield')
                         container.hidden = not expanded_hull_and_shield
@@ -27775,6 +33141,10 @@ class exportObj.SquadBuilder
                             'resistance'
                         when 'First Order'
                             'firstorder'
+                        when 'Galactic Republic'
+                            'galacticrepublic'
+                        when 'Separatist Alliance'
+                            'separatistalliance'
                     @printable_container.find('.squad-faction').html """<i class="xwing-miniatures-font xwing-miniatures-font-#{faction}"></i>"""
 
             # Conditions
@@ -27785,12 +33155,12 @@ class exportObj.SquadBuilder
 
 
             # Notes, if present
-            @printable_container.find('.printable-body').append $.trim """
-                <h5 class="print-notes">Notes:</h5>
-                <pre class="print-notes"></pre>
-                <div class="version">Points Version: Jan 28th, 2019</div>
-            """
             if $.trim(@notes.val()) != ''
+                @printable_container.find('.printable-body').append $.trim """
+                    <h5 class="print-notes">Notes:</h5>
+                    <pre class="print-notes"></pre>
+                    <div class="version">Points Version: Mar 1st, 2019</div>
+                """            
                 @printable_container.find('.printable-body pre.print-notes').text @notes.val()
 
             # Obstacles
@@ -27799,8 +33169,6 @@ class exportObj.SquadBuilder
                     <div class="obstacles">
                         <div>Mark the three obstacles you are using.</div>
                         <img class="obstacle-silhouettes" src="images/xws-obstacles.png" />
-                        <div>Mark which damage deck you are using.</div>
-                        <div><i class="fa fa-square-o"></i>Original Core Set&nbsp;&nbsp&nbsp;<i class="fa fa-square-o"></i>The Force Awakens Core Set</div>
                     </div>
                 """
 
@@ -27863,28 +33231,34 @@ class exportObj.SquadBuilder
             @container.trigger 'xwing-backend:squadDirtinessChanged'
 
     onGameTypeChanged: (gametype, cb=$.noop) =>
+        @game_type_selector.val gametype
         oldHyperspace = @isHyperspace
+        oldQuickbuild = @isQuickbuild
         switch gametype
             when 'standard'
                 @isHyperspace = false
-                @isCustom = false
+                @isQuickbuild = false
                 @desired_points_input.val 200
                 @maxSmallShipsOfOneType = null
                 @maxLargeShipsOfOneType = null
             when 'hyperspace'
                 @isHyperspace = true
-                @isCustom = false
+                @isQuickbuild = false
                 @desired_points_input.val 200
                 @maxSmallShipsOfOneType = null
                 @maxLargeShipsOfOneType = null
-            when 'custom'
+            when 'quickbuild'
                 @isHyperspace = false
-                @isCustom = true
+                @isQuickbuild = true
+                @desired_points_input.val 8
                 @maxSmallShipsOfOneType = null
                 @maxLargeShipsOfOneType = null
-        if (oldHyperspace != @isHyperspace)
+        if (oldHyperspace != @isHyperspace) or (oldQuickbuild != @isQuickbuild)
+            old_id = @current_squad.id
             @newSquadFromScratch($.trim(@current_squad.name))
-        @onPointsUpdated cb
+            @current_squad.id = old_id # we want to keep the ID, so we allow people to use the save button
+        #@onPointsUpdated cb
+        cb()
 
     onPointsUpdated: (cb=$.noop) =>
         @total_points = 0
@@ -27908,6 +33282,7 @@ class exportObj.SquadBuilder
         # update text list
         @fancy_container.text ''
         @simple_container.html '<table class="simple-table"></table>'
+        simplecopy_ships = []
         reddit_ships = []
         tts_ships = []
         bbcode_ships = []
@@ -27920,6 +33295,7 @@ class exportObj.SquadBuilder
                     #dial.hidden = true
 
                 @simple_container.find('table').append ship.toTableRow()
+                simplecopy_ships.push ship.toSimpleCopy()
                 reddit_ships.push ship.toRedditText()
                 tts_ships.push ship.toTTSText()
                 bbcode_ships.push ship.toBBCode()
@@ -27931,20 +33307,13 @@ class exportObj.SquadBuilder
 <a href="#{@getPermaLink()}">View in Yet Another Squad Builder 2.0</a>
         """
 
-        @reddit_container.find('textarea').val $.trim """#{reddit_ships.join "    \n"}
-    \n
-**Total:** *#{@total_points}*    \n
-    \n
-[View in Yet Another Squad Builder 2.0](#{@getPermaLink()})    \n
-"""
+        @reddit_container.find('textarea').val $.trim """#{reddit_ships.join "    \n"}    \n**Total:** *#{@total_points}*    \n    \n[View in Yet Another Squad Builder 2.0](#{@getPermaLink()})"""
+        @simplecopy_container.find('textarea').val $.trim """#{simplecopy_ships.join ""}    \nTotal: #{@total_points}    \n    \nView in Yet Another Squad Builder 2.0: #{@getPermaLink()}"""
+        
         @tts_container.find('textarea').val $.trim """#{tts_ships.join ""}"""
 
-        @bbcode_container.find('textarea').val $.trim """#{bbcode_ships.join "\n\n"}
+        @bbcode_container.find('textarea').val $.trim """#{bbcode_ships.join "\n\n"}\n[b][i]Total: #{@total_points}[/i][/b]\n\n[url=#{@getPermaLink()}]View in Yet Another Squad Builder 2.0[/url]"""
 
-[b][i]Total: #{@total_points}[/i][/b]
-
-[url=#{@getPermaLink()}]View in Yet Another Squad Builder 2.0[/url]
-"""
         # console.log "#{@faction}: Squad updated, checking collection"
         @checkCollection()
 
@@ -28024,15 +33393,21 @@ class exportObj.SquadBuilder
 
     serialize: ->
 
-        serialization_version = 5
+        serialization_version = 6
         game_type_abbrev = switch @game_type_selector.val()
             when 'standard'
                 's'
             when 'hyperspace'
                 'h'
-            when 'custom'
-                "c=#{$.trim @desired_points_input.val()}"
-        """v#{serialization_version}!#{game_type_abbrev}!#{( ship.toSerialized() for ship in @ships when ship.pilot? ).join ';'}"""
+            when 'quickbuild'
+                'q'
+        selected_points = $.trim @desired_points_input.val()
+        """v#{serialization_version}!#{game_type_abbrev}=#{selected_points}!#{( ship.toSerialized() for ship in @ships when ship.pilot? and (not @isQuickbuild or ship.primary) ).join ';'}"""
+
+    changeGameTypeOnSquadLoad: (gametype) ->
+        if @game_type_selector.val() != gametype
+            $(window).trigger 'xwing:gameTypeChanged', gametype
+
 
     loadFromSerialized: (serialized) ->
         @suppress_automatic_new_ship = true
@@ -28046,22 +33421,40 @@ class exportObj.SquadBuilder
             version = parseInt matches[1]
             # version 1-3 are 1st edition only (may be removed here)
             # version 4 is the final version of 1st edition x-wing, and has been the first few weeks of YASB 2.0
-            # version 5 is the current version
+            # version 5 is the first version for 2nd edtition x-wing only, it features extended (=standard), hyperspace, quickbuild and custom mode
+            # version 6 is the current version, the difference to version 5 is, that custom (=extended with != 200 points) has been removed and points are specified for all modes. 
             switch version
-                when 3, 4, 5
+                when 3, 4, 5, 6
                     # parse out game type
-                    [ game_type_abbrev, serialized_ships ] = matches[2].split('!')
-                    switch game_type_abbrev
-                        when 's'
-                            @game_type_selector.val 'standard'
-                            @game_type_selector.change()
-                        when 'h'
-                            @game_type_selector.val 'hyperspace'
-                            @game_type_selector.change()
-                        else
-                            @game_type_selector.val 'custom'
-                            @desired_points_input.val parseInt(game_type_abbrev.split('=')[1])
-                            @desired_points_input.change()
+                    [ game_type_and_point_abbrev, serialized_ships ] = matches[2].split('!')
+                    # check if there are serialized ships to load
+                    if !serialized_ships? # something went wrong, we can't load that serialization
+                        @loading_failed_container.toggleClass 'hidden', false
+                        return
+                    if version == 6 
+                        desired_points = parseInt(game_type_and_point_abbrev.split('=')[1])
+                        game_type_abbrev = game_type_and_point_abbrev.split('=')[0]  
+                        switch game_type_abbrev
+                            when 's'
+                                @changeGameTypeOnSquadLoad 'standard'
+                            when 'h'
+                                @changeGameTypeOnSquadLoad 'hyperspace'
+                            when 'q'
+                                @changeGameTypeOnSquadLoad 'quickbuild'
+                        @desired_points_input.val desired_points
+                        @desired_points_input.change()
+                    else 
+                        switch game_type_and_point_abbrev
+                            when 's'
+                                @changeGameTypeOnSquadLoad 'standard'
+                            when 'h'
+                                @changeGameTypeOnSquadLoad 'hyperspace'
+                            when 'q'
+                                @changeGameTypeOnSquadLoad 'quickbuild'
+                            else
+                                @changeGameTypeOnSquadLoad 'standard'
+                                @desired_points_input.val parseInt(game_type_and_point_abbrev.split('=')[1])
+                                @desired_points_input.change()
                     ships_with_unmet_dependencies = []
                     for serialized_ship in serialized_ships.split(';')
                         unless serialized_ship == ''
@@ -28119,6 +33512,10 @@ class exportObj.SquadBuilder
                         # else
                         #     throw new Error("Unique #{type} '#{unique.name}' already claimed as #{otherslot}")
 
+            # Solitary Check
+            if unique.solitary?
+                @uniques_in_use['Slot'].push unique.slot
+
             @uniques_in_use[type].push unique
         else
             throw new Error("Unique #{type} '#{unique.name}' already claimed")
@@ -28130,13 +33527,21 @@ class exportObj.SquadBuilder
             # Release all uniques with the same canonical name and base name
             for type, uniques of @uniques_in_use
                 # Removing stuff in a loop sucks, so we'll construct a new list
-                @uniques_in_use[type] = []
-                for u in uniques
-                    if u.canonical_name.getXWSBaseName() != unique.canonical_name.getXWSBaseName()
-                        # Keep this one
-                        @uniques_in_use[type].push u
-                    # else
-                    #     console.log "Releasing #{u.name} (#{type}) with canonical name #{unique.canonical_name}"
+                if type == 'Slot'
+                    if unique.solitary?
+                        @uniques_in_use[type] = []
+                        for u in uniques
+                            if u != unique.slot
+                                # Keep this one
+                                @uniques_in_use[type].push u.slot
+                else
+                    @uniques_in_use[type] = []
+                    for u in uniques
+                        if u.canonical_name.getXWSBaseName() != unique.canonical_name.getXWSBaseName()
+                            # Keep this one
+                            @uniques_in_use[type].push u
+                        # else
+                        #     console.log "Releasing #{u.name} (#{type}) with canonical name #{unique.canonical_name}"
         else
             throw new Error("Unique #{type} '#{unique.name}' not in use")
         cb()
@@ -28149,11 +33554,13 @@ class exportObj.SquadBuilder
         new_ship
 
 
-    removeShip: (ship) ->
-        await ship.destroy defer()
-        await @container.trigger 'xwing:pointsUpdated', defer()
-        @current_squad.dirty = true
-        @container.trigger 'xwing-backend:squadDirtinessChanged'
+    removeShip: (ship, cb=$.noop) ->
+        if ship?.destroy?
+            await ship.destroy defer()
+            await @container.trigger 'xwing:pointsUpdated', defer()
+            @current_squad.dirty = true
+            @container.trigger 'xwing-backend:squadDirtinessChanged'
+        cb()
 
     matcher: (item, term) ->
         item.toUpperCase().indexOf(term.toUpperCase()) >= 0
@@ -28168,6 +33575,7 @@ class exportObj.SquadBuilder
             getPrimaryFaction(faction) == @faction
 
     isItemAvailable: (item_data, shipCheck=false) ->
+        # this method is not invoked to check availability for quickbuild squads, as they don't care about hyperspace. Keep that in mind when adding stuff here.
         if (not @isHyperspace)
             return true
         else # hyperspace
@@ -28178,7 +33586,7 @@ class exportObj.SquadBuilder
         for ship_name, ship_data of exportObj.ships
             if @isOurFaction(ship_data.factions) and (@matcher(ship_data.name, term) or (ship_data.display_name and @matcher(ship_data.display_name, term)))
                 if (@isItemAvailable(ship_data, true))
-                    if not ship_data.huge or @isCustom
+                    if not ship_data.huge
                         if ship_data.display_name
                             ships.push
                                 id: ship_data.name
@@ -28209,17 +33617,44 @@ class exportObj.SquadBuilder
                 
         return cheap_ships
         
-    getAvailablePilotsForShipIncluding: (ship, include_pilot, term='', sorted = true) ->
+    getAvailablePilotsForShipIncluding: (ship, include_pilot, term='', sorted = true, ship_selector = null) ->
         # Returns data formatted for Select2
-        available_faction_pilots = (pilot for pilot_name, pilot of exportObj.pilots when (not ship? or pilot.ship == ship) and @isOurFaction(pilot.faction) and (@matcher(pilot_name, term) or (pilot.display_name and @matcher(pilot.display_name, term)) ) and (@isItemAvailable(pilot)))
+        retval = []
+        if not @isQuickbuild
+            # select available pilots according to ususal pilot selection
+            available_faction_pilots = (pilot for pilot_name, pilot of exportObj.pilots when (not ship? or pilot.ship == ship) and @isOurFaction(pilot.faction) and (@matcher(pilot_name, term) or (pilot.display_name and @matcher(pilot.display_name, term)) ) and (@isItemAvailable(pilot)))
 
-        eligible_faction_pilots = (pilot for pilot_name, pilot of available_faction_pilots when (not pilot.unique? or pilot not in @uniques_in_use['Pilot'] or pilot.canonical_name.getXWSBaseName() == include_pilot?.canonical_name.getXWSBaseName()) and (not pilot.restriction_func? or pilot.restriction_func((builder: @) , pilot)))
+            eligible_faction_pilots = (pilot for pilot_name, pilot of available_faction_pilots when (not pilot.unique? or pilot not in @uniques_in_use['Pilot'] or pilot.canonical_name.getXWSBaseName() == include_pilot?.canonical_name.getXWSBaseName()) and (not pilot.max_per_squad? or @countPilots(pilot.canonical_name) < pilot.max_per_squad or pilot.canonical_name.getXWSBaseName() == include_pilot?.canonical_name.getXWSBaseName()) and (not pilot.restriction_func? or pilot.restriction_func((builder: @) , pilot)))
 
-        # Re-add selected pilot
-        if include_pilot? and include_pilot.unique? and (@matcher(include_pilot.name, term) or (include_pilot.display_name and @matcher(include_pilot.display_name, term)) )
-            eligible_faction_pilots.push include_pilot
+            # Re-add selected pilot
+            if include_pilot? and include_pilot.unique? and (@matcher(include_pilot.name, term) or (include_pilot.display_name and @matcher(include_pilot.display_name, term)) )
+                eligible_faction_pilots.push include_pilot
 
-        retval = ({ id: pilot.id, text: "#{if exportObj.settings?.initiative_prefix? and exportObj.settings.initiative_prefix then pilot.skill + ' - ' else ''}#{if pilot.display_name then pilot.display_name else pilot.name} (#{pilot.points})", points: pilot.points, ship: pilot.ship, name: pilot.name, display_name: pilot.display_name, disabled: pilot not in eligible_faction_pilots } for pilot in available_faction_pilots)
+            retval = ({ id: pilot.id, text: "#{if exportObj.settings?.initiative_prefix? and exportObj.settings.initiative_prefix then pilot.skill + ' - ' else ''}#{if pilot.display_name then pilot.display_name else pilot.name} (#{pilot.points})", points: pilot.points, ship: pilot.ship, name: pilot.name, display_name: pilot.display_name, disabled: pilot not in eligible_faction_pilots } for pilot in available_faction_pilots)
+        else
+            # select according to quickbuild cards
+            # filter for faction and ship
+            quickbuilds_matching_ship_and_faction = (quickbuild for id, quickbuild of exportObj.quickbuildsById when (not ship? or quickbuild.ship == ship) and @isOurFaction(quickbuild.faction) and (@matcher(quickbuild.pilot, term) or (exportObj.pilots[quickbuild.pilot].display_name? and @matcher(exportObj.pilots[quickbuild.pilot].display_name, term)) ))
+
+            # filter for uniques in use
+            allowed_quickbuilds_containing_uniques_in_use = []
+            loop: for id, quickbuild of quickbuilds_matching_ship_and_faction
+                if exportObj.pilots[quickbuild.pilot] in @uniques_in_use.Pilot
+                    allowed_quickbuilds_containing_uniques_in_use.push quickbuild.id
+                    continue
+                if exportObj.pilots[quickbuild.pilot]?.max_per_squad? and @countPilots(exportObj.pilots[quickbuild.pilot].canonical_name) >= exportObj.pilots[quickbuild.pilot].max_per_squad
+                    allowed_quickbuilds_containing_uniques_in_use.push quickbuild.id
+                    continue
+                if quickbuild.upgrades? 
+                    for upgrade in quickbuild.upgrades
+                        if exportObj.upgrades[upgrade] in @uniques_in_use.Upgrade
+                            # check, if unique is used by this ship or it's linked ship
+                            if ship_selector == null or not (upgrade in exportObj.quickbuildsById[ship_selector.quickbuildId].upgrades or (ship_selector.linkedShip and upgrade in (exportObj.quickbuildsById[ship_selector.linkedShip?.quickbuildId].upgrades ? [])))
+                                allowed_quickbuilds_containing_uniques_in_use.push quickbuild.id
+                                break
+            
+            retval = ({id: quickbuild.id, text: "#{if exportObj.settings?.initiative_prefix? and exportObj.settings.initiative_prefix then exportObj.pilots[quickbuild.pilot].skill + ' - ' else ''}#{if exportObj.pilots[quickbuild.pilot].display_name then exportObj.pilots[quickbuild.pilot].display_name else quickbuild.pilot}#{quickbuild.suffix} (#{quickbuild.threat})", points: quickbuild.threat, ship: quickbuild.ship, disabled: quickbuild.id in allowed_quickbuilds_containing_uniques_in_use} for quickbuild in quickbuilds_matching_ship_and_faction)
+
         if sorted
             retval = retval.sort exportObj.sortHelper
         retval
@@ -28235,6 +33670,14 @@ class exportObj.SquadBuilder
             for upgrade in ship.upgrades
                 if upgrade?.data?.canonical_name == canonical_name
                     count++
+        count
+
+    countPilots: (canonical_name) ->
+        # returns number of pilots with given canonical name
+        count = 0
+        for ship in @ships
+            if ship?.pilot?.canonical_name.getXWSBaseName() == canonical_name.getXWSBaseName()
+                count++
         count
 
     isShip: (ship, name) ->
@@ -28256,8 +33699,8 @@ class exportObj.SquadBuilder
         if filter_func != @dfl_filter_func
             available_upgrades = (upgrade for upgrade in available_upgrades when filter_func(upgrade))
 
-        eligible_upgrades = (upgrade for upgrade_name, upgrade of available_upgrades when (not upgrade.unique? or upgrade not in @uniques_in_use['Upgrade']) and (not (ship? and upgrade.restriction_func?) or upgrade.restriction_func(ship, this_upgrade_obj)) and upgrade not in upgrades_in_use and ((not upgrade.max_per_squad?) or ship.builder.countUpgrades(upgrade.canonical_name) < upgrade.max_per_squad))
-
+        eligible_upgrades = (upgrade for upgrade_name, upgrade of available_upgrades when (not upgrade.unique? or upgrade not in @uniques_in_use['Upgrade']) and (not (ship? and upgrade.restriction_func?) or upgrade.restriction_func(ship, this_upgrade_obj)) and upgrade not in upgrades_in_use and ((not upgrade.max_per_squad?) or ship.builder.countUpgrades(upgrade.canonical_name) < upgrade.max_per_squad) and (not upgrade.solitary? or (upgrade.slot not in @uniques_in_use['Slot'] or include_upgrade?.solitary?)))
+        
 
         for equipped_upgrade in (upgrade.data for upgrade in ship.upgrades when upgrade?.data?)
             eligible_upgrades.removeItem equipped_upgrade
@@ -28276,6 +33719,28 @@ class exportObj.SquadBuilder
             (this_upgrade_obj.adjustment_func(upgrade) for upgrade in retval)
         else
             retval
+
+    getSquadDialsAsHTML: () ->
+        dialHTML = ""
+        added_dials = {}
+        for ship in @ships
+            if ship.pilot? # There is always one "empty" ship at the bottom of each squad, that we want to skip. 
+                maneuvers_unmodified = ship.data.maneuvers
+                maneuvers_modified = ship.effectiveStats().maneuvers
+                if not added_dials[ship.data.name]? or not (maneuvers_modified.toString() in added_dials[ship.data.name]) # we only want to add each dial once per ship (if two ships share a dial, add two copies of the dial)
+                    added_dials[ship.data.name] = (added_dials[ship.data.name] ? []).concat [maneuvers_modified.toString()] # save maneuver as string, as that is easier to compare than arrays (if e.g. two ships of same type, one with and one without R4 are in a squad, we add 2 dials)
+                    dialHTML += '<div class="fancy-dial">' + 
+                                """<h4 class="ship-name-dial">#{if ship.data.display_name? then ship.data.display_name else ship.data.name}""" +
+                                """#{if maneuvers_modified.toString() != maneuvers_unmodified.toString() then " (upgraded)" else ""}</h4>""" +
+                                @getManeuverTableHTML(maneuvers_modified, maneuvers_unmodified) + '</div>'
+
+        return """
+                    <div class="print-dials-container">
+                        #{dialHTML}
+                    </div>
+                """
+                # dialHTML = @builder.getManeuverTableHTML(effective_stats.maneuvers, @data.maneuvers)
+
 
     # Converts a maneuver table for into an HTML table.
     getManeuverTableHTML: (maneuvers, baseManeuvers) ->
@@ -28420,6 +33885,7 @@ class exportObj.SquadBuilder
             switch type
                 when 'Ship'
                     @info_container.find('.info-sources').text (exportObj.translate(@language, 'sources', source) for source in data.pilot.sources).sort().join(', ')
+                    @info_container.find('.info-sources').show()
                     if @collection?.counts?
                         ship_count = @collection.counts?.ship?[data.data.name] ? 0
                         pilot_count = @collection.counts?.pilot?[data.pilot.name] ? 0
@@ -28435,10 +33901,10 @@ class exportObj.SquadBuilder
                     #logic to determine how many dots to use for uniqueness
                     if data.pilot.unique?
                         uniquedots = "&middot;&nbsp;"
-                    else if data.pilot.restricted?
+                    else if data.pilot.max_per_squad?
                         count = 0
                         uniquedots = ""
-                        while (count < data.pilot.restricted)
+                        while (count < data.pilot.max_per_squad)
                             uniquedots = uniquedots.concat("&middot;")
                             ++count
                         uniquedots = uniquedots.concat("&nbsp;")
@@ -28450,6 +33916,7 @@ class exportObj.SquadBuilder
                     @info_container.find('p.info-text').html data.pilot.text ? ''
                     @info_container.find('tr.info-ship td.info-data').text data.pilot.ship
                     @info_container.find('tr.info-ship').show()
+                    @info_container.find('.info-solitary').hide()
 
                     if data.data.large?
                         @info_container.find('tr.info-base td.info-data').text "Large"
@@ -28516,12 +33983,16 @@ class exportObj.SquadBuilder
                     @info_container.find('tr.info-actions-red').toggle(data.data.actionsred?)
                     
                     @info_container.find('tr.info-actions').show()
-                    @info_container.find('tr.info-upgrades').show()
-                    @info_container.find('tr.info-upgrades td.info-data').html((exportObj.translate(@language, 'sloticon', slot) for slot in data.pilot.slots).join(' ') or 'None')
+                    if @isQuickbuild
+                        @info_container.find('tr.info-upgrades').hide()
+                    else
+                        @info_container.find('tr.info-upgrades').show()
+                        @info_container.find('tr.info-upgrades td.info-data').html((exportObj.translate(@language, 'sloticon', slot) for slot in data.pilot.slots).join(' ') or 'None')
                     @info_container.find('p.info-maneuvers').show()
                     @info_container.find('p.info-maneuvers').html(@getManeuverTableHTML(effective_stats.maneuvers, data.data.maneuvers))
                 when 'Pilot'
                     @info_container.find('.info-sources').text (exportObj.translate(@language, 'sources', source) for source in data.sources).sort().join(', ')
+                    @info_container.find('.info-sources').show()
                     if @collection?.counts?
                         pilot_count = @collection.counts?.pilot?[data.name] ? 0
                         ship_count = @collection.counts.ship?[additional_opts.ship] ? 0
@@ -28532,10 +34003,10 @@ class exportObj.SquadBuilder
                     #logic to determine how many dots to use for uniqueness
                     if data.unique?
                         uniquedots = "&middot;&nbsp;"
-                    else if data.restricted?
+                    else if data.max_per_squad?
                         count = 0
                         uniquedots = ""
-                        while (count < data.restricted)
+                        while (count < data.max_per_squad)
                             uniquedots = uniquedots.concat("&middot;")
                             ++count
                         uniquedots = uniquedots.concat("&nbsp;")
@@ -28547,6 +34018,7 @@ class exportObj.SquadBuilder
                     ship = exportObj.ships[data.ship]
                     @info_container.find('tr.info-ship td.info-data').text data.ship
                     @info_container.find('tr.info-ship').show()
+                    @info_container.find('.info-solitary').hide
                     
                     if ship.large?
                         @info_container.find('tr.info-base td.info-data').text "Large"
@@ -28614,18 +34086,134 @@ class exportObj.SquadBuilder
                         @info_container.find('tr.info-actions-red').hide()
 
                     @info_container.find('tr.info-actions').show()
+                    if @isQuickbuild
+                        @info_container.find('tr.info-upgrades').hide()
+                    else
+                        @info_container.find('tr.info-upgrades').show()
+                        @info_container.find('tr.info-upgrades td.info-data').html((exportObj.translate(@language, 'sloticon', slot) for slot in data.slots).join(' ') or 'None')
+                    @info_container.find('p.info-maneuvers').show()
+                    @info_container.find('p.info-maneuvers').html(@getManeuverTableHTML(ship.maneuvers, ship.maneuvers))
+                when 'Quickbuild'
+                    @info_container.find('.info-sources').hide() # there are different sources for the pilot and the upgrade cards, so we won't display any
+                    @info_container.find('.info-collection').text '' # same here, hard to give a single number telling a user how often he ones all required cards
+                    
+                    pilot = exportObj.pilots[data.pilot]
+                    ship = exportObj.ships[data.ship]
+
+                    #logic to determine how many dots to use for uniqueness
+                    if pilot.unique?
+                        uniquedots = "&middot;&nbsp;"
+                    else if pilot.max_per_squad?
+                        count = 0
+                        uniquedots = ""
+                        while (count < data.max_per_squad)
+                            uniquedots = uniquedots.concat("&middot;")
+                            ++count
+                        uniquedots = uniquedots.concat("&nbsp;")
+                    else
+                        uniquedots = ""
+                        
+                    @info_container.find('.info-name').html """#{uniquedots}#{if pilot.display_name then pilot.display_name else pilot.name}#{if data.suffix? then data.suffix else ""}#{if exportObj.isReleased(pilot) then "" else " (#{exportObj.translate(@language, 'ui', 'unreleased')})"}"""
+                    @info_container.find('p.info-text').html pilot.text ? ''
+                    @info_container.find('tr.info-ship td.info-data').text data.ship
+                    @info_container.find('tr.info-ship').show()
+                    @info_container.find('.info-solitary').hide()
+
+
+                    if ship.large?
+                        @info_container.find('tr.info-base td.info-data').text "Large"
+                    else if ship.medium?
+                        @info_container.find('tr.info-base td.info-data').text "Medium"
+                    else
+                        @info_container.find('tr.info-base td.info-data').text "Small"
+                    @info_container.find('tr.info-base').show()
+
+                    
+                    @info_container.find('tr.info-skill td.info-data').text pilot.skill
+                    @info_container.find('tr.info-skill').show()
+                    
+                    @info_container.find('tr.info-attack td.info-data').text(pilot.ship_override?.attack ? ship.attack)
+                    @info_container.find('tr.info-attack').toggle(pilot.ship_override?.attack? or ship.attack?)
+
+                    @info_container.find('tr.info-attack-fullfront td.info-data').text(ship.attackf)
+                    @info_container.find('tr.info-attack-fullfront').toggle(ship.attackf?)
+                    
+                    @info_container.find('tr.info-attack-bullseye').hide()
+                    
+                    @info_container.find('tr.info-attack-back td.info-data').text(ship.attackb)
+                    @info_container.find('tr.info-attack-back').toggle(ship.attackb?)
+                    @info_container.find('tr.info-attack-turret td.info-data').text(ship.attackt)
+                    @info_container.find('tr.info-attack-turret').toggle(ship.attackt?)
+                    @info_container.find('tr.info-attack-doubleturret td.info-data').text(ship.attackdt)
+                    @info_container.find('tr.info-attack-doubleturret').toggle(ship.attackdt?)
+                    
+#                    for cls in @info_container.find('tr.info-attack td.info-header i.xwing-miniatures-font')[0].classList
+#                        @info_container.find('tr.info-attack td.info-header i.xwing-miniatures-font').removeClass(cls) if cls.startsWith('xwing-miniatures-font-frontarc')
+                    @info_container.find('tr.info-attack td.info-header i.xwing-miniatures-font').addClass(ship.attack_icon ? 'xwing-miniatures-font-frontarc')
+
+                    @info_container.find('tr.info-energy td.info-data').text(pilot.ship_override?.energy ? ship.energy)
+                    @info_container.find('tr.info-energy').toggle(pilot.ship_override?.energy? or ship.energy?)
+                    @info_container.find('tr.info-range').hide()
+                    @info_container.find('td.info-rangebonus').hide()
+                    @info_container.find('tr.info-agility td.info-data').text(pilot.ship_override?.agility ? ship.agility)
+                    @info_container.find('tr.info-agility').show()
+                    @info_container.find('tr.info-hull td.info-data').text(pilot.ship_override?.hull ? ship.hull)
+                    @info_container.find('tr.info-hull').show()
+                    @info_container.find('tr.info-shields td.info-data').text(pilot.ship_override?.shields ? ship.shields)
+                    @info_container.find('tr.info-shields').show()
+
+                    if effective_stats?.force? or data.force?
+                        @info_container.find('tr.info-force td.info-data').html ((pilot.ship_override?.force ? pilot.force)+ '<i class="xwing-miniatures-font xwing-miniatures-font-recurring"></i>')
+                        @info_container.find('tr.info-force').show()
+                    else
+                        @info_container.find('tr.info-force').hide()
+
+                    if data.charge?
+                        if data.recurring?
+                            @info_container.find('tr.info-charge td.info-data').html (pilot.charge + '<i class="xwing-miniatures-font xwing-miniatures-font-recurring"></i>')
+                        else
+                            @info_container.find('tr.info-charge td.info-data').text pilot.charge
+                        @info_container.find('tr.info-charge').show()
+                    else
+                        @info_container.find('tr.info-charge').hide()
+
+                    @info_container.find('tr.info-actions td.info-data').html ((exportObj.translate(@language, 'action', action) for action in (pilot.ship_override?.actions ? exportObj.ships[data.ship].actions)).join(', ')).replace(/, <i class="xwing-miniatures-font xwing-miniatures-font-linked/g,' <i class="xwing-miniatures-font xwing-miniatures-font-linked')
+    
+                    if ships[data.ship].actionsred?
+                        @info_container.find('tr.info-actions-red td.info-data-red').html (exportObj.translate(@language, 'action', action) for action in (pilot.ship_override?.actionsred ? exportObj.ships[data.ship].actionsred)).join(', ')
+                        @info_container.find('tr.info-actions-red').show()
+                    else
+                        @info_container.find('tr.info-actions-red').hide()
+
+                    @info_container.find('tr.info-actions').show()
                     @info_container.find('tr.info-upgrades').show()
-                    @info_container.find('tr.info-upgrades td.info-data').html((exportObj.translate(@language, 'sloticon', slot) for slot in data.slots).join(' ') or 'None')
+                    @info_container.find('tr.info-upgrades td.info-data').html(((if exportObj.upgrades[upgrade].display_name? then exportObj.upgrades[upgrade].display_name else upgrade) for upgrade in (data.upgrades ? [])).join(', ') or 'None')
                     @info_container.find('p.info-maneuvers').show()
                     @info_container.find('p.info-maneuvers').html(@getManeuverTableHTML(ship.maneuvers, ship.maneuvers))
                 when 'Addon'
                     @info_container.find('.info-sources').text (exportObj.translate(@language, 'sources', source) for source in data.sources).sort().join(', ')
+                    @info_container.find('.info-sources').show()
+                    
+                    #logic to determine how many dots to use for uniqueness
+                    if data.unique?
+                        uniquedots = "&middot;&nbsp;"
+                    else if data.max_per_squad?
+                        count = 0
+                        uniquedots = ""
+                        while (count < data.max_per_squad)
+                            uniquedots = uniquedots.concat("&middot;")
+                            ++count
+                        uniquedots = uniquedots.concat("&nbsp;")
+                    else
+                        uniquedots = ""
+                    
+                    
                     if @collection?.counts?
                         addon_count = @collection.counts?[additional_opts.addon_type.toLowerCase()]?[data.name] ? 0
                         @info_container.find('.info-collection').text """You have #{addon_count} in your collection."""
                     else
                         @info_container.find('.info-collection').text ''
-                    @info_container.find('.info-name').html """#{if data.unique then "&middot;&nbsp;" else ""}#{if data.display_name then data.display_name else data.name}#{if exportObj.isReleased(data) then  "" else " (#{exportObj.translate(@language, 'ui', 'unreleased')})"}"""
+                    @info_container.find('.info-name').html """#{uniquedots}#{if data.display_name then data.display_name else data.name}#{if exportObj.isReleased(data) then  "" else " (#{exportObj.translate(@language, 'ui', 'unreleased')})"}"""
                     if data.pointsarray? 
                         point_info = "<i>Point cost " + data.pointsarray + " when "
                         if data.variableagility? and data.variableagility
@@ -28635,6 +34223,11 @@ class exportObj.SquadBuilder
                         else if data.variablebase? and data.variablebase
                             point_info += " base size is small, medium or large"
                         point_info += "</i><br/><br/>"
+
+                    if data.solitary?
+                        @info_container.find('.info-solitary').show()
+                    else
+                        @info_container.find('.info-solitary').hide()
 
                     @info_container.find('p.info-text').html (point_info ? '') + (data.text ? '')
                     @info_container.find('tr.info-ship').hide()
@@ -28731,8 +34324,11 @@ class exportObj.SquadBuilder
                     if available_ships.length > 0
                         ship_type = available_ships[$.randomInt available_ships.length].name
                         available_pilots = @getAvailablePilotsForShipIncluding(ship_type)
+                        if available_pilots.length == 0 
+                            # edge case: It might have been a ship selected, that has only unique pilots - which all have been already selected 
+                            return
                         pilot = available_pilots[$.randomInt available_pilots.length]
-                        if not pilot.disabled and exportObj.pilotsById[pilot.id].sources.intersects(data.allowed_sources)
+                        if not pilot.disabled and (if @isQuickbuild then exportObj.pilots[exportObj.quickbuildsById[pilot.id].pilot] else exportObj.pilotsById[pilot.id]).sources.intersects(data.allowed_sources)
                             new_ship = @addShip()
                             new_ship.setPilotById pilot.id
                 if idx >= data.ships_or_upgrades and unused_addons.length != 0
@@ -28831,7 +34427,7 @@ class exportObj.SquadBuilder
                 meth()
 
     describeSquad: ->
-        (ship.pilot.name for ship in @ships when ship.pilot?).join ', '
+        ((ship.pilot.name for ship in @ships when ship.pilot?).join ', ') + ', Squad saved: ' + (new Date()).toLocaleString()
 
     listCards: ->
         card_obj = {}
@@ -29097,6 +34693,9 @@ class Ship
         # internal state
         @pilot = null
         @data = null # ship data
+        @quickbuildId = -1
+        @linkedShip = null # some quickbuilds contain two ships, this variable may reference a Ship beeing part of the same quickbuild card
+        @primary = true # only the primary ship of a linked ship pair will contribute points and serialization id
         @upgrades = []
 
         @setupUI()
@@ -29109,6 +34708,9 @@ class Ship
         if idx < 0
             throw new Error("Ship not registered with builder")
         @builder.ships.splice idx, 1
+        if @linkedShip != null
+            @linkedShip.linkedShip = null
+            await @builder.removeShip @linkedShip, defer()
         cb()
 
     copyFrom: (other) ->
@@ -29116,7 +34718,7 @@ class Ship
         #console.log "Attempt to copy #{other?.pilot?.name}"
         return unless other.pilot? and other.data?
         #console.log "Setting pilot to ID=#{other.pilot.id}"
-        if other.pilot.unique
+        if other.pilot.unique or (other.pilot.max_per_squad? and @builder.countPilots(other.pilot.canonical_name) >= other.pilot.max_per_squad)
             # Look for cheapest generic or available unique, otherwise do nothing
             available_pilots = (pilot_data for pilot_data in @builder.getAvailablePilotsForShipIncluding(other.data.name) when not pilot_data.disabled)
             if available_pilots.length > 0
@@ -29124,18 +34726,35 @@ class Ship
                 # Can't just copy upgrades since slots may be different
                 # Similar to setPilot() when ship is the same
 
-                other_upgrades = {}
-                for upgrade in other.upgrades
-                    if upgrade?.data? and not upgrade.data.unique and ((not upgrade.data.max_per_squad?) or @builder.countUpgrades(upgrade.data.canonical_name) < upgrade.data.max_per_squad)
-                        other_upgrades[upgrade.slot] ?= []
-                        other_upgrades[upgrade.slot].push upgrade
+                if not @builder.isQuickbuild 
+                # In case of quick build upgrades are equipped when setPilotById is called, so no need to copy anything. 
+                    other_upgrades = {}
+                    for upgrade in other.upgrades
+                        if upgrade?.data? and not upgrade.data.unique and ((not upgrade.data.max_per_squad?) or @builder.countUpgrades(upgrade.data.canonical_name) < upgrade.data.max_per_squad)
+                            other_upgrades[upgrade.slot] ?= []
+                            other_upgrades[upgrade.slot].push upgrade
 
-                for upgrade in @upgrades
-                    other_upgrade = (other_upgrades[upgrade.slot] ? []).shift()
-                    if other_upgrade?
-                        upgrade.setById other_upgrade.data.id
+                    for upgrade in @upgrades
+                        other_upgrade = (other_upgrades[upgrade.slot] ? []).shift()
+                        if other_upgrade?
+                            upgrade.setById other_upgrade.data.id
             else
                 return
+        else if @builder.isQuickbuild        
+            # check if any upgrades are unique. In that case the whole ship may not be copied
+            no_uniques_involved = true
+            for upgrade in other.upgrades
+                if (upgrade.data?.unique? and upgrade.data.unique) or (upgrade.data?.max_per_squad? and @builder.countUpgrades(upgrade.data.canonical_name) >= upgrade.data.max_per_squad)
+                    no_uniques_involved = false
+                    # select cheapest generic like above
+                    available_pilots = (pilot_data for pilot_data in @builder.getAvailablePilotsForShipIncluding(other.data.name) when not pilot_data.disabled)
+                    if available_pilots.length > 0
+                        @setPilotById available_pilots[0].id, true
+                        break
+                    else
+                        return
+            if no_uniques_involved
+                @setPilotById other.quickbuildId
         else
             # Exact clone, so we can copy things over directly
             @setPilotById other.pilot.id, true
@@ -29158,10 +34777,17 @@ class Ship
     setShipType: (ship_type) ->
         @pilot_selector.data('select2').container.show()
         if ship_type != @pilot?.ship
-            # Ship changed; select first non-unique
-            @setPilot (exportObj.pilotsById[result.id] for result in @builder.getAvailablePilotsForShipIncluding(ship_type) when not exportObj.pilotsById[result.id].unique)[0]
-
-            # TODO: When no non-unique pilot is available, we should maybe select the first one not already beeing in the squad?
+            if not @builder.isQuickbuild
+                # Ship changed; select first non-unique
+                pilot = (exportObj.pilotsById[result.id] for result in @builder.getAvailablePilotsForShipIncluding(ship_type) when not exportObj.pilotsById[result.id].unique)[0]
+                if pilot # if there is a non-unique, use this one
+                    @setPilot pilot
+                else # otherwise just set it to the first available pilot
+                    @setPilot (exportObj.pilotsById[result.id] for result in @builder.getAvailablePilotsForShipIncluding(ship_type) when ((not exportObj.pilotsById[result.id].restriction_func? or exportObj.pilotsById[result.id].restriction_func(@)) and not (exportObj.pilotsById[result.id] in @builder.uniques_in_use.Pilot)))[0]
+            else
+                # get the first available pilot
+                quickbuild_id = (result.id for result in @builder.getAvailablePilotsForShipIncluding(ship_type) when not result.disabled)[0]
+                @setPilotById quickbuild_id
 
         # Clear ship background class
         for cls in @row.attr('class').split(/\s+/)
@@ -29177,12 +34803,64 @@ class Ship
         @builder.container.trigger 'xwing:shipUpdated'
 
     setPilotById: (id, noautoequip = false) ->
-        @setPilot exportObj.pilotsById[parseInt id], noautoequip
+        #sets pilot of this ship according to given id. Id might be pilotId or quickbuildId depending on mode. 
+        if not @builder.isQuickbuild
+            @setPilot exportObj.pilotsById[parseInt id], noautoequip
+        else
+            if id != @quickbuildId
+                @quickbuildId = id
+                @builder.current_squad.dirty = true
+                @resetPilot()
+                @resetAddons()
+                if id? and id > -1
+                    quickbuild = exportObj.quickbuildsById[parseInt id]
+                    new_pilot = exportObj.pilots[quickbuild.pilot]
+                    @data = exportObj.ships[quickbuild.ship]
+                    @builder.isUpdatingPoints = true # prevents unneccesary validations while still adding stuff
+                    if new_pilot?.unique?
+                        await @builder.container.trigger 'xwing:claimUnique', [ new_pilot, 'Pilot', defer() ]
+                    @pilot = new_pilot
+                    @setupAddons() if @pilot?
+                    @copy_button.show()
+                    @setShipType @pilot.ship
 
-    setPilotByName: (name) ->
-        @setPilot exportObj.pilots[$.trim name]
+                    # if this card contains more than one ship, make sure the other one is added as well
+                    if @linkedShip
+                        # we are already linked to some other ship
+                        if quickbuild.linkedId? 
+                            # we will stay linked to another ship, so just set the linked one to an new pilot es well
+                            @linkedShip.setPilotById quickbuild.linkedId
+                            @linkedShip.primary = false
+                        else
+                            # we are no longer part of a linked pair, so the linked ship should be removed
+                            @linkedShip.linkedShip = null
+                            await @builder.removeShip @linkedShip, defer()
+                            @linkedShip = null
+                    else if quickbuild.linkedId?
+                        # we nare not already linked to another ship, but need one. Let's set one up
+                        @linkedShip = @builder.ships.slice(-1)[0]
+                        # during squad building there is an empty ship at the bottom, use that one and add a new empty one. 
+                        # during squad loading there is no empty ship at the bottom, so we just create a new one and use it
+                        if @linkedShip.data != null
+                            @linkedShip = @builder.addShip()
+                        else 
+                            @builder.addShip()
+                        @linkedShip.linkedShip = this
+                        @linkedShip.setPilotById quickbuild.linkedId
+                        @linkedShip.primary = false
+                    @primary = true
+                    @builder.isUpdatingPoints = false
+                    @builder.container.trigger 'xwing:pointsUpdated'
+
+                else
+                    @copy_button.hide()
+                @builder.container.trigger 'xwing:pointsUpdated'
+                @builder.container.trigger 'xwing-backend:squadDirtinessChanged'
+            
 
     setPilot: (new_pilot, noautoequip = false) ->
+        # don't call this method directly, unless you know what you do. Use setPilotById for proper quickbuild handling
+
         if new_pilot != @pilot
             @builder.current_squad.dirty = true
             same_ship = @pilot? and new_pilot?.ship == @pilot.ship
@@ -29227,12 +34905,27 @@ class Ship
         @pilot = null
 
     setupAddons: ->
-        # Upgrades from pilot
-        for slot in @pilot.slots ? []
-            @upgrades.push new exportObj.Upgrade
-                ship: this
-                container: @addon_container
-                slot: slot
+        if not @builder.isQuickbuild
+            # Upgrades from pilot
+            for slot in @pilot.slots ? []
+                @upgrades.push new exportObj.Upgrade
+                    ship: this
+                    container: @addon_container
+                    slot: slot
+        else 
+            # Upgrades from quickbuild
+            for upgrade_name in exportObj.quickbuildsById[@quickbuildId].upgrades ? []
+                upgrade_data = exportObj.upgrades[upgrade_name]
+                if not upgrade_data?
+                    console.log("Unknown Upgrade: " + upgrade_name)
+                    continue
+                upgrade = new exportObj.QuickbuildUpgrade
+                    ship: this
+                    container: @addon_container
+                    slot: upgrade_data.slot
+                    upgrade: upgrade_data
+                upgrade.setData upgrade_data
+                @upgrades.push upgrade
 
     resetAddons: ->
         await
@@ -29241,15 +34934,24 @@ class Ship
         @upgrades = []
 
     getPoints: ->
-        points = @pilot?.points ? 0
-        for upgrade in @upgrades
-            points += upgrade.getPoints()
-        @points_container.find('span').text points
-        if points > 0
-            @points_container.fadeTo 'fast', 1
-        else
-            @points_container.fadeTo 0, 0
-        points
+        if not @builder.isQuickbuild
+            points = @pilot?.points ? 0
+            for upgrade in @upgrades
+                points += upgrade.getPoints()
+            @points_container.find('span').text points
+            if points > 0
+                @points_container.fadeTo 'fast', 1
+            else
+                @points_container.fadeTo 0, 0
+            points
+        else            
+            threat = if @primary then exportObj.quickbuildsById[@quickbuildId]?.threat ? 0 else 0 
+            @points_container.find('span').text threat
+            if threat > 0
+                @points_container.fadeTo 'fast', 1
+            else
+                @points_container.fadeTo 0, 0
+            threat
 
     updateSelections: ->
         if @pilot?
@@ -29265,7 +34967,7 @@ class Ship
                     xws: exportObj.ships[@pilot.ship].xws
             @pilot_selector.select2 'data',
                 id: @pilot.id
-                text: "#{if exportObj.settings?.initiative_prefix? and exportObj.settings.initiative_prefix then @pilot.skill + ' - ' else ''}#{if @pilot.display_name then @pilot.display_name else @pilot.name} (#{@pilot.points})"
+                text: "#{if exportObj.settings?.initiative_prefix? and exportObj.settings.initiative_prefix then @pilot.skill + ' - ' else ''}#{if @pilot.display_name then @pilot.display_name else @pilot.name}#{if @quickbuildId != -1 then exportObj.quickbuildsById[@quickbuildId].suffix else ""} (#{if @quickbuildId != -1 then (if @primary then exportObj.quickbuildsById[@quickbuildId].threat else 0) else @pilot.points})"
             @pilot_selector.data('select2').container.show()
             for upgrade in @upgrades
                 points = upgrade.getPoints()
@@ -29343,19 +35045,24 @@ class Ship
                 @builder.checkCollection()
                 query.callback
                     more: false
-                    results: @builder.getAvailablePilotsForShipIncluding(@ship_selector.val(), @pilot, query.term)
+                    results: @builder.getAvailablePilotsForShipIncluding(@ship_selector.val(), @pilot, query.term, true, @)
             minimumResultsForSearch: if $.isMobile() then -1 else 0
             formatResultCssClass: (obj) =>
                 if @builder.collection? and (@builder.collection.checks.collectioncheck == "true")
                     not_in_collection = false
+                    name = ""
+                    if @builder.isQuickbuild
+                        name = exportObj.quickbuildsById[obj.id]?.pilot ? "unknown pilot"
+                    else
+                        name = obj.name
                     if obj.id == @pilot?.id
                         # Currently selected pilot; mark as not in collection if it's neither
                         # on the shelf nor on the table
-                        unless (@builder.collection.checkShelf('pilot', obj.name) or @builder.collection.checkTable('pilot', obj.name))
+                        unless (@builder.collection.checkShelf('pilot', name) or @builder.collection.checkTable('pilot', name))
                             not_in_collection = true
                     else
                         # Not currently selected; check shelf only
-                        not_in_collection = not @builder.collection.checkShelf('pilot', obj.name)
+                        not_in_collection = not @builder.collection.checkShelf('pilot', name)
                     if not_in_collection then 'select2-result-not-in-collection' else ''
                 else
                     ''
@@ -29367,14 +35074,16 @@ class Ship
             @builder.backend_status.fadeOut 'slow'
         @pilot_selector.data('select2').results.on 'mousemove-filtered', (e) =>
             select2_data = $(e.target).closest('.select2-result').data 'select2-data'
-            @builder.showTooltip 'Pilot', exportObj.pilotsById[select2_data.id], {ship: @data?.name} if select2_data?.id?
+            if @builder.isQuickbuild
+                @builder.showTooltip 'Quickbuild', exportObj.quickbuildsById[select2_data.id], {ship: @data?.name} if select2_data?.id?
+            else
+                @builder.showTooltip 'Pilot', exportObj.pilotsById[select2_data.id], {ship: @data?.name} if select2_data?.id?
         @pilot_selector.data('select2').container.on 'mouseover', (e) =>
             @builder.showTooltip 'Ship', this if @data?
         @pilot_selector.data('select2').container.on 'touchmove', (e) =>
             @builder.showTooltip 'Ship', this if @data?
             ###if @data? 
                 scrollTo(0,$('#info-container').offset().top - 10,'smooth')###
-
 
         @pilot_selector.data('select2').container.hide()
 
@@ -29394,16 +35103,7 @@ class Ship
         @copy_button = $ @row.find('button.copy-pilot')
         @copy_button.click (e) =>
             clone = @builder.ships[@builder.ships.length - 1]
-            
-            # Restricted Check
-            if this.pilot.restricted
-                count = 0
-                # for ship in @builder.ships
-                    # shipname = ship.pilot.name
-                if count < this.pilot.restricted
-                    clone.copyFrom(this)
-            else
-                clone.copyFrom(this)
+            clone.copyFrom(this)
                 
         @copy_button.hide()
 
@@ -29429,6 +35129,8 @@ class Ship
                     """<i class="xwing-miniatures-font xwing-miniatures-font-focus"></i> """
                 when 'Evade'
                     """<i class="xwing-miniatures-font xwing-miniatures-font-evade"></i> """
+                when 'F-Evade'
+                    """<i class="xwing-miniatures-font force xwing-miniatures-font-evade"></i> """
                 when 'Barrel Roll'
                     """<i class="xwing-miniatures-font xwing-miniatures-font-barrelroll"></i> """
                 when 'Lock'
@@ -29437,6 +35139,8 @@ class Ship
                     """<i class="xwing-miniatures-font xwing-miniatures-font-boost"></i> """
                 when 'Coordinate'
                     """<i class="xwing-miniatures-font xwing-miniatures-font-coordinate"></i> """
+                when 'F-Coordinate'
+                    """<i class="xwing-miniatures-font force xwing-miniatures-font-coordinate"></i> """
                 when 'Jam'
                     """<i class="xwing-miniatures-font xwing-miniatures-font-jam"></i> """
                 when 'Reinforce'
@@ -29570,7 +35274,7 @@ class Ship
                 <div class="pilot-header-text">#{if @pilot.display_name then @pilot.display_name else @pilot.name} <i class="xwing-miniatures-ship xwing-miniatures-ship-#{@data.xws}"></i><span class="fancy-ship-type"> #{if @data.display_name then @data.display_name else @data.name}</span></div>
                 <div class="mask">
                     <div class="outer-circle">
-                        <div class="inner-circle pilot-points">#{@pilot.points}</div>
+                        <div class="inner-circle pilot-points">#{if @quickbuildId != -1 then (if @primary then exportObj.quickbuildsById[@quickbuildId].threat else 0) else @pilot.points}</div>
                     </div>
                 </div>
             </div>
@@ -29600,14 +35304,15 @@ class Ship
                 </div>
             </div>
         """
-
-        dialHTML = @builder.getManeuverTableHTML(effective_stats.maneuvers, @data.maneuvers)
-
-        html += $.trim """
-            <div class="fancy-dial">
-                #{dialHTML}
-            </div>
-            """
+        
+        #  Maneuver Dials have been moved at the bottom of the squad, rather than beeing added to each ship
+        # dialHTML = @builder.getManeuverTableHTML(effective_stats.maneuvers, @data.maneuvers)
+        # 
+        # html += $.trim """
+        #     <div class="fancy-dial">
+        #         #{dialHTML}
+        #     </div>
+        #     """
         
         if @pilot.text
             html += $.trim """
@@ -29633,8 +35338,6 @@ class Ship
         
         Threshold = Math.ceil (effective_stats['hull'] + effective_stats['shields']) / 2
         
-        
-        # if @getPoints() != @pilot.points
         html += $.trim """
             <div class="ship-points-total">
                 <strong>Ship Total: #{@getPoints()}, Half Points: #{HalfPoints}, Threshold: #{Threshold}</strong> 
@@ -29647,7 +35350,7 @@ class Ship
         table_html = $.trim """
             <tr class="simple-pilot">
                 <td class="name">#{if @pilot.display_name then @pilot.display_name else @pilot.name} &mdash; #{if @data.display_name then @data.display_name else @data.name}</td>
-                <td class="points">#{@pilot.points}</td>
+                <td class="points">#{if @quickbuildId != -1 then (if @primary then exportObj.quickbuildsById[@quickbuildId].threat else 0) else @pilot.points}</td>
             </tr>
         """
 
@@ -29668,11 +35371,32 @@ class Ship
         table_html += '<tr><td>&nbsp;</td><td></td></tr>'
         table_html
 
-    toRedditText: ->
-        reddit = """**#{@pilot.name} (#{@pilot.points})**    \n"""
+    toSimpleCopy: ->
+        simplecopy = """#{@pilot.name} (#{if @quickbuildId != -1 then (if @primary then exportObj.quickbuildsById[@quickbuildId].threat else 0) else @pilot.points})    \n"""
         slotted_upgrades = (upgrade for upgrade in @upgrades when upgrade.data?)
         if slotted_upgrades.length > 0
-            reddit +="    \n"
+            simplecopy +="    "
+            simplecopy_upgrades= []
+            for upgrade in slotted_upgrades
+                points = upgrade.getPoints()
+                upgrade_simplecopy = upgrade.toSimpleCopy points
+                simplecopy_upgrades.push upgrade_simplecopy if upgrade_simplecopy?
+            simplecopy += simplecopy_upgrades.join "    "
+            simplecopy += """    \n"""
+
+        halfPoints = Math.ceil @getPoints() / 2        
+        threshold = Math.ceil (@effectiveStats()['hull'] + @effectiveStats()['shields']) / 2
+
+        simplecopy += """Ship total: #{@getPoints()}  Half Points: #{halfPoints}  Threshold: #{threshold}    \n    \n"""
+
+        simplecopy
+        
+        
+    toRedditText: ->
+        reddit = """**#{@pilot.name} (#{if @quickbuildId != -1 then (if @primary then exportObj.quickbuildsById[@quickbuildId].threat else 0) else @pilot.points})**    \n"""
+        slotted_upgrades = (upgrade for upgrade in @upgrades when upgrade.data?)
+        if slotted_upgrades.length > 0
+            reddit +="    "
             reddit_upgrades= []
             for upgrade in slotted_upgrades
                 points = upgrade.getPoints()
@@ -29694,7 +35418,7 @@ class Ship
         tts
 
     toBBCode: ->
-        bbcode = """[b]#{if @pilot.display_name then @pilot.display_name else @pilot.name} (#{@pilot.points})[/b]"""
+        bbcode = """[b]#{if @pilot.display_name then @pilot.display_name else @pilot.name} (#{if @quickbuildId != -1 then (if @primary then exportObj.quickbuildsById[@quickbuildId].threat else 0) else @pilot.points})[/b]"""
 
         slotted_upgrades = (upgrade for upgrade in @upgrades when upgrade.data?)
         if slotted_upgrades.length > 0
@@ -29709,7 +35433,7 @@ class Ship
         bbcode
 
     toSimpleHTML: ->
-        html = """<b>#{if @pilot.display_name then @pilot.display_name else @pilot.name} (#{@pilot.points})</b><br />"""
+        html = """<b>#{if @pilot.display_name then @pilot.display_name else @pilot.name} (#{if @quickbuildId != -1 then (if @primary then exportObj.quickbuildsById[@quickbuildId].threat else 0) else @pilot.points})</b><br />"""
 
         slotted_upgrades = (upgrade for upgrade in @upgrades when upgrade.data?)
         if slotted_upgrades.length > 0
@@ -29722,22 +35446,24 @@ class Ship
 
     toSerialized: ->
         # PILOT_ID:UPGRADEID1,UPGRADEID2:CONFERREDADDONTYPE1.CONFERREDADDONID1,CONFERREDADDONTYPE2.CONFERREDADDONID2
+        if @builder.isQuickbuild
+            """#{@quickbuildId}:"""
+        else
+            # Skip conferred upgrades
+            conferred_addons = []
+            for upgrade in @upgrades
+                conferred_addons = conferred_addons.concat(upgrade?.conferredAddons ? [])
+            upgrades = """#{upgrade?.data?.id ? "" for upgrade, i in @upgrades when upgrade not in conferred_addons}"""
 
-        # Skip conferred upgrades
-        conferred_addons = []
-        for upgrade in @upgrades
-            conferred_addons = conferred_addons.concat(upgrade?.conferredAddons ? [])
-        upgrades = """#{upgrade?.data?.id ? -1 for upgrade, i in @upgrades when upgrade not in conferred_addons}"""
+            serialized_conferred_addons = []
+            for addon in conferred_addons
+                serialized_conferred_addons.push addon.toSerialized()
 
-        serialized_conferred_addons = []
-        for addon in conferred_addons
-            serialized_conferred_addons.push addon.toSerialized()
-
-        [
-            @pilot.id,
-            upgrades,
-            serialized_conferred_addons.join(','),
-        ].join ':'
+            [
+                @pilot.id,
+                upgrades,
+                serialized_conferred_addons.join(','),
+            ].join ':'
 
 
     fromSerialized: (version, serialized) ->
@@ -29785,7 +35511,7 @@ class Ship
                     conferredaddon_pairs = []
 
 
-            when 4, 5
+            when 4, 5, 6
                 # PILOT_ID:UPGRADEID1,UPGRADEID2:CONFERREDADDONTYPE1.CONFERREDADDONID1,CONFERREDADDONTYPE2.CONFERREDADDONID2
                 # version 5 is the same as version 4, but title and mod has been dropped (as they are treated as upgrades anyways). Thus, we may differ by length
                 if (serialized.split ':').length == 3
@@ -29810,13 +35536,14 @@ class Ship
                         everythingadded &= @upgrades[i].lastSetValid
 
                 for deferred_id in deferred_ids
+                    deferred_id_added = false
                     for upgrade, i in @upgrades
                         if upgrade.isOccupied() or upgrade.slot != exportObj.upgradesById[deferred_id].slot
-                            everythingadded = false
                             continue
                         upgrade.setById deferred_id
-                        everythingadded &= upgrade.lastSetValid
+                        deferred_id_added = upgrade.lastSetValid
                         break
+                    everythingadded &= deferred_id_added
 
                 if conferredaddon_pairs?
                     conferredaddon_pairs = conferredaddon_pairs.split ','
@@ -29889,7 +35616,7 @@ class Ship
             equipped_upgrades = []
             for upgrade in @upgrades
                 func = upgrade?.data?.validation_func ? upgrade?.data?.restriction_func ? undefined
-                if (func? and not func(this, upgrade)) or (upgrade?.data? and upgrade.data in equipped_upgrades)
+                if ((func? and not func(this, upgrade)) or (upgrade?.data? and upgrade.data in equipped_upgrades)) and not @builder.isQuickbuild # check restriction func, check limited (is upgrade already in equipped_upgrades?), ignore building rules for Quickbuild
                     #console.log "Invalid upgrade: #{upgrade?.data?.name}"
                     upgrade.setById null
                     valid = false
@@ -29921,6 +35648,20 @@ class Ship
             return true unless upgrade.isOccupied()
         false
 
+    doesSlotExist: (slot) ->
+        for upgrade in @upgrades
+            if slot == upgrade.slot
+                return true
+        false
+    
+    
+    isSlotOccupied: (slot_name) ->
+        for upgrade in @upgrades
+            if upgrade.slot == slot_name
+                return true unless upgrade.isOccupied()
+        false
+
+
     toXWS: ->
         xws =
             id: (@pilot.xws ? @pilot.canonical_name)
@@ -29935,7 +35676,7 @@ class Ship
         upgrade_obj = {}
 
         for upgrade in @upgrades
-            if upgrade?.data?
+            if upgrade?.data? and (not upgrade?.data?.ignorecollection?)
                 upgrade.toXWS upgrade_obj
 
         if Object.keys(upgrade_obj).length > 0
@@ -30244,6 +35985,12 @@ class GenericAddon
             """
         else
             ''
+
+    toSimpleCopy: (points) ->
+        if @data?
+            """#{@data.name} (#{points})    \n"""
+        else
+            null
             
     toRedditText: (points) ->
         if @data?
@@ -30348,6 +36095,45 @@ class exportObj.RestrictedUpgrade extends exportObj.Upgrade
         if args.auto_equip?
             @setById args.auto_equip
 
+class exportObj.QuickbuildUpgrade extends GenericAddon
+    constructor: (args) ->
+        super args
+        @slot = args.slot
+        @type = 'Upgrade'
+        @dataById = exportObj.upgradesById
+        @dataByName = exportObj.upgrades
+        @serialization_code = 'U'
+        @upgrade = args.upgrade
+        @setupSelector()
+
+    setupSelector: ->
+        super
+            width: '50%'
+            allowClear: false
+            query: (query) =>
+                @ship.builder.checkCollection()
+                query.callback
+                    more: false
+                    results: [{
+                            id: @upgrade.id
+                            text: if @upgrade.display_name then @upgrade.display_name else @upgrade.name
+                            points: 0
+                            name: @upgrade.name
+                            display_name: @upgrade.display_name
+                        }]
+
+    getPoints: (args) ->
+        0
+            
+    updateSelection: (args) ->
+        if @data?
+            @selector.select2 'data',
+            id: @data.id
+            text: "#{if @data.display_name then @data.display_name else @data.name}"
+        else
+            @selector.select2 'data', null
+            
+        
 
 SERIALIZATION_CODE_TO_CLASS =
     'U': exportObj.Upgrade
@@ -30375,6 +36161,7 @@ exportObj.toXWSFaction =
 exportObj.toXWSUpgrade =
     'Modification': 'modification'
     'Force':'force-power'
+    'Tactical Relay':'tacticalrelay'
 
 exportObj.fromXWSUpgrade =
     'amd': 'Astromech'
@@ -30384,6 +36171,7 @@ exportObj.fromXWSUpgrade =
     'system': 'Sensor'
     'mod': 'Modification'
     'force-power':'Force'
+    'tacticalrelay':'Tactical Relay'
 
 SPEC_URL = 'https://github.com/elistevens/xws-spec'
 
