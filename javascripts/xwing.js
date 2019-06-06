@@ -6951,11 +6951,6 @@ exportObj.basicCardData = function() {
         slot: "Sensor",
         points: 10
       }, {
-        name: "Passive Sensors",
-        id: 1111,
-        slot: "Sensor",
-        points: 5
-      }, {
         name: "Collision Detector",
         id: 112,
         slot: "Sensor",
@@ -8152,6 +8147,11 @@ exportObj.basicCardData = function() {
         solitary: true,
         faction: "Separatist Alliance",
         points: 200
+      }, {
+        name: "Passive Sensors",
+        id: 240,
+        slot: "Sensor",
+        points: 5
       }
     ],
     conditionsById: [
