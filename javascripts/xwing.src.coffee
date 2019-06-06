@@ -8385,7 +8385,7 @@ exportObj.basicCardData = ->
             faction: "Galactic Republic"
             ship: "Naboo Royal N-1 Starfighter"
             skill: 2
-            points: 36
+            points: 32
             slots: [
                 "Sensor"
                 "Astromech"
@@ -8398,7 +8398,7 @@ exportObj.basicCardData = ->
             faction: "Separatist Alliance"
             ship: "Hyena-Class Droid Bomber"
             skill: 1
-            points: 200
+            points: 30
             slots: [
                 "Sensor"
                 "Torpedo"
@@ -8417,7 +8417,7 @@ exportObj.basicCardData = ->
             ship: "Hyena-Class Droid Bomber"
             skill: 3
             max_per_squad: 3
-            points: 200
+            points: 31
             slots: [
                 "Sensor"
                 "Torpedo"
@@ -8436,7 +8436,7 @@ exportObj.basicCardData = ->
             faction: "Separatist Alliance"
             ship: "Hyena-Class Droid Bomber"
             skill: 4
-            points: 200
+            points: 36
             slots: [
                 "Sensor"
                 "Torpedo"
@@ -8454,7 +8454,7 @@ exportObj.basicCardData = ->
             faction: "Separatist Alliance"
             ship: "Hyena-Class Droid Bomber"
             skill: 3
-            points: 200
+            points: 32
             slots: [
                 "Sensor"
                 "Torpedo"
@@ -8473,7 +8473,7 @@ exportObj.basicCardData = ->
             faction: "Separatist Alliance"
             ship: "Hyena-Class Droid Bomber"
             skill: 3
-            points: 200
+            points: 35
             slots: [
                 "Sensor"
                 "Torpedo"
@@ -8492,7 +8492,7 @@ exportObj.basicCardData = ->
             faction: "Separatist Alliance"
             ship: "Hyena-Class Droid Bomber"
             skill: 1
-            points: 200
+            points: 31
             slots: [
                 "Sensor"
                 "Torpedo"

@@ -5688,7 +5688,7 @@ exportObj.basicCardData = function() {
         faction: "Galactic Republic",
         ship: "Naboo Royal N-1 Starfighter",
         skill: 2,
-        points: 36,
+        points: 32,
         slots: ["Sensor", "Astromech", "Torpedo"]
       }, {
         name: "Techno Union Bomber",
@@ -5696,7 +5696,7 @@ exportObj.basicCardData = function() {
         faction: "Separatist Alliance",
         ship: "Hyena-Class Droid Bomber",
         skill: 1,
-        points: 200,
+        points: 30,
         slots: ["Sensor", "Torpedo", "Missile", "Missile", "Device", "Device", "Modification", "Configuration"]
       }, {
         name: "Bombardment Drone",
@@ -5705,7 +5705,7 @@ exportObj.basicCardData = function() {
         ship: "Hyena-Class Droid Bomber",
         skill: 3,
         max_per_squad: 3,
-        points: 200,
+        points: 31,
         slots: ["Sensor", "Torpedo", "Missile", "Missile", "Device", "Device", "Modification", "Configuration"]
       }, {
         name: "DBS-404",
@@ -5714,7 +5714,7 @@ exportObj.basicCardData = function() {
         faction: "Separatist Alliance",
         ship: "Hyena-Class Droid Bomber",
         skill: 4,
-        points: 200,
+        points: 36,
         slots: ["Sensor", "Torpedo", "Missile", "Missile", "Device", "Device", "Modification", "Configuration"]
       }, {
         name: "Separatist Bomber",
@@ -5722,7 +5722,7 @@ exportObj.basicCardData = function() {
         faction: "Separatist Alliance",
         ship: "Hyena-Class Droid Bomber",
         skill: 3,
-        points: 200,
+        points: 32,
         slots: ["Sensor", "Torpedo", "Missile", "Missile", "Device", "Device", "Modification", "Configuration"]
       }, {
         name: "DBS-32C",
@@ -5731,7 +5731,7 @@ exportObj.basicCardData = function() {
         faction: "Separatist Alliance",
         ship: "Hyena-Class Droid Bomber",
         skill: 3,
-        points: 200,
+        points: 35,
         slots: ["Sensor", "Torpedo", "Missile", "Missile", "Device", "Device", "Modification", "Configuration"]
       }, {
         name: "Baktoid Prototype",
@@ -5740,7 +5740,7 @@ exportObj.basicCardData = function() {
         faction: "Separatist Alliance",
         ship: "Hyena-Class Droid Bomber",
         skill: 1,
-        points: 200,
+        points: 31,
         slots: ["Sensor", "Torpedo", "Missile", "Missile", "Device", "Device", "Modification", "Configuration"]
       }, {
         name: "Naboo Handmaiden",
