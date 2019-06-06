@@ -8398,7 +8398,7 @@ exportObj.basicCardData = ->
             faction: "Separatist Alliance"
             ship: "Hyena-Class Droid Bomber"
             skill: 1
-            points: 30
+            points: 28
             slots: [
                 "Sensor"
                 "Torpedo"
@@ -8417,7 +8417,7 @@ exportObj.basicCardData = ->
             ship: "Hyena-Class Droid Bomber"
             skill: 3
             max_per_squad: 3
-            points: 31
+            points: 30
             slots: [
                 "Sensor"
                 "Torpedo"
@@ -8436,7 +8436,7 @@ exportObj.basicCardData = ->
             faction: "Separatist Alliance"
             ship: "Hyena-Class Droid Bomber"
             skill: 4
-            points: 36
+            points: 32
             slots: [
                 "Sensor"
                 "Torpedo"
@@ -8454,7 +8454,7 @@ exportObj.basicCardData = ->
             faction: "Separatist Alliance"
             ship: "Hyena-Class Droid Bomber"
             skill: 3
-            points: 32
+            points: 31
             slots: [
                 "Sensor"
                 "Torpedo"
@@ -8758,7 +8758,7 @@ exportObj.basicCardData = ->
             faction: "Resistance"
             ship: "Resistance Transport Pod"
             skill: 3
-            points: 200
+            points: 26
             slots: [
                 "Talent"
                 "Crew"
@@ -8771,7 +8771,7 @@ exportObj.basicCardData = ->
             faction: "Resistance"
             ship: "Resistance Transport"
             skill: 1
-            points: 200
+            points: 37
             slots: [
                 "Cannon"
                 "Crew"
@@ -8785,10 +8785,82 @@ exportObj.basicCardData = ->
             faction: "Resistance"
             ship: "Resistance Transport"
             skill: 3
-            points: 200
+            points: 39
             slots: [
                 "Talent"
                 "Cannon"
+                "Crew"
+                "Modification"
+            ]
+        }
+        {
+            name: "Nodin Chavdri"
+            id: 348
+            unique: true
+            faction: "Resistance"
+            ship: "Resistance Transport"
+            skill: 4
+            points: 41
+            slots: [
+                "Talent"
+                "Cannon"
+                "Crew"
+                "Modification"
+            ]
+        }
+        {
+            name: "Cova Nell"
+            id: 349
+            unique: true
+            faction: "Resistance"
+            ship: "Resistance Transport"
+            skill: 5
+            points: 43
+            slots: [
+                "Talent"
+                "Cannon"
+                "Crew"
+                "Modification"
+            ]
+        }
+        {
+            name: "BB-8"
+            id: 350
+            unique: true
+            faction: "Resistance"
+            ship: "Resistance Transport Pod"
+            skill: 2
+            points: 24
+            slots: [
+                "Talent"
+                "Crew"
+                "Modification"
+            ]
+        }
+        {
+            name: "GA-97"
+            id: 351
+            unique: true
+            faction: "Resistance"
+            ship: "Resistance Transport Pod"
+            skill: 1
+            points: 23
+            slots: [
+                "Talent"
+                "Crew"
+                "Modification"
+            ]
+        }
+        {
+            name: "Vi Moradi"
+            id: 352
+            unique: true
+            faction: "Resistance"
+            ship: "Resistance Transport Pod"
+            skill: 4
+            points: 28
+            slots: [
+                "Talent"
                 "Crew"
                 "Modification"
             ]
@@ -10972,7 +11044,7 @@ exportObj.basicCardData = ->
             name: "GA-97"
             id: 230
             slot: "Crew"
-            points: 200
+            points: 6
             charge: 5
             recurring: true
             faction: "Resistance"
@@ -10985,7 +11057,7 @@ exportObj.basicCardData = ->
             name: "Kaydel Connix"
             id: 231
             slot: "Crew"
-            points: 200
+            points: 4
             faction: "Resistance"
             unique: true
        }
@@ -10993,7 +11065,7 @@ exportObj.basicCardData = ->
            name: "Autoblasters"
            id: 232
            slot: "Cannon"
-           points: 200
+           points: 2
            attack: 2
            range: """1-2"""
        }
@@ -11002,7 +11074,7 @@ exportObj.basicCardData = ->
            id: 233
            unique: true
            slot: "Astromech"
-           points: 200
+           points: 3
            faction: "Galactic Republic"
        }
        {
@@ -11019,7 +11091,7 @@ exportObj.basicCardData = ->
             name: "Electro-Proton Bomb"
             id: 235
             slot: "Device"
-            points: 200
+            points: 7
             charge: 1
             unequips_upgrades: [ "Modification" ]
             also_occupies_upgrades: [ "Modification" ]
@@ -11031,20 +11103,20 @@ exportObj.basicCardData = ->
             name: "Delayed Fuses"
             id: 236
             slot: "Modification"
-            points: 200
+            points: 3
        }
        {
             name: "Landing Struts"
             id: 237
             ship: "Hyena-Class Droid Bomber"
             slot: "Configuration"
-            points: 200
+            points: 4
        }
        {
            name: "Diamond-Boron Missiles"
            id: 238
            slot: "Missile"
-           points: 200
+           points: 6
            attack: 3
            range: """2-3"""
            rangebonus: true 
@@ -11062,7 +11134,7 @@ exportObj.basicCardData = ->
             slot: "Tactical Relay"
             solitary: true
             faction: "Separatist Alliance"
-            points: 200
+            points: 8
        }
        {
             name: "Passive Sensors"
@@ -11070,7 +11142,51 @@ exportObj.basicCardData = ->
             slot: "Sensor"
             points: 5
        }
-
+       {
+            name: "PZ-4CO"
+            id: 241
+            slot: "Crew"
+            xws: "pz-4co-crew"
+            points: 2
+            unique: true
+            faction: "Resistance"
+       }
+       {
+            name: "Leia Organa (Resistance)"
+            id: 242
+            slot: "Crew"
+            xws: "leia-organa-resistance-crew"
+            points: 14
+            unique: true
+            faction: "Resistance"
+       }
+       {
+            name: "Amilyn Holdo"
+            id: 243
+            slot: "Crew"
+            xws: "amilyn-holdo-crew"
+            points: 3
+            unique: true
+            faction: "Resistance"
+       }
+       {
+            name: "Korr Sella"
+            id: 244
+            slot: "Crew"
+            xws: "korr-sella-crew"
+            points: 2
+            unique: true
+            faction: "Resistance"
+       }
+       {
+            name: "Larma D'Acy"
+            id: 245
+            slot: "Crew"
+            xws: "larma-dacy-crew"
+            points: 4
+            unique: true
+            faction: "Resistance"
+       }
     ]
 
 
@@ -19387,6 +19503,21 @@ exportObj.cardLoaders.English = () ->
         "Leia Organa":
            display_name: """Leia Organa"""
            text: """<i>Rebel only</i>%LINEBREAK%At the start of the Activation Phase, you may spend 3 %CHARGE%. During this phase, each friendly ship reduces the difficulty of its red maneuvers."""
+        "Amilyn Holdo":
+           display_name: """Amilyn Holdo"""
+           text: """<i>Resistance only</i>%LINEBREAK%Before you engage, you may choose another friendly ship at range 1-2. You may transfer to that ship 1 token of a type that ship does not have. That ship may transfer 1 token to you of a type you do not have."""
+        "Leia Organa (Resistance)":
+           display_name: """Leia Organa"""
+           text: """<i>Resistance only</i>%LINEBREAK%After a friendly ship reveals its dial, you may spend 1 %CALCULATE%. If you do, the chosen ship reduces the difficulty of that maneuver."""
+        "Korr Sella":
+           display_name: """Korr Sella"""
+           text: """<i>Resistance only</i>%LINEBREAK%After you fully execute a blue maneuver, remove all of your stress tokens."""
+        "Larma D'Acy":
+           display_name: """Larma D'Acy"""
+           text: """<i>Resistance only</i>%LINEBREAK%While you have 2 or fewer stress tokens, you can perform %REINFORCE%, %COORDINATE%, and %JAM% actions, even while stressed.%LINEBREAK%While you perform a white %REINFORCE%, %COORDINATE%, and %JAM% actions, if you are stressed, treat that action as red."""
+        "PZ-4CO":
+           display_name: """PZ-4CO"""
+           text: """<i>Resistance only</i>%LINEBREAK%At the end of Activation Phase, you may choose 1 friendly ship at range 1-2. If you do, transfer 1 calculate token to that ship. If your revealed maneuver is blue, you may transfer 1 focus token instead."""
         "Lone Wolf":
            display_name: """Lone Wolf"""
            text: """While you defend or perform an attack, if there are no other friendly ships at range 0-2, you may spend 1&nbsp;%CHARGE% to reroll 1 of your dice."""

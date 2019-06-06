@@ -5696,7 +5696,7 @@ exportObj.basicCardData = function() {
         faction: "Separatist Alliance",
         ship: "Hyena-Class Droid Bomber",
         skill: 1,
-        points: 30,
+        points: 28,
         slots: ["Sensor", "Torpedo", "Missile", "Missile", "Device", "Device", "Modification", "Configuration"]
       }, {
         name: "Bombardment Drone",
@@ -5705,7 +5705,7 @@ exportObj.basicCardData = function() {
         ship: "Hyena-Class Droid Bomber",
         skill: 3,
         max_per_squad: 3,
-        points: 31,
+        points: 30,
         slots: ["Sensor", "Torpedo", "Missile", "Missile", "Device", "Device", "Modification", "Configuration"]
       }, {
         name: "DBS-404",
@@ -5714,7 +5714,7 @@ exportObj.basicCardData = function() {
         faction: "Separatist Alliance",
         ship: "Hyena-Class Droid Bomber",
         skill: 4,
-        points: 36,
+        points: 32,
         slots: ["Sensor", "Torpedo", "Missile", "Missile", "Device", "Device", "Modification", "Configuration"]
       }, {
         name: "Separatist Bomber",
@@ -5722,7 +5722,7 @@ exportObj.basicCardData = function() {
         faction: "Separatist Alliance",
         ship: "Hyena-Class Droid Bomber",
         skill: 3,
-        points: 32,
+        points: 31,
         slots: ["Sensor", "Torpedo", "Missile", "Missile", "Device", "Device", "Modification", "Configuration"]
       }, {
         name: "DBS-32C",
@@ -5886,7 +5886,7 @@ exportObj.basicCardData = function() {
         faction: "Resistance",
         ship: "Resistance Transport Pod",
         skill: 3,
-        points: 200,
+        points: 26,
         slots: ["Talent", "Crew", "Modification"]
       }, {
         name: "Logistics Division Pilot",
@@ -5894,7 +5894,7 @@ exportObj.basicCardData = function() {
         faction: "Resistance",
         ship: "Resistance Transport",
         skill: 1,
-        points: 200,
+        points: 37,
         slots: ["Cannon", "Crew", "Modification"]
       }, {
         name: "Pammich Nerro Goode",
@@ -5903,8 +5903,53 @@ exportObj.basicCardData = function() {
         faction: "Resistance",
         ship: "Resistance Transport",
         skill: 3,
-        points: 200,
+        points: 39,
         slots: ["Talent", "Cannon", "Crew", "Modification"]
+      }, {
+        name: "Nodin Chavdri",
+        id: 348,
+        unique: true,
+        faction: "Resistance",
+        ship: "Resistance Transport",
+        skill: 4,
+        points: 41,
+        slots: ["Talent", "Cannon", "Crew", "Modification"]
+      }, {
+        name: "Cova Nell",
+        id: 349,
+        unique: true,
+        faction: "Resistance",
+        ship: "Resistance Transport",
+        skill: 5,
+        points: 43,
+        slots: ["Talent", "Cannon", "Crew", "Modification"]
+      }, {
+        name: "BB-8",
+        id: 350,
+        unique: true,
+        faction: "Resistance",
+        ship: "Resistance Transport Pod",
+        skill: 2,
+        points: 24,
+        slots: ["Talent", "Crew", "Modification"]
+      }, {
+        name: "GA-97",
+        id: 351,
+        unique: true,
+        faction: "Resistance",
+        ship: "Resistance Transport Pod",
+        skill: 1,
+        points: 23,
+        slots: ["Talent", "Crew", "Modification"]
+      }, {
+        name: "Vi Moradi",
+        id: 352,
+        unique: true,
+        faction: "Resistance",
+        ship: "Resistance Transport Pod",
+        skill: 4,
+        points: 28,
+        slots: ["Talent", "Crew", "Modification"]
       }
     ],
     upgradesById: [
@@ -8059,7 +8104,7 @@ exportObj.basicCardData = function() {
         name: "GA-97",
         id: 230,
         slot: "Crew",
-        points: 200,
+        points: 6,
         charge: 5,
         recurring: true,
         faction: "Resistance",
@@ -8074,14 +8119,14 @@ exportObj.basicCardData = function() {
         name: "Kaydel Connix",
         id: 231,
         slot: "Crew",
-        points: 200,
+        points: 4,
         faction: "Resistance",
         unique: true
       }, {
         name: "Autoblasters",
         id: 232,
         slot: "Cannon",
-        points: 200,
+        points: 2,
         attack: 2,
         range: "1-2"
       }, {
@@ -8089,7 +8134,7 @@ exportObj.basicCardData = function() {
         id: 233,
         unique: true,
         slot: "Astromech",
-        points: 200,
+        points: 3,
         faction: "Galactic Republic"
       }, {
         name: "Plasma Torpedoes",
@@ -8104,7 +8149,7 @@ exportObj.basicCardData = function() {
         name: "Electro-Proton Bomb",
         id: 235,
         slot: "Device",
-        points: 200,
+        points: 7,
         charge: 1,
         unequips_upgrades: ["Modification"],
         also_occupies_upgrades: ["Modification"],
@@ -8116,18 +8161,18 @@ exportObj.basicCardData = function() {
         name: "Delayed Fuses",
         id: 236,
         slot: "Modification",
-        points: 200
+        points: 3
       }, {
         name: "Landing Struts",
         id: 237,
         ship: "Hyena-Class Droid Bomber",
         slot: "Configuration",
-        points: 200
+        points: 4
       }, {
         name: "Diamond-Boron Missiles",
         id: 238,
         slot: "Missile",
-        points: 200,
+        points: 6,
         attack: 3,
         range: "2-3",
         rangebonus: true,
@@ -8146,12 +8191,52 @@ exportObj.basicCardData = function() {
         slot: "Tactical Relay",
         solitary: true,
         faction: "Separatist Alliance",
-        points: 200
+        points: 8
       }, {
         name: "Passive Sensors",
         id: 240,
         slot: "Sensor",
         points: 5
+      }, {
+        name: "PZ-4CO",
+        id: 241,
+        slot: "Crew",
+        xws: "pz-4co-crew",
+        points: 2,
+        unique: true,
+        faction: "Resistance"
+      }, {
+        name: "Leia Organa (Resistance)",
+        id: 242,
+        slot: "Crew",
+        xws: "leia-organa-resistance-crew",
+        points: 14,
+        unique: true,
+        faction: "Resistance"
+      }, {
+        name: "Amilyn Holdo",
+        id: 243,
+        slot: "Crew",
+        xws: "amilyn-holdo-crew",
+        points: 3,
+        unique: true,
+        faction: "Resistance"
+      }, {
+        name: "Korr Sella",
+        id: 244,
+        slot: "Crew",
+        xws: "korr-sella-crew",
+        points: 2,
+        unique: true,
+        faction: "Resistance"
+      }, {
+        name: "Larma D'Acy",
+        id: 245,
+        slot: "Crew",
+        xws: "larma-dacy-crew",
+        points: 4,
+        unique: true,
+        faction: "Resistance"
       }
     ],
     conditionsById: [
@@ -15856,6 +15941,26 @@ exportObj.cardLoaders.English = function() {
     "Leia Organa": {
       display_name: "Leia Organa",
       text: "<i>Rebel only</i>%LINEBREAK%At the start of the Activation Phase, you may spend 3 %CHARGE%. During this phase, each friendly ship reduces the difficulty of its red maneuvers."
+    },
+    "Amilyn Holdo": {
+      display_name: "Amilyn Holdo",
+      text: "<i>Resistance only</i>%LINEBREAK%Before you engage, you may choose another friendly ship at range 1-2. You may transfer to that ship 1 token of a type that ship does not have. That ship may transfer 1 token to you of a type you do not have."
+    },
+    "Leia Organa (Resistance)": {
+      display_name: "Leia Organa",
+      text: "<i>Resistance only</i>%LINEBREAK%After a friendly ship reveals its dial, you may spend 1 %CALCULATE%. If you do, the chosen ship reduces the difficulty of that maneuver."
+    },
+    "Korr Sella": {
+      display_name: "Korr Sella",
+      text: "<i>Resistance only</i>%LINEBREAK%After you fully execute a blue maneuver, remove all of your stress tokens."
+    },
+    "Larma D'Acy": {
+      display_name: "Larma D'Acy",
+      text: "<i>Resistance only</i>%LINEBREAK%While you have 2 or fewer stress tokens, you can perform %REINFORCE%, %COORDINATE%, and %JAM% actions, even while stressed.%LINEBREAK%While you perform a white %REINFORCE%, %COORDINATE%, and %JAM% actions, if you are stressed, treat that action as red."
+    },
+    "PZ-4CO": {
+      display_name: "PZ-4CO",
+      text: "<i>Resistance only</i>%LINEBREAK%At the end of Activation Phase, you may choose 1 friendly ship at range 1-2. If you do, transfer 1 calculate token to that ship. If your revealed maneuver is blue, you may transfer 1 focus token instead."
     },
     "Lone Wolf": {
       display_name: "Lone Wolf",
@@ -31145,7 +31250,7 @@ exportObj.setupTranslationSupport = function() {
                     parent: ___iced_passed_deferral
                   });
                   builder.container.trigger('xwing:beforeLanguageLoad', __iced_deferrals.defer({
-                    lineno: 33197
+                    lineno: 33328
                   }));
                   __iced_deferrals._fulfill();
                 })(_next);
@@ -31976,7 +32081,7 @@ exportObj.SquadBuilder = (function() {
                   return results = arguments[0];
                 };
               })(),
-              lineno: 34061
+              lineno: 34192
             }));
             __iced_deferrals._fulfill();
           })(function() {
@@ -32787,7 +32892,7 @@ exportObj.SquadBuilder = (function() {
               funcname: "SquadBuilder.removeShip"
             });
             ship.destroy(__iced_deferrals.defer({
-              lineno: 34784
+              lineno: 34915
             }));
             __iced_deferrals._fulfill();
           })(function() {
@@ -32797,7 +32902,7 @@ exportObj.SquadBuilder = (function() {
                 funcname: "SquadBuilder.removeShip"
               });
               _this.container.trigger('xwing:pointsUpdated', __iced_deferrals.defer({
-                lineno: 34785
+                lineno: 34916
               }));
               __iced_deferrals._fulfill();
             })(function() {
@@ -34514,7 +34619,7 @@ Ship = (function() {
               funcname: "Ship.destroy"
             });
             _this.builder.removeShip(_this.linkedShip, __iced_deferrals.defer({
-              lineno: 35950
+              lineno: 36081
             }));
             __iced_deferrals._fulfill();
           })(__iced_k);
@@ -34716,7 +34821,7 @@ Ship = (function() {
                       });
                       _this.builder.container.trigger('xwing:claimUnique', [
                         new_pilot, 'Pilot', __iced_deferrals.defer({
-                          lineno: 36058
+                          lineno: 36189
                         })
                       ]);
                       __iced_deferrals._fulfill();
@@ -34745,7 +34850,7 @@ Ship = (function() {
                               funcname: "Ship.setPilotById"
                             });
                             _this.builder.removeShip(_this.linkedShip, __iced_deferrals.defer({
-                              lineno: 36074
+                              lineno: 36205
                             }));
                             __iced_deferrals._fulfill();
                           })(function() {
@@ -34815,7 +34920,7 @@ Ship = (function() {
                   });
                   _this.builder.container.trigger('xwing:claimUnique', [
                     new_pilot, 'Pilot', __iced_deferrals.defer({
-                      lineno: 36116
+                      lineno: 36247
                     })
                   ]);
                   __iced_deferrals._fulfill();
@@ -34889,7 +34994,7 @@ Ship = (function() {
             });
             _this.builder.container.trigger('xwing:releaseUnique', [
               _this.pilot, 'Pilot', __iced_deferrals.defer({
-                lineno: 36141
+                lineno: 36272
               })
             ]);
             __iced_deferrals._fulfill();
@@ -34958,7 +35063,7 @@ Ship = (function() {
           upgrade = _ref[_i];
           if (upgrade != null) {
             upgrade.destroy(__iced_deferrals.defer({
-              lineno: 36170
+              lineno: 36301
             }));
           }
         }
@@ -36033,7 +36138,7 @@ GenericAddon = (function() {
             });
             _this.ship.builder.container.trigger('xwing:releaseUnique', [
               _this.data, _this.type, __iced_deferrals.defer({
-                lineno: 37010
+                lineno: 37141
               })
             ]);
             __iced_deferrals._fulfill();
@@ -36174,7 +36279,7 @@ GenericAddon = (function() {
               });
               _this.ship.builder.container.trigger('xwing:releaseUnique', [
                 _this.unadjusted_data, _this.type, __iced_deferrals.defer({
-                  lineno: 37084
+                  lineno: 37215
                 })
               ]);
               __iced_deferrals._fulfill();
@@ -36196,7 +36301,7 @@ GenericAddon = (function() {
                 });
                 _this.ship.builder.container.trigger('xwing:claimUnique', [
                   new_data, _this.type, __iced_deferrals.defer({
-                    lineno: 37088
+                    lineno: 37219
                   })
                 ]);
                 __iced_deferrals._fulfill();
@@ -36283,7 +36388,7 @@ GenericAddon = (function() {
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           addon = _ref[_i];
           addon.destroy(__iced_deferrals.defer({
-            lineno: 37129
+            lineno: 37260
           }));
         }
         __iced_deferrals._fulfill();
