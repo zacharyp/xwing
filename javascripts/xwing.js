@@ -5683,7 +5683,7 @@ exportObj.basicCardData = function() {
         points: 44,
         slots: ["Force", "Sensor", "Astromech", "Torpedo"]
       }, {
-        name: "Generic PS 2",
+        name: "Bravo Flight Officer",
         id: 323,
         faction: "Galactic Republic",
         ship: "Naboo Royal N-1 Starfighter",
@@ -5743,7 +5743,7 @@ exportObj.basicCardData = function() {
         points: 200,
         slots: ["Sensor", "Torpedo", "Missile", "Missile", "Device", "Device", "Modification", "Configuration"]
       }, {
-        name: "Pilot PS 1",
+        name: "Naboo Handmaiden",
         id: 330,
         max_per_squad: 2,
         faction: "Galactic Republic",

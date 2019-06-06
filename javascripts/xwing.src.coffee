@@ -8380,7 +8380,7 @@ exportObj.basicCardData = ->
             ]
         }
         {
-            name: "Generic PS 2"
+            name: "Bravo Flight Officer"
             id: 323
             faction: "Galactic Republic"
             ship: "Naboo Royal N-1 Starfighter"
@@ -8505,7 +8505,7 @@ exportObj.basicCardData = ->
             ]
         }
         {
-            name: "Pilot PS 1"
+            name: "Naboo Handmaiden"
             id: 330
             max_per_squad: 2
             faction: "Galactic Republic"
