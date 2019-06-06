@@ -5776,7 +5776,7 @@ exportObj.basicCardData = function() {
         faction: "Galactic Republic",
         ship: "Naboo Royal N-1 Starfighter",
         skill: 5,
-        points: 39,
+        points: 43,
         slots: ["Talent", "Sensor", "Astromech", "Torpedo"]
       }, {
         name: "Count Dooku",
