@@ -19429,6 +19429,9 @@ exportObj.cardLoaders.English = () ->
         "Paige Tico":
            display_name: """Paige Tico"""
            text: """<i>Resistance only</i>%LINEBREAK%After you perform a primary attack, you may drop 1 bomb or rotate your %SINGLETURRETARC%.%LINEBREAK%After you are destroyed, you may drop 1 bomb."""
+        "Passive Sensors":
+           display_name: """Passive Sensors"""
+           text: """Action: Spend 1&nbsp;%CHARGE%. You can only perform this action in your Perform Action step.%LINEBREAK%While your %CHARGE% is inactive, you cannot be coordinated. Before you engage, if your %CHARGE% is inactive, you may perform a %CALCULATE% or %LOCK% action."""
         "Pattern Analyzer":
            display_name: """Pattern Analyzer"""
            text: """While you fully execute a red maneuver, before the Check Difficulty step, you may perform 1 action."""
