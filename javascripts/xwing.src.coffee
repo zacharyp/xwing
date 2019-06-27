@@ -35804,7 +35804,7 @@ class exportObj.SquadBuilder
             when 'quickbuild'
                 'q'
         selected_points = $.trim @desired_points_input.val()
-        """v#{serialization_version}Z#{game_type_abbrev}=#{selected_points}Z#{( ship.toSerialized() for ship in @ships when ship.pilot? and (not @isQuickbuild or ship.primary) ).join ';'}"""
+        """v#{serialization_version}Z#{game_type_abbrev}=#{selected_points}Z#{( ship.toSerialized() for ship in @ships when ship.pilot? and (not @isQuickbuild or ship.primary) ).join 'Y'}"""
 
     changeGameTypeOnSquadLoad: (gametype) ->
         if @game_type_selector.val() != gametype
@@ -35818,10 +35818,6 @@ class exportObj.SquadBuilder
 
         re = if "Z" in serialized then /^v(\d+)Z(.*)/ else /^v(\d+)!(.*)/
         matches = re.exec serialized
-
-        console.log matches[1]
-        console.log matches[2]
-
         if matches?
             # versioned
             version = parseInt matches[1]
@@ -35829,10 +35825,11 @@ class exportObj.SquadBuilder
             # version 4 is the final version of 1st edition x-wing, and has been the first few weeks of YASB 2.0
             # version 5 is the first version for 2nd edtition x-wing only, it features extended (=standard), hyperspace, quickbuild and custom mode
             # version 6 has the only difference to version 5 is, that custom (=extended with != 200 points) has been removed and points are specified for all modes. 
-            # version 7 has arbitrary ordering of upgrades is additionally supported
-            # version 8 is the current version, replacing "!" with "Z" in the serialzed string
+            # version 7 has arbitrary ordering of upgrades additionally supported
+            # version 8 is the current version, replacing "!" with "Z" in the serialzed string, and 'Y' etc
             switch version
-                when 3, 4, 5, 6, 7, 8
+                when 4, 5, 6, 7, 8
+                    ship_splitter = if version > 7 then 'Y' else ';'
                     # parse out game type
                     [ game_type_and_point_abbrev, serialized_ships ] = if version > 7 then matches[2].split('Z') else matches[2].split('!')
                     # check if there are serialized ships to load
@@ -35864,7 +35861,7 @@ class exportObj.SquadBuilder
                                 @desired_points_input.val parseInt(game_type_and_point_abbrev.split('=')[1])
                                 @desired_points_input.change()
                     ships_with_unmet_dependencies = []
-                    for serialized_ship in serialized_ships.split(';')
+                    for serialized_ship in serialized_ships.split(ship_splitter)
                         unless serialized_ship == ''
                             new_ship = @addShip()
                             # try to create ship. fromSerialized returns false, if some upgrade have been skipped as they are not legal until now (e.g. 0-0-0 but vader is not yet in the squad)
@@ -37080,7 +37077,7 @@ class exportObj.SquadBuilder
                                     serialized_squad += possible_pilot.id
                                     break
 
-                    serialized_squad += ":"
+                    serialized_squad += "X"
 
                     # add upgrade ids
                     # Turn all the upgrades into a flat list so we can keep trying to add them
@@ -37097,8 +37094,8 @@ class exportObj.SquadBuilder
                                 success = false
                                 continue
                             serialized_squad += upgrade.id
-                            serialized_squad += ","
-                    serialized_squad += ":;"
+                            serialized_squad += "W"
+                    serialized_squad += "XY"
 
                 @loadFromSerialized(serialized_squad)
 
@@ -37897,10 +37894,14 @@ class Ship
         else
             upgrades = """#{upgrade?.data?.id ? "" for upgrade, i in @upgrades}"""
 
+            upgrades2 = upgrades.replace(/,/g, "W")
+            console.log(upgrades)
+            console.log(upgrades2)
+
             [
                 @pilot.id,
-                upgrades,
-            ].join ':'
+                upgrades2,
+            ].join 'X'
 
 
     fromSerialized: (version, serialized) ->
@@ -37969,10 +37970,12 @@ class Ship
                             else
                                 throw new Error("Expected addon class #{addon_cls.constructor.name} for conferred addon at index #{i} but #{conferred_addon.constructor.name} is there")
 
-            when 7
+            when 7, 8
+                pilot_splitter = if version > 7 then 'X' else ':'
+                upgrade_splitter = if version > 7 then 'W' else ','
                 # version 7 is an further extension of version 6, allowing arbitrary order of upgrades. It currently ignores conferredaddons (upgrades in slots added by titles etc), probably we can drop the special case handling for them and include them into the usual upgrade list?
-                [ pilot_id, upgrade_ids, conferredaddon_pairs ] = serialized.split ':' 
-                upgrade_ids = upgrade_ids.split ','
+                [ pilot_id, upgrade_ids, conferredaddon_pairs ] = serialized.split pilot_splitter
+                upgrade_ids = upgrade_ids.split upgrade_splitter
                 # set the pilot
                 @setPilotById parseInt(pilot_id), true
                 # make sure the pilot is valid 
