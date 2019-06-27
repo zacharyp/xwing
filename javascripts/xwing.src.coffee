@@ -53,6 +53,8 @@ class exportObj.SquadBuilderBackend
 
         @squad_display_mode = 'all'
 
+        @show_archived = false
+
         @collection_save_timer = null
 
         @setupHandlers()
@@ -115,6 +117,10 @@ class exportObj.SquadBuilderBackend
                 success: data.success
                 error: data.error
 
+    archive: (data, faction, cb) ->
+        data.additional_data["archived"] = true
+        @save(data.serialized, data.id, data.name, faction, data.additional_data, cb)
+
     list: (builder, all=false) ->
         # TODO: Pagination
         if all
@@ -134,114 +140,118 @@ class exportObj.SquadBuilderBackend
 
         url = if all then "#{@server}/all" else "#{@server}/squads/list"
         $.get url, (data, textStatus, jqXHR) =>
-            if data[builder.faction].length == 0
-                list_ul.append $.trim """
-                    <li>You have no squads saved.  Go save one!</li>
+            hasNotArchivedSquads = false
+            for squad in data[builder.faction]
+                li = $ document.createElement('LI')
+                li.addClass 'squad-summary'
+                li.data 'squad', squad
+                li.data 'builder', builder
+                li.data 'selectedForDeletion', false
+                list_ul.append li
+                if squad.additional_data?.archived?
+                    li.hide()
+                else
+                    hasNotArchivedSquads = true
+                li.append $.trim """
+                    <div class="row-fluid">
+                        <div class="span9">
+                            <h4>#{squad.name}</h4>
+                        </div>
+                        <div class="span3">
+                            <h5>#{squad.additional_data.points} Points</h5>
+                        </div>
+                    </div>
+                    <div class="row-fluid squad-description">
+                        <div class="span8">
+                            #{squad.additional_data.description}
+                        </div>
+                        <div class="span4">
+                            <button class="btn load-squad">Load</button>
+                            &nbsp;
+                            <button class="btn btn-danger delete-squad">Delete</button>
+                        </div>
+                    </div>
+                    <div class="row-fluid squad-delete-confirm">
+                        <div class="span8">
+                            Really delete <em>#{squad.name}</em>?
+                        </div>
+                        <div class="span4">
+                            <button class="btn btn-danger confirm-delete-squad">Delete</button>
+                            &nbsp;
+                            <button class="btn cancel-delete-squad">Cancel</button>
+                        </div>
+                    </div>
                 """
-            else
-                for squad in data[builder.faction]
-                    li = $ document.createElement('LI')
-                    li.addClass 'squad-summary'
-                    li.data 'squad', squad
-                    li.data 'builder', builder
-                    li.data 'selectedForDeletion', false
-                    list_ul.append li
-                    li.append $.trim """
-                        <div class="row-fluid">
-                            <div class="span9">
-                                <h4>#{squad.name}</h4>
-                            </div>
-                            <div class="span3">
-                                <h5>#{squad.additional_data.points} Points</h5>
-                            </div>
-                        </div>
-                        <div class="row-fluid squad-description">
-                            <div class="span8">
-                                #{squad.additional_data.description}
-                            </div>
-                            <div class="span4">
-                                <button class="btn load-squad">Load</button>
-                                &nbsp;
-                                <button class="btn btn-danger delete-squad">Delete</button>
-                            </div>
-                        </div>
-                        <div class="row-fluid squad-delete-confirm">
-                            <div class="span8">
-                                Really delete <em>#{squad.name}</em>?
-                            </div>
-                            <div class="span4">
-                                <button class="btn btn-danger confirm-delete-squad">Delete</button>
-                                &nbsp;
-                                <button class="btn cancel-delete-squad">Cancel</button>
-                            </div>
-                        </div>
-                    """
-                    li.find('.squad-delete-confirm').hide()
+                li.find('.squad-delete-confirm').hide()
 
-                    li.find('button.load-squad').click (e) =>
-                        e.preventDefault()
-                        button = $ e.target
-                        li = button.closest 'li'
-                        builder = li.data('builder')
-                        @squad_list_modal.modal 'hide'
-                        if builder.current_squad.dirty
-                            @warnUnsaved builder, () ->
-                                builder.container.trigger 'xwing-backend:squadLoadRequested', li.data('squad')
-                        else
+                li.find('button.load-squad').click (e) =>
+                    e.preventDefault()
+                    button = $ e.target
+                    li = button.closest 'li'
+                    builder = li.data('builder')
+                    @squad_list_modal.modal 'hide'
+                    if builder.current_squad.dirty
+                        @warnUnsaved builder, () ->
                             builder.container.trigger 'xwing-backend:squadLoadRequested', li.data('squad')
+                    else
+                        builder.container.trigger 'xwing-backend:squadLoadRequested', li.data('squad')
 
-                    li.find('button.delete-squad').click (e) =>
-                        e.preventDefault()
-                        button = $ e.target
-                        li = button.closest 'li'
-                        builder = li.data('builder')
-                        li.data 'selectedForDeletion', true
-                        do (li) =>
-                            li.find('.squad-description').fadeOut 'fast', ->
-                                li.find('.squad-delete-confirm').fadeIn 'fast'
-                            # show delete multiple section if not yet shown
-                            if not @number_of_selected_squads_to_be_deleted
-                                @squad_list_modal.find('div.delete-multiple-squads').show()
-                        # increment counter
-                        @number_of_selected_squads_to_be_deleted += 1
+                li.find('button.delete-squad').click (e) =>
+                    e.preventDefault()
+                    button = $ e.target
+                    li = button.closest 'li'
+                    builder = li.data('builder')
+                    li.data 'selectedForDeletion', true
+                    do (li) =>
+                        li.find('.squad-description').fadeOut 'fast', ->
+                            li.find('.squad-delete-confirm').fadeIn 'fast'
+                        # show delete multiple section if not yet shown
+                        if not @number_of_selected_squads_to_be_deleted
+                            @squad_list_modal.find('div.delete-multiple-squads').show()
+                    # increment counter
+                    @number_of_selected_squads_to_be_deleted += 1
 
 
-                    li.find('button.cancel-delete-squad').click (e) =>
-                        e.preventDefault()
-                        button = $ e.target
-                        li = button.closest 'li'
-                        builder = li.data('builder')
-                        li.data 'selectedForDeletion', false
-                        # decrement counter
-                        @number_of_selected_squads_to_be_deleted -= 1
-                        do (li) =>
-                            li.find('.squad-delete-confirm').fadeOut 'fast', ->
-                                li.find('.squad-description').fadeIn 'fast'
+                li.find('button.cancel-delete-squad').click (e) =>
+                    e.preventDefault()
+                    button = $ e.target
+                    li = button.closest 'li'
+                    builder = li.data('builder')
+                    li.data 'selectedForDeletion', false
+                    # decrement counter
+                    @number_of_selected_squads_to_be_deleted -= 1
+                    do (li) =>
+                        li.find('.squad-delete-confirm').fadeOut 'fast', ->
+                            li.find('.squad-description').fadeIn 'fast'
+                        # hide delete multiple section if this was the last selected squad
+                        if not @number_of_selected_squads_to_be_deleted
+                            @squad_list_modal.find('div.delete-multiple-squads').hide()
+
+                li.find('button.confirm-delete-squad').click (e) =>
+                    e.preventDefault()
+                    button = $ e.target
+                    li = button.closest 'li'
+                    builder = li.data('builder')
+                    li.find('.cancel-delete-squad').fadeOut 'fast'
+                    li.find('.confirm-delete-squad').addClass 'disabled'
+                    li.find('.confirm-delete-squad').text 'Deleting...'
+                    @delete li.data('squad').id, (results) =>
+                        if results.success
+                            li.slideUp 'fast', ->
+                                $(li).remove()
+                            # decrement counter
+                            @number_of_selected_squads_to_be_deleted -= 1
                             # hide delete multiple section if this was the last selected squad
                             if not @number_of_selected_squads_to_be_deleted
                                 @squad_list_modal.find('div.delete-multiple-squads').hide()
-
-                    li.find('button.confirm-delete-squad').click (e) =>
-                        e.preventDefault()
-                        button = $ e.target
-                        li = button.closest 'li'
-                        builder = li.data('builder')
-                        li.find('.cancel-delete-squad').fadeOut 'fast'
-                        li.find('.confirm-delete-squad').addClass 'disabled'
-                        li.find('.confirm-delete-squad').text 'Deleting...'
-                        @delete li.data('squad').id, (results) =>
-                            if results.success
-                                li.slideUp 'fast', ->
-                                    $(li).remove()
-                                # decrement counter
-                                @number_of_selected_squads_to_be_deleted -= 1
-                                # hide delete multiple section if this was the last selected squad
-                                if not @number_of_selected_squads_to_be_deleted
-                                    @squad_list_modal.find('div.delete-multiple-squads').hide()
-                            else
-                                li.html $.trim """
-                                    Error deleting #{li.data('squad').name}: <em>#{results.error}</em>
-                                """
+                        else
+                            li.html $.trim """
+                                Error deleting #{li.data('squad').name}: <em>#{results.error}</em>
+                            """
+            if not hasNotArchivedSquads
+                list_ul.append $.trim """
+                    <li>Nothing to see here. Go save a squad!</li>
+                """
 
             loading_pane.fadeOut 'fast'
             list_ul.fadeIn 'fast'
@@ -430,6 +440,7 @@ class exportObj.SquadBuilderBackend
             <div class="modal-footer">
                 <div class="btn-group delete-multiple-squads">
                     <button class="btn select-all">Select All</button>
+                    <button class="btn archive-selected">Archive Selected</button>
                     <button class="btn btn-danger delete-selected">Delete Selected</button>
                 </div>
                 <div class="btn-group squad-display-mode">
@@ -437,6 +448,7 @@ class exportObj.SquadBuilderBackend
                     <button class="btn show-extended-squads">Extended</button>
                     <button class="btn show-hyperspace-squads">Hyperspace</button>
                     <button class="btn show-quickbuild-squads">Quickbuild</button>
+                    <button class="btn show-archived-squads">Archived</button>
                 </div>
                 <button class="btn btn reload-all">Reload<span class="hidden-phone"> all squads (this might take a while)</span></button>
                 <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
@@ -469,6 +481,34 @@ class exportObj.SquadBuilderBackend
                             else
                                 li.html $.trim """
                                     Error deleting #{li.data('squad').name}: <em>#{results.error}</em>
+                                """
+
+        @archive_selected_button = $ @squad_list_modal.find('button.archive-selected')
+        @archive_selected_button.click (e) =>
+            ul = @squad_list_modal.find('ul.squad-list') 
+            for li in ul.find('li')
+                li = $ li
+                if li.data 'selectedForDeletion'
+                    do (li) =>
+                        li.find('.confirm-delete-squad').addClass 'disabled'
+                        li.find('.confirm-delete-squad').text 'Archiving...'
+                        @archive li.data('squad'), li.data('builder').faction, (results) =>
+                            if results.success
+                                li.slideUp 'fast', ->
+                                    $(li).hide()
+                                    $(li).find('.confirm-delete-squad').removeClass 'disabled'
+                                    $(li).find('.confirm-delete-squad').text 'Delete'
+                                    $(li).data 'selectedForDeletion', false
+                                    $(li).find('.squad-delete-confirm').fadeOut 'fast', ->
+                                        $(li).find('.squad-description').fadeIn 'fast'
+                                # decrement counter
+                                @number_of_selected_squads_to_be_deleted -= 1
+                                # hide delete multiple section if this was the last selected squad
+                                if not @number_of_selected_squads_to_be_deleted
+                                    @squad_list_modal.find('div.delete-multiple-squads').hide()
+                            else
+                                li.html $.trim """
+                                    Error archiving #{li.data('squad').name}: <em>#{results.error}</em>
                                 """
 
         @squad_list_modal.find('button.reload-all').click (e) =>
@@ -546,6 +586,16 @@ class exportObj.SquadBuilderBackend
                 @show_quickbuild_squads_button.addClass 'btn-inverse'
                 @squad_list_modal.find('.squad-list li').each (idx, elem) ->
                     $(elem).toggle $(elem).data().squad.serialized.search(/v\d+!q/) != -1
+                    
+        @show_archived_squads_button = $ @squad_list_modal.find('.show-archived-squads')
+        @show_archived_squads_button.click (e) =>
+            @show_archived = not @show_archived
+            if @show_archived
+                @show_archived_squads_button.addClass 'btn-inverse'
+            else
+                @show_archived_squads_button.removeClass 'btn-inverse'
+            @squad_list_modal.find('.squad-list li').each (idx, elem) =>
+                $(elem).toggle (($(elem).data().squad.additional_data.archived?) == @show_archived)
 
         @save_as_modal = $ document.createElement('DIV')
         @save_as_modal.addClass 'modal hide fade hidden-print'
@@ -8528,6 +8578,10 @@ exportObj.basicCardData = ->
                 "Modification"
                 "Configuration"
             ]
+            ship_override:
+                actionsred: [
+                    "Jam"
+                ]
         }
         {
             name: "Baktoid Prototype"
@@ -8563,6 +8617,7 @@ exportObj.basicCardData = ->
         {
             name: "Dineé Ellberger"
             id: 331
+            xws: "dineeellberger-nabooroyaln1starfighter"
             unique: true
             faction: "Galactic Republic"
             ship: "Naboo Royal N-1 Starfighter"
@@ -8578,6 +8633,7 @@ exportObj.basicCardData = ->
         {
             name: "Padmé Amidala"
             id: 332
+            xws: "padmeamidala-nabooroyaln1starfighter"
             unique: true
             faction: "Galactic Republic"
             ship: "Naboo Royal N-1 Starfighter"
@@ -8593,6 +8649,7 @@ exportObj.basicCardData = ->
         {
             name: "Ric Olié"
             id: 333
+            xws: "ricolie-nabooroyaln1starfighter"
             unique: true
             faction: "Galactic Republic"
             ship: "Naboo Royal N-1 Starfighter"
@@ -18021,7 +18078,7 @@ exportObj.cardLoaders.Deutsch = () ->
            text: """<i>Nur für Rebellen</i>%LINEBREAK%Während des Schrittes „Aktion durchführen“ darfst du 1 Aktion durchführen, auch solange du gestresst bist. Nachdem du eine Aktion durchgeführt hast, solange du gestresst bist, erleide 1 %HIT%-Schaden, es sei denn, du legst 1 deiner Schadenskarten offen."""
         '"Chopper" (Astromech)':
            display_name: """„Chopper“ (Astromech)"""
-           text: """<i>Nur für Rebellen</i>%LINEBREAK%<strong>Aktion:</strong> Gib 1 nicht-wiederkehrende %CHARGE% von einer anderen ausgerüsteten Aufwertung aus, um 1 Schild wiederherzustellen."""
+           text: """<i>Nur für Rebellen</i>%LINEBREAK%<strong>Aktion:</strong> Gib 1 nicht-wiederkehrende %CHARGE% von einer anderen ausgerüsteten Aufwertung aus, um 1 Schild wiederherzustellen.%LINEBREAK%<strong>Aktion:</strong> Gib 2 Schilde aus, um 1 nicht-wiederkehrende %CHARGE% von einer ausgerüsteten Aufwertung wiederherzustellen."""
         '"Genius"':
            display_name: """„Genie“"""
            text: """<i>Nur für Abschaum</i>%LINEBREAK%Nachdem du ein Manöver vollständig ausgeführt hast, falls du in dieser Runde noch kein Gerät abgeworfen oder gestartet hast, darfst du 1 Bombe abwerfen."""
@@ -35171,7 +35228,7 @@ class exportObj.SquadBuilder
             if @backend? and not @backend_save_list_button.hasClass('disabled')
                 additional_data =
                     points: @total_points
-                    description: @describeSquad() + ', Squad saved: ' + (new Date()).toLocaleString()
+                    description: @describeSquad()
                     cards: @listCards()
                     notes: @notes.val().substr(0, 1024)
                     obstacles: @getObstacles()
@@ -35738,7 +35795,7 @@ class exportObj.SquadBuilder
 
     serialize: ->
 
-        serialization_version = 7
+        serialization_version = 8
         game_type_abbrev = switch @game_type_selector.val()
             when 'standard'
                 's'
@@ -35747,7 +35804,7 @@ class exportObj.SquadBuilder
             when 'quickbuild'
                 'q'
         selected_points = $.trim @desired_points_input.val()
-        """v#{serialization_version}!#{game_type_abbrev}=#{selected_points}!#{( ship.toSerialized() for ship in @ships when ship.pilot? and (not @isQuickbuild or ship.primary) ).join ';'}"""
+        """v#{serialization_version}Z#{game_type_abbrev}=#{selected_points}Z#{( ship.toSerialized() for ship in @ships when ship.pilot? and (not @isQuickbuild or ship.primary) ).join ';'}"""
 
     changeGameTypeOnSquadLoad: (gametype) ->
         if @game_type_selector.val() != gametype
@@ -35759,8 +35816,12 @@ class exportObj.SquadBuilder
         # Clear all existing ships
         @removeAllShips()
 
-        re = /^v(\d+)!(.*)/
+        re = if "Z" in serialized then /^v(\d+)Z(.*)/ else /^v(\d+)!(.*)/
         matches = re.exec serialized
+
+        console.log matches[1]
+        console.log matches[2]
+
         if matches?
             # versioned
             version = parseInt matches[1]
@@ -35768,11 +35829,12 @@ class exportObj.SquadBuilder
             # version 4 is the final version of 1st edition x-wing, and has been the first few weeks of YASB 2.0
             # version 5 is the first version for 2nd edtition x-wing only, it features extended (=standard), hyperspace, quickbuild and custom mode
             # version 6 has the only difference to version 5 is, that custom (=extended with != 200 points) has been removed and points are specified for all modes. 
-            # version 7 is the current version, arbitrary ordering of upgrades is additionally supported
+            # version 7 has arbitrary ordering of upgrades is additionally supported
+            # version 8 is the current version, replacing "!" with "Z" in the serialzed string
             switch version
-                when 3, 4, 5, 6, 7
+                when 3, 4, 5, 6, 7, 8
                     # parse out game type
-                    [ game_type_and_point_abbrev, serialized_ships ] = matches[2].split('!')
+                    [ game_type_and_point_abbrev, serialized_ships ] = if version > 7 then matches[2].split('Z') else matches[2].split('!')
                     # check if there are serialized ships to load
                     if !serialized_ships? # something went wrong, we can't load that serialization
                         @loading_failed_container.toggleClass 'hidden', false
@@ -35815,12 +35877,7 @@ class exportObj.SquadBuilder
                             # create ship, if the ship was so invalid, that it in fact decided to not exist
                             ship[0] = @addShip()
                         ship[0].fromSerialized version, ship[1]
-                            
-                when 2
-                    for serialized_ship in matches[2].split(';')
-                        unless serialized_ship == ''
-                            new_ship = @addShip()
-                            new_ship.fromSerialized version, serialized_ship
+
         else
             # v1 (unversioned)
             for serialized_ship in serialized.split(';')
@@ -36837,7 +36894,7 @@ class exportObj.SquadBuilder
                 meth()
 
     describeSquad: ->
-        ((ship.pilot.name for ship in @ships when ship.pilot?).join ', ') #+ ', Squad saved: ' + (new Date()).toLocaleString()
+        if @getNotes().trim() == '' then  ((ship.pilot.name for ship in @ships when ship.pilot?).join ', ') else @getNotes()
 
     listCards: ->
         card_obj = {}
@@ -36992,7 +37049,7 @@ class exportObj.SquadBuilder
                 success = true
                 error = ""
 
-                serialized_squad = "v7!s=200!" # serialization version 7, standard squad, 200 points
+                serialized_squad = "v7Zs=200Z" # serialization version 7, standard squad, 200 points
                 # serialization schema SHIPID:UPGRADEID,UPGRADEID,...,UPGRADEID:;SHIPID:UPGRADEID,...
 
                 for pilot in xws.pilots
@@ -37838,20 +37895,11 @@ class Ship
         if @builder.isQuickbuild
             """#{@quickbuildId}:"""
         else
-            # Skip conferred upgrades
-            conferred_addons = []
-            for upgrade in @upgrades
-                conferred_addons = conferred_addons.concat(upgrade?.conferredAddons ? [])
-            upgrades = """#{upgrade?.data?.id ? "" for upgrade, i in @upgrades when upgrade not in conferred_addons}"""
-
-            serialized_conferred_addons = []
-            for addon in conferred_addons
-                serialized_conferred_addons.push addon.toSerialized()
+            upgrades = """#{upgrade?.data?.id ? "" for upgrade, i in @upgrades}"""
 
             [
                 @pilot.id,
                 upgrades,
-                serialized_conferred_addons.join(','),
             ].join ':'
 
 
@@ -37864,42 +37912,6 @@ class Ship
         # version 1-3 are 1st edition x-wing only, so we may as well delete them. 
         # version 4 was the final version of 1st edition, and the first few weeks of 2nd edition. 
         # version 5 is the current version. It handles titles and mods as regular upgrades. 
-            when 1
-                # PILOT_ID:UPGRADEID1,UPGRADEID2:TITLEUPGRADE1,TITLEUPGRADE2
-                [ pilot_id, upgrade_ids ] = serialized.split ':'
-
-                @setPilotById parseInt(pilot_id), true
-
-                for upgrade_id, i in upgrade_ids.split ','
-                    upgrade_id = parseInt upgrade_id
-                    @upgrades[i].setById upgrade_id if upgrade_id >= 0
-
-            when 2, 3
-                # PILOT_ID:UPGRADEID1,UPGRADEID2:CONFERREDADDONTYPE1.CONFERREDADDONID1,CONFERREDADDONTYPE2.CONFERREDADDONID2
-                [ pilot_id, upgrade_ids, conferredaddon_pairs ] = serialized.split ':'
-                @setPilotById parseInt(pilot_id), true
-
-                deferred_ids = []
-                for upgrade_id, i in upgrade_ids.split ','
-                    upgrade_id = parseInt upgrade_id
-                    continue if upgrade_id < 0 or isNaN(upgrade_id)
-                    if @upgrades[i].isOccupied()
-                        deferred_ids.push upgrade_id
-                    else
-                        @upgrades[i].setById upgrade_id
-
-                for deferred_id in deferred_ids
-                    for upgrade, i in @upgrades
-                        continue if upgrade.isOccupied() or upgrade.slot != exportObj.upgradesById[deferred_id].slot
-                        upgrade.setById deferred_id
-                        break
-
-                if conferredaddon_pairs?
-                    conferredaddon_pairs = conferredaddon_pairs.split ','
-                else
-                    conferredaddon_pairs = []
-
-
             when 4, 5, 6
                 # PILOT_ID:UPGRADEID1,UPGRADEID2:CONFERREDADDONTYPE1.CONFERREDADDONID1,CONFERREDADDONTYPE2.CONFERREDADDONID2
                 # conferredaddons are upgrade slots added by e.g. titles 
