@@ -33578,7 +33578,7 @@ exportObj.SquadBuilder = (function() {
       }
     }).call(this);
     selected_points = $.trim(this.desired_points_input.val());
-    return "v" + serialization_version + "Z" + game_type_abbrev + "=" + selected_points + "Z" + (((function() {
+    return "v" + serialization_version + "Z" + game_type_abbrev + "Z" + selected_points + "Z" + (((function() {
       var _i, _len, _ref, _results;
       _ref = this.ships;
       _results = [];
@@ -33599,80 +33599,71 @@ exportObj.SquadBuilder = (function() {
   };
 
   SquadBuilder.prototype.loadFromSerialized = function(serialized) {
-    var desired_points, game_type_abbrev, game_type_and_point_abbrev, matches, new_ship, re, serialized_ship, serialized_ships, ship, ship_splitter, ships_with_unmet_dependencies, version, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
+    var desired_points, g, game_type_abbrev, game_type_and_point_abbrev, matches, new_ship, p, re, s, serialized_ship, serialized_ships, ship, ship_splitter, ships_with_unmet_dependencies, version, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3, _ref4;
     this.suppress_automatic_new_ship = true;
     this.removeAllShips();
     re = __indexOf.call(serialized, "Z") >= 0 ? /^v(\d+)Z(.*)/ : /^v(\d+)!(.*)/;
     matches = re.exec(serialized);
     if (matches != null) {
       version = parseInt(matches[1]);
-      switch (version) {
-        case 4:
-        case 5:
-        case 6:
-        case 7:
-        case 8:
-          ship_splitter = version > 7 ? 'Y' : ';';
-          _ref = version > 7 ? matches[2].split('Z') : matches[2].split('!'), game_type_and_point_abbrev = _ref[0], serialized_ships = _ref[1];
-          if (serialized_ships == null) {
-            this.loading_failed_container.toggleClass('hidden', false);
-            return;
-          }
-          if (version === 6) {
-            desired_points = parseInt(game_type_and_point_abbrev.split('=')[1]);
-            game_type_abbrev = game_type_and_point_abbrev.split('=')[0];
-            switch (game_type_abbrev) {
-              case 's':
-                this.changeGameTypeOnSquadLoad('standard');
-                break;
-              case 'h':
-                this.changeGameTypeOnSquadLoad('hyperspace');
-                break;
-              case 'q':
-                this.changeGameTypeOnSquadLoad('quickbuild');
-            }
+      ship_splitter = version > 7 ? 'Y' : ';';
+      _ref2 = version > 7 ? ((_ref = matches[2].split('Z'), g = _ref[0], p = _ref[1], s = _ref[2], _ref), [g, parseInt(p), s]) : ((_ref1 = matches[2].split('!'), game_type_and_point_abbrev = _ref1[0], s = _ref1[1], _ref1), p = parseInt(game_type_and_point_abbrev.split('=')[1]), g = game_type_and_point_abbrev.split('=')[0], [g, p, s]), game_type_abbrev = _ref2[0], desired_points = _ref2[1], serialized_ships = _ref2[2];
+      if (serialized_ships == null) {
+        this.loading_failed_container.toggleClass('hidden', false);
+        return;
+      }
+      if (version === 6) {
+        switch (game_type_abbrev) {
+          case 's':
+            this.changeGameTypeOnSquadLoad('standard');
+            break;
+          case 'h':
+            this.changeGameTypeOnSquadLoad('hyperspace');
+            break;
+          case 'q':
+            this.changeGameTypeOnSquadLoad('quickbuild');
+        }
+        this.desired_points_input.val(desired_points);
+        this.desired_points_input.change();
+      } else {
+        switch (game_type_abbrev) {
+          case 's':
+            this.changeGameTypeOnSquadLoad('standard');
+            break;
+          case 'h':
+            this.changeGameTypeOnSquadLoad('hyperspace');
+            break;
+          case 'q':
+            this.changeGameTypeOnSquadLoad('quickbuild');
+            break;
+          default:
+            this.changeGameTypeOnSquadLoad('standard');
             this.desired_points_input.val(desired_points);
             this.desired_points_input.change();
-          } else {
-            switch (game_type_and_point_abbrev) {
-              case 's':
-                this.changeGameTypeOnSquadLoad('standard');
-                break;
-              case 'h':
-                this.changeGameTypeOnSquadLoad('hyperspace');
-                break;
-              case 'q':
-                this.changeGameTypeOnSquadLoad('quickbuild');
-                break;
-              default:
-                this.changeGameTypeOnSquadLoad('standard');
-                this.desired_points_input.val(parseInt(game_type_and_point_abbrev.split('=')[1]));
-                this.desired_points_input.change();
-            }
+        }
+      }
+      ships_with_unmet_dependencies = [];
+      _ref3 = serialized_ships.split(ship_splitter);
+      for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
+        serialized_ship = _ref3[_i];
+        if (serialized_ship !== '') {
+          new_ship = this.addShip();
+          if ((!new_ship.fromSerialized(version, serialized_ship)) || !new_ship.pilot) {
+            ships_with_unmet_dependencies.push([new_ship, serialized_ship]);
           }
-          ships_with_unmet_dependencies = [];
-          _ref1 = serialized_ships.split(ship_splitter);
-          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-            serialized_ship = _ref1[_i];
-            if (serialized_ship !== '') {
-              new_ship = this.addShip();
-              if ((!new_ship.fromSerialized(version, serialized_ship)) || !new_ship.pilot) {
-                ships_with_unmet_dependencies.push([new_ship, serialized_ship]);
-              }
-            }
-          }
-          for (_j = 0, _len1 = ships_with_unmet_dependencies.length; _j < _len1; _j++) {
-            ship = ships_with_unmet_dependencies[_j];
-            if (!ship[0].pilot) {
-              ship[0] = this.addShip();
-            }
-            ship[0].fromSerialized(version, ship[1]);
-          }
+        }
+      }
+      for (_j = 0, _len1 = ships_with_unmet_dependencies.length; _j < _len1; _j++) {
+        ship = ships_with_unmet_dependencies[_j];
+        if (!ship[0].pilot) {
+          ship[0] = this.addShip();
+        }
+        ship[0].fromSerialized(version, ship[1]);
       }
     } else {
-      _ref2 = serialized.split(';');
-      for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
-        serialized_ship = _ref2[_k];
+      _ref4 = serialized.split(';');
+      for (_k = 0, _len2 = _ref4.length; _k < _len2; _k++) {
+        serialized_ship = _ref4[_k];
         if (serialized !== '') {
           new_ship = this.addShip();
           new_ship.fromSerialized(1, serialized_ship);
@@ -33786,7 +33777,7 @@ exportObj.SquadBuilder = (function() {
               funcname: "SquadBuilder.removeShip"
             });
             ship.destroy(__iced_deferrals.defer({
-              lineno: 35959
+              lineno: 35964
             }));
             __iced_deferrals._fulfill();
           })(function() {
@@ -33796,7 +33787,7 @@ exportObj.SquadBuilder = (function() {
                 funcname: "SquadBuilder.removeShip"
               });
               _this.container.trigger('xwing:pointsUpdated', __iced_deferrals.defer({
-                lineno: 35960
+                lineno: 35965
               }));
               __iced_deferrals._fulfill();
             })(function() {
@@ -35425,7 +35416,7 @@ exportObj.SquadBuilder = (function() {
         this.removeAllShips();
         success = true;
         error = "";
-        serialized_squad = "v7Zs=200Z";
+        serialized_squad = "v8Zs=200Z";
         _ref = xws.pilots;
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           pilot = _ref[_i];
@@ -35528,7 +35519,7 @@ Ship = (function() {
               funcname: "Ship.destroy"
             });
             _this.builder.removeShip(_this.linkedShip, __iced_deferrals.defer({
-              lineno: 37136
+              lineno: 37141
             }));
             __iced_deferrals._fulfill();
           })(__iced_k);
@@ -35745,7 +35736,7 @@ Ship = (function() {
                       });
                       _this.builder.container.trigger('xwing:claimUnique', [
                         new_pilot, 'Pilot', __iced_deferrals.defer({
-                          lineno: 37252
+                          lineno: 37257
                         })
                       ]);
                       __iced_deferrals._fulfill();
@@ -35774,7 +35765,7 @@ Ship = (function() {
                               funcname: "Ship.setPilotById"
                             });
                             _this.builder.removeShip(_this.linkedShip, __iced_deferrals.defer({
-                              lineno: 37268
+                              lineno: 37273
                             }));
                             __iced_deferrals._fulfill();
                           })(function() {
@@ -35844,7 +35835,7 @@ Ship = (function() {
                   });
                   _this.builder.container.trigger('xwing:claimUnique', [
                     new_pilot, 'Pilot', __iced_deferrals.defer({
-                      lineno: 37310
+                      lineno: 37315
                     })
                   ]);
                   __iced_deferrals._fulfill();
@@ -35924,7 +35915,7 @@ Ship = (function() {
             });
             _this.builder.container.trigger('xwing:releaseUnique', [
               _this.pilot, 'Pilot', __iced_deferrals.defer({
-                lineno: 37339
+                lineno: 37344
               })
             ]);
             __iced_deferrals._fulfill();
@@ -35993,7 +35984,7 @@ Ship = (function() {
           upgrade = _ref[_i];
           if (upgrade != null) {
             upgrade.destroy(__iced_deferrals.defer({
-              lineno: 37368
+              lineno: 37373
             }));
           }
         }
@@ -36635,11 +36626,11 @@ Ship = (function() {
   };
 
   Ship.prototype.toSerialized = function() {
-    var i, upgrade, upgrades, upgrades2;
+    var i, upgrade, upgrades;
     if (this.builder.isQuickbuild) {
       return "" + this.quickbuildId + ":";
     } else {
-      upgrades = "" + ((function() {
+      upgrades = ("" + ((function() {
         var _i, _len, _ref, _ref1, _ref2, _results;
         _ref = this.upgrades;
         _results = [];
@@ -36648,11 +36639,8 @@ Ship = (function() {
           _results.push((_ref1 = upgrade != null ? (_ref2 = upgrade.data) != null ? _ref2.id : void 0 : void 0) != null ? _ref1 : "");
         }
         return _results;
-      }).call(this));
-      upgrades2 = upgrades.replace(/,/g, "W");
-      console.log(upgrades);
-      console.log(upgrades2);
-      return [this.pilot.id, upgrades2].join('X');
+      }).call(this))).replace(/,/g, "W");
+      return [this.pilot.id, upgrades].join('X');
     }
   };
 
