@@ -567,7 +567,7 @@ class exportObj.SquadBuilderBackend
                 @squad_list_modal.find('.squad-display-mode .btn').removeClass 'btn-inverse'
                 @show_extended_squads_button.addClass 'btn-inverse'
                 @squad_list_modal.find('.squad-list li').each (idx, elem) ->
-                    $(elem).toggle $(elem).data().squad.serialized.search(/v\d+!s/) != -1
+                    $(elem).toggle $(elem).data().squad.serialized.search(/v\d+Zs/) != -1
 
         @show_hyperspace_squads_button = $ @squad_list_modal.find('.show-hyperspace-squads')
         @show_hyperspace_squads_button.click (e) =>
@@ -576,7 +576,7 @@ class exportObj.SquadBuilderBackend
                 @squad_list_modal.find('.squad-display-mode .btn').removeClass 'btn-inverse'
                 @show_hyperspace_squads_button.addClass 'btn-inverse'
                 @squad_list_modal.find('.squad-list li').each (idx, elem) ->
-                    $(elem).toggle $(elem).data().squad.serialized.search(/v\d+!h/) != -1
+                    $(elem).toggle $(elem).data().squad.serialized.search(/v\d+Zh/) != -1
 
         @show_quickbuild_squads_button = $ @squad_list_modal.find('.show-quickbuild-squads')
         @show_quickbuild_squads_button.click (e) =>
@@ -585,7 +585,7 @@ class exportObj.SquadBuilderBackend
                 @squad_list_modal.find('.squad-display-mode .btn').removeClass 'btn-inverse'
                 @show_quickbuild_squads_button.addClass 'btn-inverse'
                 @squad_list_modal.find('.squad-list li').each (idx, elem) ->
-                    $(elem).toggle $(elem).data().squad.serialized.search(/v\d+!q/) != -1
+                    $(elem).toggle $(elem).data().squad.serialized.search(/v\d+Zq/) != -1
                     
         @show_archived_squads_button = $ @squad_list_modal.find('.show-archived-squads')
         @show_archived_squads_button.click (e) =>
@@ -35843,28 +35843,15 @@ class exportObj.SquadBuilder
             if !serialized_ships? # something went wrong, we can't load that serialization
                 @loading_failed_container.toggleClass 'hidden', false
                 return
-            if version == 6
-                switch game_type_abbrev
-                    when 's'
-                        @changeGameTypeOnSquadLoad 'standard'
-                    when 'h'
-                        @changeGameTypeOnSquadLoad 'hyperspace'
-                    when 'q'
-                        @changeGameTypeOnSquadLoad 'quickbuild'
-                @desired_points_input.val desired_points
-                @desired_points_input.change()
-            else
-                switch game_type_abbrev
-                    when 's'
-                        @changeGameTypeOnSquadLoad 'standard'
-                    when 'h'
-                        @changeGameTypeOnSquadLoad 'hyperspace'
-                    when 'q'
-                        @changeGameTypeOnSquadLoad 'quickbuild'
-                    else
-                        @changeGameTypeOnSquadLoad 'standard'
-                        @desired_points_input.val desired_points
-                        @desired_points_input.change()
+            switch game_type_abbrev
+                when 's'
+                    @changeGameTypeOnSquadLoad 'standard'
+                when 'h'
+                    @changeGameTypeOnSquadLoad 'hyperspace'
+                when 'q'
+                    @changeGameTypeOnSquadLoad 'quickbuild'
+            @desired_points_input.val desired_points
+            @desired_points_input.change()
             ships_with_unmet_dependencies = []
             for serialized_ship in serialized_ships.split(ship_splitter)
                 unless serialized_ship == ''
