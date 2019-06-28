@@ -11248,6 +11248,7 @@ exportObj.basicCardData = ->
             name: "DRK-1 Probe Droids"
             id: 221
             slot: "Device"
+            unique: true
             faction: "Separatist Alliance"
             charge: 2
             points: 5
@@ -19408,6 +19409,9 @@ exportObj.cardLoaders.English = () ->
         "Naboo Handmaiden":
            display_name: """Naboo Handmaiden"""
            text: """<strong>Setup:</strong> After placing forces, assign the <strong>Decoyed</strong> condition to 1 friendly ship other than <strong>Naboo Handmaiden</strong>. %LINEBREAK%<strong>Full Throttle:</strong> After you fully execute a speed 3-5 maneuver, you may perform an %EVADE% action."""
+        "Bravo Flight Officer":
+           display_name: """Bravo Flight Officer"""
+           text: """<strong>Full Throttle:</strong> After you fully execute a speed 3-5 maneuver, you may perform an %EVADE% action."""
         "BB-8":
            display_name: """BB-8"""
            text: """During the System Phase, you may perform a red %BARRELROLL% or %BOOST% action."""
@@ -35644,10 +35648,15 @@ class exportObj.SquadBuilder
                 @desired_points_input.val 8
                 @maxSmallShipsOfOneType = null
                 @maxLargeShipsOfOneType = null
-        if (oldHyperspace != @isHyperspace) or (oldQuickbuild != @isQuickbuild)
+        if oldQuickbuild != @isQuickbuild
             old_id = @current_squad.id
             @newSquadFromScratch($.trim(@current_squad.name))
             @current_squad.id = old_id # we want to keep the ID, so we allow people to use the save button
+        else if oldHyperspace != @isHyperspace
+            if @isHyperspace == true
+                old_id = @current_squad.id
+                @newSquadFromScratch($.trim(@current_squad.name)) # need to change this to a new function to check hyperspace and remove
+                @current_squad.id = old_id # we want to keep the ID, so we allow people to use the save button
         #@onPointsUpdated cb
         cb()
 
@@ -35866,13 +35875,6 @@ class exportObj.SquadBuilder
                     # create ship, if the ship was so invalid, that it in fact decided to not exist
                     ship[0] = @addShip()
                 ship[0].fromSerialized version, ship[1]
-
-        else
-            # v1 (unversioned)
-            for serialized_ship in serialized.split(';')
-                unless serialized == ''
-                    new_ship = @addShip()
-                    new_ship.fromSerialized 1, serialized_ship
 
         @suppress_automatic_new_ship = false
         # Finally, the unassigned ship
