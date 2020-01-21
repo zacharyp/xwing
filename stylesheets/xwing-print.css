@@ -1,7 +1,3 @@
-@page {
-  size: 8.5in 11in;
-  margin: 0.5in; }
-
 body {
   -webkit-print-color-adjust: exact;
   color-adjust: exact !important;
@@ -19,6 +15,11 @@ body {
     color: white; }
   #printable .bw .fancy-pilot-stats .xwing-miniatures-font {
     color: black; }
+  #printable .bw .fancy-pilot-stats .red {
+    -webkit-text-stroke: 0.5px black;
+    color: white; }
+  #printable .bw .fancy-pilot-stats .force {
+    color: gray; }
   #printable .bw .fancy-dial .svg-maneuver-triangle.svg-base-maneuver {
     fill: black;
     stroke: black; }
@@ -53,7 +54,7 @@ body {
     background-color: white !important; }
   #printable .bw .fancy-dial table > tbody > tr > td {
     border: 2px solid gray !important; }
-  #printable .bw i.xwing-miniatures-font-agility, #printable .bw i.xwing-miniatures-font-hull, #printable .bw i.xwing-miniatures-font-shield, #printable .bw i.xwing-miniatures-font-attack-bullseye, #printable .bw i.xwing-miniatures-font-forcecharge, #printable .bw i.xwing-miniatures-font-charge, #printable .bw i.xwing-miniatures-font-doubleturretarc, #printable .bw i.xwing-miniatures-font-singleturretarc, #printable .bw i.xwing-miniatures-font-frontarc, #printable .bw i.xwing-miniatures-font-reararc, #printable .bw i.xwing-miniatures-font-fullfrontarc {
+  #printable .bw i.xwing-miniatures-font-agility, #printable .bw i.xwing-miniatures-font-hull, #printable .bw i.xwing-miniatures-font-energy, #printable .bw i.xwing-miniatures-font-shield, #printable .bw i.xwing-miniatures-font-attack-bullseye, #printable .bw i.xwing-miniatures-font-forcecharge, #printable .bw i.xwing-miniatures-font-charge, #printable .bw i.xwing-miniatures-font-doubleturretarc, #printable .bw i.xwing-miniatures-font-singleturretarc, #printable .bw i.xwing-miniatures-font-frontarc, #printable .bw i.xwing-miniatures-font-reararc, #printable .bw i.xwing-miniatures-font-fullfrontarc {
     background: white; }
   #printable .bw .upgrade-attack .xwing-miniatures-font-attack, #printable .bw .upgrade-attack i.xwing-miniatures-font-doublearcturret, #printable .bw .upgrade-attack i.xwing-miniatures-font-singleturretarc, #printable .bw .upgrade-attack i.xwing-miniatures-font-frontarc, #printable .bw .upgrade-attack i.xwing-miniatures-font-reararc, #printable .bw .upgrade-attack i.xwing-miniatures-font-fullfrontarc {
     background: black;
@@ -74,25 +75,25 @@ body {
     position: relative; }
   #printable .fancy-header {
     border: 0.375in solid #4e4e4e;
-    color: white;
+    color: white !important;
     border-left-color: transparent;
     border-top-color: transparent;
     border-right-color: transparent;
     font-family: EurostileStandard, Impact, sans-serif; }
     #printable .fancy-header .squad-name {
-      color: white;
       position: absolute;
-      font-size: 0.3in;
-      margin-top: 0.09375in;
+      font-size: 0.28125in;
+      margin-top: 0.075in;
       font-weight: 100; }
+      #printable .fancy-header .squad-name .xwing-miniatures-font {
+        font-size: 0.2625in; }
     #printable .fancy-header .squad-faction {
       position: absolute;
       margin-top: 0.075in;
       right: 0.984375in;
       font-weight: 100; }
       #printable .fancy-header .squad-faction .xwing-miniatures-font {
-        color: white;
-        font-size: 0.3in; }
+        font-size: 0.2625in; }
     #printable .fancy-header .mask {
       position: absolute;
       right: 0;
@@ -141,8 +142,8 @@ body {
       height: 0px; }
       #printable .fancy-ship .fancy-pilot-header .pilot-header-text {
         position: absolute;
-        font-size: 0.24in;
-        margin-top: -0.24in;
+        font-size: 0.225in;
+        margin-top: -0.225in;
         font-weight: 100; }
         #printable .fancy-ship .fancy-pilot-header .pilot-header-text .fancy-ship-type {
           font-style: italic;
@@ -190,8 +191,8 @@ body {
         margin-top: -0.2in; }
         #printable .fancy-ship .fancy-pilot-stats .pilot-stats-content .xwing-miniatures-font {
           vertical-align: middle; }
-        #printable .fancy-ship .fancy-pilot-stats .pilot-stats-content .red {
-          -webkit-text-stroke: 0.1px white; }
+        #printable .fancy-ship .fancy-pilot-stats .pilot-stats-content .action {
+          color: black; }
       #printable .fancy-ship .fancy-pilot-stats .info-data, #printable .fancy-ship .fancy-pilot-stats .xwing-miniatures-font {
         position: relative;
         bottom: 0.048in; }

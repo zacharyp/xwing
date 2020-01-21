@@ -28,7 +28,8 @@
 
 body {
   background-color: #202020;
-  font-family: EurostileStandard; }
+  font-family: EurostileStandard;
+  overflow-x: hidden; }
 
 button {
   font-family: EurostileStandard; }
@@ -63,11 +64,11 @@ strong em, em strong {
 .ship-container > .row-fluid {
   padding: 10px 0px; }
 
-.card-stat, .info-data.info-skill, .info-data.info-attack, .info-data.info-energy, .info-data.info-agility, .info-data.info-hull, .info-data.info-shields, .info-data.info-force, .info-data.info-charge, .info-maneuvers table > tbody > tr > td:first-child {
+.card-stat, .info-data.info-skill, .info-data.info-engagement, .info-data.info-attack, .info-data.info-energy, .info-data.info-agility, .info-data.info-hull, .info-data.info-shields, .info-data.info-force, .info-data.info-charge, .info-maneuvers table > tbody > tr > td:first-child {
   font-family: kimberley;
   font-size: 1.5em; }
 
-.info-data.info-skill {
+.info-data.info-skill, .info-data.info-engagement {
   color: #CD6D2D; }
 
 .info-data-red {
@@ -171,6 +172,9 @@ i.header-range {
 
 r {
   color: #EF232B; }
+
+f {
+  color: #9D899D; }
 
 .info-maneuvers table {
   table-layout: fixed;
